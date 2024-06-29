@@ -67,15 +67,19 @@ class FastCan(SelectorMixin, BaseEstimator):
         Orthogonal least squares based fast feature selection for
         linear classification. Pattern Recognition, 123, 108419.
 
+    * Zhang, S., Wang, T., Sun L., Worden, K., & Cross, E. J. (2024).
+        Canonical-correlation-based fast feature selection for
+        structural health monitoring.
+
     Examples
     --------
-    >>> from idakit import CorrelationSelector
+    >>> from fastcan import FastCan
     >>> X = [[ 0.87, -1.34,  0.31 ],
     ...     [-2.79, -0.02, -0.85 ],
     ...     [-1.34, -0.48, -2.55 ],
     ...     [ 1.92,  1.48,  0.65 ]]
     >>> y = [0, 1, 0, 1]
-    >>> selector = CorrelationSelector(n_features_to_select=2, verbose=0).fit(X, y)
+    >>> selector = FastCan(n_features_to_select=2, verbose=0).fit(X, y)
     >>> selector.get_support()
     array([ True,  True, False])
     """
