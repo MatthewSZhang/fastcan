@@ -1,0 +1,145 @@
+[project]
+name = "fastcan"
+version = "0.1.0"
+description = "A Fast canonical-correlation-based feature selection method"
+authors = [
+    { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
+]
+requires-python = ">= 3.10"
+readme = "README.rst"
+license = { file = "LICENSE" }
+dependencies = ["scikit-learn>=1.5.0,<1.6"]
+
+[project.optional-dependencies]
+test = ["pytest", "pytest-cov"]
+build = ["build"]
+fmt = ["black"]
+lint = ["ruff", "cython-lint"]
+type = ["mypy"]
+doc = ["furo"]
+
+[build-system]
+requires = ["setuptools", "wheel", "Cython>=3.0.10", "scikit-learn"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.package-data]
+fastcan = ["*.pyd", "*.so"]
+
+[tool.setuptools.packages.find]
+namespaces = false
+
+[tool.pixi.project]
+channels = ["conda-forge"]
+platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
+
+[tool.pixi.pypi-dependencies]
+fastcan = { path = ".", editable = true }
+
+[tool.pixi.host-dependencies]
+python = "~=3.11.3"
+
+[tool.pixi.build-dependencies]
+wheel = ">=0.43.0,<0.44"
+cython = ">=3.0.10,<3.1"
+scikit-learn = ">=1.5.0,<1.6"
+
+[tool.pixi.target.osx-arm64.build-dependencies]
+compilers = ">=1.7.0,<1.8"
+llvm-openmp = ">=18.1.6,<18.2"
+
+[tool.pixi.target.osx-64.build-dependencies]
+compilers = ">=1.7.0,<1.8"
+llvm-openmp = ">=18.1.6,<18.2"
+
+[tool.pixi.dependencies]
+scikit-learn = ">=1.5.0,<1.6"
+
+[tool.pixi.feature.test.tasks]
+test = { cmd = "pytest", cwd = "tests" }
+test-coverage = { cmd = "rm -rf coverage .coverage && pytest tests --showlocals -v --cov=$PACKAGE tests/ --cov-report=html:coverage", env = { PACKAGE = "fastcan" } }
+
+[tool.pixi.feature.build.tasks]
+build-wheel = "python -m build --no-isolation --wheel ."
+
+[tool.pixi.feature.fmt.tasks]
+fmt = { cmd = "black .", cwd = "fastcan" }
+
+[tool.pixi.feature.lint.tasks]
+lint = "ruff check . --fix"
+cython-lint = { cmd = "cython-lint .", cwd = "fastcan" }
+
+[tool.pixi.feature.type.tasks]
+type = { cmd = "mypy . --ignore-missing-imports", cwd = "fastcan" }
+
+[tool.pixi.feature.doc.tasks]
+doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "doc", env = { SPHINXBUILD = "sphinx-build", CMD = "html", SOURCEDIR = ".", BUILDDIR = "_build", SPHINXOPTS = "" } }
+doc-clean = { cmd = "rm -rf $BUILDDIR && rm -rf generated", cwd = "doc", env = { BUILDDIR = "_build" } }
+
+[tool.pixi.environments]
+default = ["build", "fmt", "lint", "type", "doc", "test"]
+
+[tool.black]
+line-length = 88
+preview = true
+exclude = '''
+/(
+    \.eggs         # exclude a few common directories in the
+  | \.git          # root of the project
+  | \.mypy_cache
+  | \.vscode
+  | \.venv
+  | \.ruff_cache
+  | build
+  | dist
+  | doc/_build
+)/
+'''
+
+[tool.ruff]
+# all rules can be found here: https://beta.ruff.rs/docs/rules/
+lint.select = ["E", "F", "W", "I"]
+
+lint.ignore = [
+    # space before : (needed for how black formats slicing)
+    "E203",
+    # do not assign a lambda expression, use a def
+    "E731",
+    # do not use variables named 'l', 'O', or 'I'
+    "E741",
+]
+
+# max line length for black
+line-length = 88
+
+exclude = [".git", "__pycache__", "dist", "doc/_build", "build"]
+
+[tool.ruff.lint.per-file-ignores]
+# It's fine not to put the import at the top of the file in the examples
+# folder.
+"examples/*" = ["E402"]
+"doc/conf.py" = ["E402"]
+
+
+[tool.cython-lint]
+# Ignore the same error codes as ruff
+# + E501 (line too long) because keeping it < 88 in cython
+# often makes code less readable.
+lint.ignore = [
+    # multiple spaces/tab after comma
+    'E24',
+    # space before : (needed for how black formats slicing)
+    'E203',
+    # line too long
+    'E501',
+    # do not assign a lambda expression, use a def
+    'E731',
+    # do not use variables named 'l', 'O', or 'I'
+    'E741',
+    # line break before binary operator
+    'W503',
+    # line break after binary operator
+    'W504',
+]

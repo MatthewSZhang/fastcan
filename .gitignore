@@ -1,0 +1,31 @@
+# pixi environments
+.pixi
+*.egg-info
+
+# python generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+
+.idea
+.vscode
+.DS_Store
+
+# Cython
+*.c
+*.so
+*.pyd
+
+# Used by pytest, pytest-cov
+.pytest_cache/
+.coverage
+cov_html/
+
+# Used by mypy
+.mypy_cache/
+
+# Used by sphinx
+doc/_build/
+doc/generated/
