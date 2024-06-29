@@ -7,18 +7,17 @@ on:
   release:
     types: [published]
 
-permissions:
-  contents: read
-
 jobs:
   deploy:
 
     strategy:
-      fail-fast: false
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
         python-version: ["3.10", "3.11", "3.12"]
     runs-on: ${{ matrix.os }}
+
+    permissions:
+      id-token: write
 
     steps:
     - uses: actions/checkout@v4
@@ -36,11 +35,11 @@ jobs:
     - name: Test with pytest
       run: |
         pixi run test
+    - name: Test with doctest
+      run: |
+        CMD=doctest pixi run doc
     - name: Build package
       run: |
         pixi run build-wheel
     - name: Publish package
-      uses: pypa/gh-action-pypi-publish@27b31702a0e7fc50959f5ad993c78deac1bdfc29
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_API_TOKEN }}
+      uses: pypa/gh-action-pypi-publish@release/v1
