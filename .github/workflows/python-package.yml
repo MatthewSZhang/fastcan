@@ -62,9 +62,6 @@ jobs:
             platform_id: macosx_arm64
     runs-on: ${{ matrix.os }}
 
-    permissions:
-      id-token: write
-
     steps:
     - uses: actions/checkout@v4
     - name: Set up Python ${{ matrix.python }}
@@ -97,6 +94,8 @@ jobs:
   publish:
     runs-on: ubuntu-latest
     needs: build
+    permissions:
+      id-token: write
     steps:
       - name: Download artifacts
         uses: actions/download-artifact@v4
