@@ -38,9 +38,6 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 [tool.pixi.pypi-dependencies]
 fastcan = { path = ".", editable = true }
 
-[tool.pixi.host-dependencies]
-python = "~=3.11.3"
-
 [tool.pixi.build-dependencies]
 wheel = ">=0.43.0,<0.44"
 cython = ">=3.0.10,<3.1"
@@ -78,8 +75,17 @@ type = { cmd = "mypy . --ignore-missing-imports", cwd = "fastcan" }
 doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "doc", env = { SPHINXBUILD = "sphinx-build", CMD = "html", SOURCEDIR = ".", BUILDDIR = "_build", SPHINXOPTS = "" } }
 doc-clean = { cmd = "rm -rf $BUILDDIR && rm -rf generated", cwd = "doc", env = { BUILDDIR = "_build" } }
 
+[tool.pixi.feature.py310.dependencies]
+python = "3.10.*"
+[tool.pixi.feature.py311.dependencies]
+python = "3.11.*"
+[tool.pixi.feature.py312.dependencies]
+python = "3.12.*"
+
 [tool.pixi.environments]
-default = ["build", "fmt", "lint", "type", "doc", "test"]
+py310 = ["py310", "build", "fmt", "lint", "type", "doc", "test"]
+py311 = ["py311", "build", "fmt", "lint", "type", "doc", "test"]
+py312 = ["py312", "build", "fmt", "lint", "type", "doc", "test"]
 
 [tool.black]
 line-length = 88
