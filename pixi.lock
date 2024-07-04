@@ -1491,9 +1491,9 @@ packages:
   requires_python: '>=3.9'
 - kind: pypi
   name: fastcan
-  version: 0.1.21
+  version: 0.1.22
   path: .
-  sha256: 3e92a3b8615e40791c1b1fa2f79990e4bd99b40721b3048ec7c55b616f270f61
+  sha256: 6483c2c83b11649ccc6385535dd2832d4ec7bd36b51ff5b9a289efee8a994011
   requires_dist:
   - pytest ; extra == 'test'
   - pytest-cov ; extra == 'test'

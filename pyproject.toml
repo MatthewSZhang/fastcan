@@ -1,6 +1,6 @@
 [project]
 name = "fastcan"
-version = "0.1.21"
+version = "0.1.22"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
@@ -98,6 +98,9 @@ skip = [
     "*-manylinux_i686", "*-musllinux_*",
     "*-manylinux_ppc64le", "*-manylinux_s390x"
 ]
+# Don't repair macOS wheels
+[tool.cibuildwheel.macos]
+repair-wheel-command = ""
 
 [tool.black]
 line-length = 88
