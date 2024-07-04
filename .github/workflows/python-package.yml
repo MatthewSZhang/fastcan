@@ -14,6 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: prefix-dev/setup-pixi@v0.8.1
+      with:
+        environments: default
 
     - name: Lint with ruff
       run: |
@@ -34,10 +36,13 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-12, macos-14]
 
     runs-on: ${{ matrix.os }}
+    needs: test
 
     steps:
     - uses: actions/checkout@v4
     - uses: prefix-dev/setup-pixi@v0.8.1
+      with:
+        environments: default
 
     - name: Build package
       run: |
