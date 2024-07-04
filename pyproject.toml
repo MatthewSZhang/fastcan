@@ -1,7 +1,7 @@
 [project]
 name = "fastcan"
-version = "0.1.13"
-description = "A Fast canonical-correlation-based feature selection method"
+version = "0.1.15"
+description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
 ]
@@ -12,7 +12,7 @@ dependencies = ["scikit-learn>=1.5.0,<1.6"]
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
-build = ["build"]
+build = ["build", "cibuildwheel"]
 fmt = ["black"]
 lint = ["ruff", "cython-lint"]
 type = ["mypy"]
@@ -60,6 +60,7 @@ test-coverage = { cmd = "rm -rf coverage .coverage && pytest tests --showlocals 
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "python -m build --no-isolation --wheel ."
+cibuildwheel = "python -m cibuildwheel --output-dir wheelhouse"
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
