@@ -1,18 +1,18 @@
 [project]
 name = "fastcan"
-version = "0.1.15"
+version = "0.1.16"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
 ]
-requires-python = ">= 3.10"
+requires-python = ">= 3.9"
 readme = "README.rst"
 license = { file = "LICENSE" }
 dependencies = ["scikit-learn>=1.5.0,<1.6"]
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
-build = ["build", "cibuildwheel"]
+build = ["build", "auditwheel"]
 fmt = ["black"]
 lint = ["ruff", "cython-lint"]
 type = ["mypy"]
@@ -60,7 +60,9 @@ test-coverage = { cmd = "rm -rf coverage .coverage && pytest tests --showlocals 
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "python -m build --no-isolation --wheel ."
-cibuildwheel = "python -m cibuildwheel --output-dir wheelhouse"
+
+[tool.pixi.target.linux-64.tasks]
+build-wheel = "python -m build --no-isolation --wheel . && auditwheel repair dist/*linux_x86_64.whl"
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
@@ -76,6 +78,8 @@ type = { cmd = "mypy . --ignore-missing-imports", cwd = "fastcan" }
 doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "doc", env = { SPHINXBUILD = "sphinx-build", CMD = "html", SOURCEDIR = ".", BUILDDIR = "_build", SPHINXOPTS = "" } }
 doc-clean = { cmd = "rm -rf $BUILDDIR && rm -rf generated", cwd = "doc", env = { BUILDDIR = "_build" } }
 
+[tool.pixi.feature.py39.dependencies]
+python = "3.9.*"
 [tool.pixi.feature.py310.dependencies]
 python = "3.10.*"
 [tool.pixi.feature.py311.dependencies]
@@ -84,6 +88,7 @@ python = "3.11.*"
 python = "3.12.*"
 
 [tool.pixi.environments]
+py39 = ["py39", "build", "fmt", "lint", "type", "doc", "test"]
 py310 = ["py310", "build", "fmt", "lint", "type", "doc", "test"]
 py311 = ["py311", "build", "fmt", "lint", "type", "doc", "test"]
 py312 = ["py312", "build", "fmt", "lint", "type", "doc", "test"]
