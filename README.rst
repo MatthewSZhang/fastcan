@@ -1,3 +1,13 @@
++---------------------------------------------+-----------------------------------------+-----------------------------------------+-----------------------------------------+
+| .. figure:: doc/images/sheffield-logo.svg   | .. figure:: doc/images/tongji-logo.jpg  | .. figure:: doc/images/DRG-logo.png     | .. figure:: doc/images/shmc.png         |
+|   :target: https://www.sheffield.ac.uk/     |   :target: https://www.tongji.edu.cn/   |   :target: https://drg.ac.uk/           |   :target: https://shmc.tongji.edu.cn/  |
+|   :figwidth: 70pt                           |   :figwidth: 70pt                       |   :figwidth: 70pt                       |   :figwidth: 70pt                       |
+|   :alt: Sheffield                           |   :alt: Tongji                          |   :alt: DRG                             |   :alt: SHMC                            |
+|                                             |                                         |                                         |                                         |
+|                                             |                                         |                                         |                                         |
++---------------------------------------------+-----------------------------------------+-----------------------------------------+-----------------------------------------+
+
+
 FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 ====================================================================
 
@@ -35,3 +45,5 @@ Uninstallation
 Uninstall **FastCan**:
 
 * Run ``pip uninstall fastcan``
+
+.. include:: doc/index.rst
