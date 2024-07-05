@@ -10,28 +10,22 @@
 import importlib.metadata
 from datetime import datetime
 
-from sklearn.externals._packaging.version import parse
-
 # project root
 # sys.path.insert(0, os.path.abspath(".."))
 # General information about the project.
 project = "fastcan"
-copyright = f"2023 - {datetime.now().year}, fastcan developers (MIT License)"
+copyright = f"{datetime.now().year}, fastcan developers (MIT License)"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
 # built documents.
 #
-# The short X.Y version.
-version_info = importlib.metadata.version(project)
-parsed_version = parse(version_info)
-version = ".".join(parsed_version.base_version.split(".")[:2])
+
 # The full version, including alpha/beta/rc tags.
-# Removes post from release name
-if parsed_version.is_postrelease:
-    release = parsed_version.base_version
-else:
-    release = version_info
+release = importlib.metadata.version(project)
+
+# The short X.Y version.
+version = '.'.join(release.split('.')[:2])
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

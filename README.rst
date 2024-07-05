@@ -1,7 +1,7 @@
 FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 ====================================================================
 
-FastCan is a python implementation of the paper
+FastCan is a Python implementation of the following papers.
 
 #. Zhang, S., & Lang, Z. Q. (2022).
     Orthogonal least squares based fast feature selection for

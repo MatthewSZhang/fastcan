@@ -100,11 +100,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/ca-certificates-2024.7.4-h8857fd0_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/cctools-986-h40f6528_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/cctools_osx-64-986-ha1c5b94_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/clang-16-16.0.6-default_h4c8afb6_8.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/clang-16.0.6-default_ha3b9224_8.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/clang-16-16.0.6-default_h0c94c6a_9.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/clang-16.0.6-default_h179603d_9.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/clang_impl_osx-64-16.0.6-h8787910_16.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/clang_osx-64-16.0.6-hb91bd55_16.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/clangxx-16.0.6-default_ha3b9224_8.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/clangxx-16.0.6-default_h179603d_9.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/clangxx_impl_osx-64-16.0.6-h6d92fbe_16.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/clangxx_osx-64-16.0.6-hb91bd55_16.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/compiler-rt-16.0.6-ha38d28d_2.conda
@@ -124,7 +124,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-64/ld64_osx-64-711-ha20a434_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libblas-3.9.0-22_osx64_openblas.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libcblas-3.9.0-22_osx64_openblas.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-64/libclang-cpp16-16.0.6-default_h4c8afb6_8.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-64/libclang-cpp16-16.0.6-default_h0c94c6a_9.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libcxx-17.0.6-heb59cac_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libexpat-2.6.2-h73e2aa4_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-64/libffi-3.4.2-h0d85af4_5.tar.bz2
@@ -216,11 +216,11 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/ca-certificates-2024.7.4-hf0a4a13_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/cctools-986-h4faf515_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/cctools_osx-arm64-986-h62378fb_0.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16-16.0.6-default_hb63da90_8.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16.0.6-default_h095aff0_8.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16-16.0.6-default_h5c12605_9.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16.0.6-default_h675cc0c_9.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clang_impl_osx-arm64-16.0.6-hc421ffc_16.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clang_osx-arm64-16.0.6-h54d7cd3_16.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx-16.0.6-default_h095aff0_8.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx-16.0.6-default_h675cc0c_9.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx_impl_osx-arm64-16.0.6-hcd7bac0_16.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx_osx-arm64-16.0.6-h54d7cd3_16.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/compiler-rt-16.0.6-h3808999_2.conda
@@ -240,7 +240,7 @@ environments:
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/ld64_osx-arm64-711-ha4bd21c_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libblas-3.9.0-22_osxarm64_openblas.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libcblas-3.9.0-22_osxarm64_openblas.conda
-      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libclang-cpp16-16.0.6-default_hb63da90_8.conda
+      - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libclang-cpp16-16.0.6-default_h5c12605_9.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libcxx-17.0.6-h0812c0d_3.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libexpat-2.6.2-hebf3989_0.conda
       - conda: https://conda.anaconda.org/conda-forge/osx-arm64/libffi-3.4.2-h3422bc3_5.tar.bz2
@@ -511,28 +511,8 @@ packages:
 - kind: pypi
   name: black
   version: 24.4.2
-  url: https://files.pythonhosted.org/packages/43/24/942b22571b0171be7c6f701cdc3e3b7221f5b522ef02cf82503a547a657b/black-24.4.2-cp312-cp312-win_amd64.whl
-  sha256: 415e686e87dbbe6f4cd5ef0fbf764af7b89f9057b97c908742b6008cc554b9c0
-  requires_dist:
-  - click>=8.0.0
-  - mypy-extensions>=0.4.3
-  - packaging>=22.0
-  - pathspec>=0.9.0
-  - platformdirs>=2
-  - tomli>=1.1.0 ; python_version < '3.11'
-  - typing-extensions>=4.0.1 ; python_version < '3.11'
-  - colorama>=0.4.3 ; extra == 'colorama'
-  - aiohttp!=3.9.0,>=3.7.4 ; (sys_platform == 'win32' and implementation_name == 'pypy') and extra == 'd'
-  - aiohttp>=3.7.4 ; (sys_platform != 'win32' or implementation_name != 'pypy') and extra == 'd'
-  - ipython>=7.8.0 ; extra == 'jupyter'
-  - tokenize-rt>=3.2.0 ; extra == 'jupyter'
-  - uvloop>=0.15.2 ; extra == 'uvloop'
-  requires_python: '>=3.8'
-- kind: pypi
-  name: black
-  version: 24.4.2
-  url: https://files.pythonhosted.org/packages/25/6d/eb15a1b155f755f43766cc473618c6e1de6555d6a1764965643f486dcf01/black-24.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: be8bef99eb46d5021bf053114442914baeb3649a89dc5f3a555c88737e5e98fc
+  url: https://files.pythonhosted.org/packages/be/b8/9c152301774fa62a265b035a8ede4d6280827904ea1af8c3be10a28d3187/black-24.4.2-cp312-cp312-macosx_11_0_arm64.whl
+  sha256: 88c57dc656038f1ab9f92b3eb5335ee9b021412feaa46330d5eba4e51fe49b04
   requires_dist:
   - click>=8.0.0
   - mypy-extensions>=0.4.3
@@ -571,8 +551,28 @@ packages:
 - kind: pypi
   name: black
   version: 24.4.2
-  url: https://files.pythonhosted.org/packages/be/b8/9c152301774fa62a265b035a8ede4d6280827904ea1af8c3be10a28d3187/black-24.4.2-cp312-cp312-macosx_11_0_arm64.whl
-  sha256: 88c57dc656038f1ab9f92b3eb5335ee9b021412feaa46330d5eba4e51fe49b04
+  url: https://files.pythonhosted.org/packages/43/24/942b22571b0171be7c6f701cdc3e3b7221f5b522ef02cf82503a547a657b/black-24.4.2-cp312-cp312-win_amd64.whl
+  sha256: 415e686e87dbbe6f4cd5ef0fbf764af7b89f9057b97c908742b6008cc554b9c0
+  requires_dist:
+  - click>=8.0.0
+  - mypy-extensions>=0.4.3
+  - packaging>=22.0
+  - pathspec>=0.9.0
+  - platformdirs>=2
+  - tomli>=1.1.0 ; python_version < '3.11'
+  - typing-extensions>=4.0.1 ; python_version < '3.11'
+  - colorama>=0.4.3 ; extra == 'colorama'
+  - aiohttp!=3.9.0,>=3.7.4 ; (sys_platform == 'win32' and implementation_name == 'pypy') and extra == 'd'
+  - aiohttp>=3.7.4 ; (sys_platform != 'win32' or implementation_name != 'pypy') and extra == 'd'
+  - ipython>=7.8.0 ; extra == 'jupyter'
+  - tokenize-rt>=3.2.0 ; extra == 'jupyter'
+  - uvloop>=0.15.2 ; extra == 'uvloop'
+  requires_python: '>=3.8'
+- kind: pypi
+  name: black
+  version: 24.4.2
+  url: https://files.pythonhosted.org/packages/25/6d/eb15a1b155f755f43766cc473618c6e1de6555d6a1764965643f486dcf01/black-24.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: be8bef99eb46d5021bf053114442914baeb3649a89dc5f3a555c88737e5e98fc
   requires_dist:
   - click>=8.0.0
   - mypy-extensions>=0.4.3
@@ -867,14 +867,8 @@ packages:
 - kind: pypi
   name: charset-normalizer
   version: 3.3.2
-  url: https://files.pythonhosted.org/packages/b6/7c/8debebb4f90174074b827c63242c23851bdf00a532489fba57fef3416e40/charset_normalizer-3.3.2-cp312-cp312-win_amd64.whl
-  sha256: 96b02a3dc4381e5494fad39be677abcb5e6634bf7b4fa83a6dd3112607547001
-  requires_python: '>=3.7.0'
-- kind: pypi
-  name: charset-normalizer
-  version: 3.3.2
-  url: https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b
+  url: https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl
+  sha256: 55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6
   requires_python: '>=3.7.0'
 - kind: pypi
   name: charset-normalizer
@@ -885,8 +879,14 @@ packages:
 - kind: pypi
   name: charset-normalizer
   version: 3.3.2
-  url: https://files.pythonhosted.org/packages/3a/52/9f9d17c3b54dc238de384c4cb5a2ef0e27985b42a0e5cc8e8a31d918d48d/charset_normalizer-3.3.2-cp312-cp312-macosx_11_0_arm64.whl
-  sha256: 55086ee1064215781fff39a1af09518bc9255b50d6333f2e4c74ca09fac6a8f6
+  url: https://files.pythonhosted.org/packages/b6/7c/8debebb4f90174074b827c63242c23851bdf00a532489fba57fef3416e40/charset_normalizer-3.3.2-cp312-cp312-win_amd64.whl
+  sha256: 96b02a3dc4381e5494fad39be677abcb5e6634bf7b4fa83a6dd3112607547001
+  requires_python: '>=3.7.0'
+- kind: pypi
+  name: charset-normalizer
+  version: 3.3.2
+  url: https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b
   requires_python: '>=3.7.0'
 - kind: pypi
   name: cibuildwheel
@@ -940,93 +940,83 @@ packages:
 - kind: conda
   name: clang
   version: 16.0.6
-  build: default_h095aff0_8
-  build_number: 8
-  subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16.0.6-default_h095aff0_8.conda
-  sha256: f44cd2204f23eb883e8c56531f3abf9bfd132deed9440249ea4f678f4734f808
-  md5: 2e45f36aad7201ace28741db124c04d7
+  build: default_h179603d_9
+  build_number: 9
+  subdir: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/clang-16.0.6-default_h179603d_9.conda
+  sha256: 0553d08f7c917801841db35755d03c2e3c593145e7bb540d848ff60e9a59342d
+  md5: 1acf03a00abda70355ef2978cfce3e9b
   depends:
-  - clang-16 16.0.6 default_hb63da90_8
-  constrains:
-  - clang-tools 16.0.6.*
-  - llvm 16.0.6.*
-  - llvm-tools 16.0.6.*
-  - llvmdev 16.0.6.*
+  - clang-16 16.0.6 default_h0c94c6a_9
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 81920
-  timestamp: 1718122290461
+  size: 84075
+  timestamp: 1720102149775
 - kind: conda
   name: clang
   version: 16.0.6
-  build: default_ha3b9224_8
-  build_number: 8
-  subdir: osx-64
-  url: https://conda.anaconda.org/conda-forge/osx-64/clang-16.0.6-default_ha3b9224_8.conda
-  sha256: 0aebba64709009f1a19de04cd2788c7e3836f68928f63c2afaaa66be8069b26d
-  md5: 339f02347429e9199be888bc41605caa
+  build: default_h675cc0c_9
+  build_number: 9
+  subdir: osx-arm64
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16.0.6-default_h675cc0c_9.conda
+  sha256: 18ab9e76cad7e4e0e270e144e95f855101392f2b98f7f755770d4183230b36d0
+  md5: 69857936b4859caebecb5ae2cb95969a
   depends:
-  - clang-16 16.0.6 default_h4c8afb6_8
-  constrains:
-  - clang-tools 16.0.6.*
-  - llvm 16.0.6.*
-  - llvm-tools 16.0.6.*
-  - llvmdev 16.0.6.*
+  - clang-16 16.0.6 default_h5c12605_9
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 81665
-  timestamp: 1718124897896
+  size: 84193
+  timestamp: 1720101080713
 - kind: conda
   name: clang-16
   version: 16.0.6
-  build: default_h4c8afb6_8
-  build_number: 8
+  build: default_h0c94c6a_9
+  build_number: 9
   subdir: osx-64
-  url: https://conda.anaconda.org/conda-forge/osx-64/clang-16-16.0.6-default_h4c8afb6_8.conda
-  sha256: 6d1f62db30967d7b836d6cfb197f6f0a66bb623a8202e67804fad09fbb6acabe
-  md5: 9e52d9c3ed342cf593a27786d1cdd1f2
+  url: https://conda.anaconda.org/conda-forge/osx-64/clang-16-16.0.6-default_h0c94c6a_9.conda
+  sha256: 26d405aeb42d84c904b551f5efa00ba3b8e4ec6577f62cecaa849fb1e485137f
+  md5: bdd24ee262fd1c08f6e0a8173140321d
   depends:
   - __osx >=10.13
-  - libclang-cpp16 16.0.6 default_h4c8afb6_8
+  - libclang-cpp16 16.0.6 default_h0c94c6a_9
   - libcxx >=16.0.6
   - libllvm16 >=16.0.6,<16.1.0a0
   constrains:
-  - clang-tools 16.0.6
-  - llvm-tools 16.0.6
   - clangxx 16.0.6
+  - clang-tools 16.0.6
   - clangdev 16.0.6
+  - llvm-tools 16.0.6
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 758196
-  timestamp: 1718124767692
+  size: 757356
+  timestamp: 1720102035739
 - kind: conda
   name: clang-16
   version: 16.0.6
-  build: default_hb63da90_8
-  build_number: 8
+  build: default_h5c12605_9
+  build_number: 9
   subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16-16.0.6-default_hb63da90_8.conda
-  sha256: 28bdd7f357bc4110c4e20376d64d61174fd44f8a322401c88e63dc2238f3e0f1
-  md5: 156001036e0ffa60ecfe6b6734333054
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/clang-16-16.0.6-default_h5c12605_9.conda
+  sha256: 235846274760aeef56512e2775998ab7c6f7f313ab7fb0d129d9b812e921fedd
+  md5: 51f20b419e43701e31cf9d86c222c838
   depends:
   - __osx >=11.0
-  - libclang-cpp16 16.0.6 default_hb63da90_8
+  - libclang-cpp16 16.0.6 default_h5c12605_9
   - libcxx >=16.0.6
   - libllvm16 >=16.0.6,<16.1.0a0
   constrains:
-  - clangxx 16.0.6
+  - llvm-tools 16.0.6
   - clang-tools 16.0.6
   - clangdev 16.0.6
-  - llvm-tools 16.0.6
+  - clangxx 16.0.6
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 753196
-  timestamp: 1718122199201
+  size: 754380
+  timestamp: 1720100966553
 - kind: conda
   name: clang_impl_osx-64
   version: 16.0.6
@@ -1102,35 +1092,35 @@ packages:
 - kind: conda
   name: clangxx
   version: 16.0.6
-  build: default_h095aff0_8
-  build_number: 8
-  subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx-16.0.6-default_h095aff0_8.conda
-  sha256: 0b5c1f3a0287102855b6632e7fbd899204f35c6dc9fad2f1507fc6190b6a8534
-  md5: c72a621207bfd3c1fcbda4974657c315
+  build: default_h179603d_9
+  build_number: 9
+  subdir: osx-64
+  url: https://conda.anaconda.org/conda-forge/osx-64/clangxx-16.0.6-default_h179603d_9.conda
+  sha256: 149c705d66303ab4ffe153b7d45625bdd4d131607178336e7a5a5fa45253c9d9
+  md5: 0cad937ac54668f5bd98ab7c6a76374c
   depends:
-  - clang 16.0.6 default_h095aff0_8
+  - clang 16.0.6 default_h179603d_9
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 81993
-  timestamp: 1718122305093
+  size: 84158
+  timestamp: 1720102173764
 - kind: conda
   name: clangxx
   version: 16.0.6
-  build: default_ha3b9224_8
-  build_number: 8
-  subdir: osx-64
-  url: https://conda.anaconda.org/conda-forge/osx-64/clangxx-16.0.6-default_ha3b9224_8.conda
-  sha256: b4319c2be623a94915b7c8c67d232fb3d080d07165b66ee368b1fa4a718c6402
-  md5: 244466126a69da5d012c4013394ff5f0
+  build: default_h675cc0c_9
+  build_number: 9
+  subdir: osx-arm64
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/clangxx-16.0.6-default_h675cc0c_9.conda
+  sha256: 68f51dfafd07398afc1b79da16f865cbd9519f562b2fe861f62ae77e48ae0a24
+  md5: 33569c59e4553fbe9d0c9bca4a479ac9
   depends:
-  - clang 16.0.6 default_ha3b9224_8
+  - clang 16.0.6 default_h675cc0c_9
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 81753
-  timestamp: 1718124918671
+  size: 84266
+  timestamp: 1720101097432
 - kind: conda
   name: clangxx_impl_osx-64
   version: 16.0.6
@@ -1333,16 +1323,8 @@ packages:
 - kind: pypi
   name: coverage
   version: 7.5.4
-  url: https://files.pythonhosted.org/packages/0e/c1/2b7c7dcf4c273aac7676f12fb2b5524b133671d731ab91bd9a41c21675b9/coverage-7.5.4-cp312-cp312-win_amd64.whl
-  sha256: cef4649ec906ea7ea5e9e796e68b987f83fa9a718514fe147f538cfeda76d7a7
-  requires_dist:
-  - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
-  requires_python: '>=3.8'
-- kind: pypi
-  name: coverage
-  version: 7.5.4
-  url: https://files.pythonhosted.org/packages/88/52/7054710a881b09d295e93b9889ac204c241a6847a8c05555fc6e1d8799d5/coverage-7.5.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 5013ed890dc917cef2c9f765c4c6a8ae9df983cd60dbb635df8ed9f4ebc9f555
+  url: https://files.pythonhosted.org/packages/2c/63/4f781db529b585a6ef3860ea01390951b006dbea9ada4ea3a3d830e325f4/coverage-7.5.4-cp312-cp312-macosx_11_0_arm64.whl
+  sha256: 042183de01f8b6d531e10c197f7f0315a61e8d805ab29c5f7b51a01d62782747
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
@@ -1357,8 +1339,16 @@ packages:
 - kind: pypi
   name: coverage
   version: 7.5.4
-  url: https://files.pythonhosted.org/packages/2c/63/4f781db529b585a6ef3860ea01390951b006dbea9ada4ea3a3d830e325f4/coverage-7.5.4-cp312-cp312-macosx_11_0_arm64.whl
-  sha256: 042183de01f8b6d531e10c197f7f0315a61e8d805ab29c5f7b51a01d62782747
+  url: https://files.pythonhosted.org/packages/0e/c1/2b7c7dcf4c273aac7676f12fb2b5524b133671d731ab91bd9a41c21675b9/coverage-7.5.4-cp312-cp312-win_amd64.whl
+  sha256: cef4649ec906ea7ea5e9e796e68b987f83fa9a718514fe147f538cfeda76d7a7
+  requires_dist:
+  - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
+  requires_python: '>=3.8'
+- kind: pypi
+  name: coverage
+  version: 7.5.4
+  url: https://files.pythonhosted.org/packages/88/52/7054710a881b09d295e93b9889ac204c241a6847a8c05555fc6e1d8799d5/coverage-7.5.4-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 5013ed890dc917cef2c9f765c4c6a8ae9df983cd60dbb635df8ed9f4ebc9f555
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
@@ -2133,12 +2123,12 @@ packages:
 - kind: conda
   name: libclang-cpp16
   version: 16.0.6
-  build: default_h4c8afb6_8
-  build_number: 8
+  build: default_h0c94c6a_9
+  build_number: 9
   subdir: osx-64
-  url: https://conda.anaconda.org/conda-forge/osx-64/libclang-cpp16-16.0.6-default_h4c8afb6_8.conda
-  sha256: aac37aa11603bd9abd2c7a4bde089d2dde151c1fd018d9156f1143fffbe47a04
-  md5: 50f4e969d77f64fe7d53f192b4b1f23c
+  url: https://conda.anaconda.org/conda-forge/osx-64/libclang-cpp16-16.0.6-default_h0c94c6a_9.conda
+  sha256: fec5b4a971bfa09348d1cf0f7adfa00015aea31ea12027dc38b36b2eeda16dde
+  md5: 1d2344f627433a89f189b8aeb503eaa6
   depends:
   - __osx >=10.13
   - libcxx >=16.0.6
@@ -2146,17 +2136,17 @@ packages:
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 12861256
-  timestamp: 1718124160007
+  size: 12863650
+  timestamp: 1720101497056
 - kind: conda
   name: libclang-cpp16
   version: 16.0.6
-  build: default_hb63da90_8
-  build_number: 8
+  build: default_h5c12605_9
+  build_number: 9
   subdir: osx-arm64
-  url: https://conda.anaconda.org/conda-forge/osx-arm64/libclang-cpp16-16.0.6-default_hb63da90_8.conda
-  sha256: e23bfec4fbd4ecd0ce98d0a61df0c3c8c9da32534d8b1fe509c2b60c810ba913
-  md5: 076ad35c90bdd646e9e48af5cd2a08dc
+  url: https://conda.anaconda.org/conda-forge/osx-arm64/libclang-cpp16-16.0.6-default_h5c12605_9.conda
+  sha256: d2f27de1a9fa1b547b27b81351360a0d618ed33bf11a58cdbe430ddc24a451ff
+  md5: a6f0bff2a459cc2527f8f9ad32c6dde3
   depends:
   - __osx >=11.0
   - libcxx >=16.0.6
@@ -2164,8 +2154,8 @@ packages:
   license: Apache-2.0 WITH LLVM-exception
   license_family: Apache
   purls: []
-  size: 11910689
-  timestamp: 1718121809860
+  size: 11912918
+  timestamp: 1720100491557
 - kind: conda
   name: libcxx
   version: 17.0.6
@@ -3062,14 +3052,8 @@ packages:
 - kind: pypi
   name: markupsafe
   version: 2.1.5
-  url: https://files.pythonhosted.org/packages/3f/14/c3554d512d5f9100a95e737502f4a2323a1959f6d0d01e0d0997b35f7b10/MarkupSafe-2.1.5-cp312-cp312-win_amd64.whl
-  sha256: 823b65d8706e32ad2df51ed89496147a42a2a6e01c13cfb6ffb8b1e92bc910bb
-  requires_python: '>=3.7'
-- kind: pypi
-  name: markupsafe
-  version: 2.1.5
-  url: https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5
+  url: https://files.pythonhosted.org/packages/53/bd/583bf3e4c8d6a321938c13f49d44024dbe5ed63e0a7ba127e454a66da974/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl
+  sha256: 8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1
   requires_python: '>=3.7'
 - kind: pypi
   name: markupsafe
@@ -3080,8 +3064,14 @@ packages:
 - kind: pypi
   name: markupsafe
   version: 2.1.5
-  url: https://files.pythonhosted.org/packages/53/bd/583bf3e4c8d6a321938c13f49d44024dbe5ed63e0a7ba127e454a66da974/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_universal2.whl
-  sha256: 8dec4936e9c3100156f8a2dc89c4b88d5c435175ff03413b443469c7c8c5f4d1
+  url: https://files.pythonhosted.org/packages/3f/14/c3554d512d5f9100a95e737502f4a2323a1959f6d0d01e0d0997b35f7b10/MarkupSafe-2.1.5-cp312-cp312-win_amd64.whl
+  sha256: 823b65d8706e32ad2df51ed89496147a42a2a6e01c13cfb6ffb8b1e92bc910bb
+  requires_python: '>=3.7'
+- kind: pypi
+  name: markupsafe
+  version: 2.1.5
+  url: https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5
   requires_python: '>=3.7'
 - kind: conda
   name: mkl
@@ -3167,22 +3157,8 @@ packages:
 - kind: pypi
   name: mypy
   version: 1.10.1
-  url: https://files.pythonhosted.org/packages/f9/20/d33608e8dc3bc0f5966fc1f6c2d16671f0725dcca279beec47c3e19afd9d/mypy-1.10.1-cp312-cp312-win_amd64.whl
-  sha256: 3c4c2992f6ea46ff7fce0072642cfb62af7a2484efe69017ed8b095f7b39ef31
-  requires_dist:
-  - typing-extensions>=4.1.0
-  - mypy-extensions>=1.0.0
-  - tomli>=1.1.0 ; python_version < '3.11'
-  - psutil>=4.0 ; extra == 'dmypy'
-  - pip ; extra == 'install-types'
-  - setuptools>=50 ; extra == 'mypyc'
-  - lxml ; extra == 'reports'
-  requires_python: '>=3.8'
-- kind: pypi
-  name: mypy
-  version: 1.10.1
-  url: https://files.pythonhosted.org/packages/ff/b5/cbccba4dca9703c4c467171e7f61ea6a1a75eae991208aa5bc7d49807f91/mypy-1.10.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 6bacf8f3a3d7d849f40ca6caea5c055122efe70e81480c8328ad29c55c69e93e
+  url: https://files.pythonhosted.org/packages/ec/05/7c87b26b6a769b70f6c0b8a6daef01fc6f3ae566df89a2fa9d04f690b0d3/mypy-1.10.1-cp312-cp312-macosx_11_0_arm64.whl
+  sha256: 378c03f53f10bbdd55ca94e46ec3ba255279706a6aacaecac52ad248f98205d3
   requires_dist:
   - typing-extensions>=4.1.0
   - mypy-extensions>=1.0.0
@@ -3209,8 +3185,22 @@ packages:
 - kind: pypi
   name: mypy
   version: 1.10.1
-  url: https://files.pythonhosted.org/packages/ec/05/7c87b26b6a769b70f6c0b8a6daef01fc6f3ae566df89a2fa9d04f690b0d3/mypy-1.10.1-cp312-cp312-macosx_11_0_arm64.whl
-  sha256: 378c03f53f10bbdd55ca94e46ec3ba255279706a6aacaecac52ad248f98205d3
+  url: https://files.pythonhosted.org/packages/f9/20/d33608e8dc3bc0f5966fc1f6c2d16671f0725dcca279beec47c3e19afd9d/mypy-1.10.1-cp312-cp312-win_amd64.whl
+  sha256: 3c4c2992f6ea46ff7fce0072642cfb62af7a2484efe69017ed8b095f7b39ef31
+  requires_dist:
+  - typing-extensions>=4.1.0
+  - mypy-extensions>=1.0.0
+  - tomli>=1.1.0 ; python_version < '3.11'
+  - psutil>=4.0 ; extra == 'dmypy'
+  - pip ; extra == 'install-types'
+  - setuptools>=50 ; extra == 'mypyc'
+  - lxml ; extra == 'reports'
+  requires_python: '>=3.8'
+- kind: pypi
+  name: mypy
+  version: 1.10.1
+  url: https://files.pythonhosted.org/packages/ff/b5/cbccba4dca9703c4c467171e7f61ea6a1a75eae991208aa5bc7d49807f91/mypy-1.10.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 6bacf8f3a3d7d849f40ca6caea5c055122efe70e81480c8328ad29c55c69e93e
   requires_dist:
   - typing-extensions>=4.1.0
   - mypy-extensions>=1.0.0
@@ -3796,14 +3786,8 @@ packages:
 - kind: pypi
   name: ruff
   version: 0.5.0
-  url: https://files.pythonhosted.org/packages/48/05/04bf25784ba73abf0e639065fd7a785c005c895c4bf64aa2729d26a1984f/ruff-0.5.0-py3-none-win_amd64.whl
-  sha256: e9118f60091047444c1b90952736ee7b1792910cab56e9b9a9ac20af94cd0440
-  requires_python: '>=3.7'
-- kind: pypi
-  name: ruff
-  version: 0.5.0
-  url: https://files.pythonhosted.org/packages/af/79/8a57016a761d11491b913460a3d1545cdbe96dca6acb1279102814c9147b/ruff-0.5.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 81e5facfc9f4a674c6a78c64d38becfbd5e4f739c31fcd9ce44c849f1fad9e4c
+  url: https://files.pythonhosted.org/packages/e2/a2/afc6952d5a0199e7e6c0a2051d6f4780fb70376f5bd07f27838f8bc0cf47/ruff-0.5.0-py3-none-macosx_11_0_arm64.whl
+  sha256: 7594f8df5404a5c5c8f64b8311169879f6cf42142da644c7e0ba3c3f14130370
   requires_python: '>=3.7'
 - kind: pypi
   name: ruff
@@ -3814,8 +3798,14 @@ packages:
 - kind: pypi
   name: ruff
   version: 0.5.0
-  url: https://files.pythonhosted.org/packages/e2/a2/afc6952d5a0199e7e6c0a2051d6f4780fb70376f5bd07f27838f8bc0cf47/ruff-0.5.0-py3-none-macosx_11_0_arm64.whl
-  sha256: 7594f8df5404a5c5c8f64b8311169879f6cf42142da644c7e0ba3c3f14130370
+  url: https://files.pythonhosted.org/packages/48/05/04bf25784ba73abf0e639065fd7a785c005c895c4bf64aa2729d26a1984f/ruff-0.5.0-py3-none-win_amd64.whl
+  sha256: e9118f60091047444c1b90952736ee7b1792910cab56e9b9a9ac20af94cd0440
+  requires_python: '>=3.7'
+- kind: pypi
+  name: ruff
+  version: 0.5.0
+  url: https://files.pythonhosted.org/packages/af/79/8a57016a761d11491b913460a3d1545cdbe96dca6acb1279102814c9147b/ruff-0.5.0-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 81e5facfc9f4a674c6a78c64d38becfbd5e4f739c31fcd9ce44c849f1fad9e4c
   requires_python: '>=3.7'
 - kind: conda
   name: scikit-learn
