@@ -154,10 +154,10 @@ class FastCan(SelectorMixin, BaseEstimator):
         n_samples, n_features = X.shape
         n_outputs = y.shape[1]
 
-        if self.n_features_to_select >= n_features:
+        if self.n_features_to_select > n_features:
             raise ValueError(
                 f"n_features_to_select {self.n_features_to_select} "
-                f"must be < n_features {n_features}."
+                f"must be <= n_features {n_features}."
             )
 
         if self.inclusive_indices.shape[0] >= n_features:
