@@ -55,11 +55,16 @@ class FastCan(SelectorMixin, BaseEstimator):
         Names of features seen during :term:`fit`. Defined only when `X`
         has feature names that are all strings.
 
+    indices_ : ndarray of shape (n_features_to_select,), dtype=float
+        The indices of the selected features. The order of the indices
+        is corresponding to the feature selection process.
+
     support_ : ndarray of shape (n_features,), dtype=bool
         The mask of selected features.
 
     scores_: ndarray of shape (n_features_to_select,), dtype=float
-        The h-correlation/eta-cosine of selected features.
+        The h-correlation/eta-cosine of selected features. The order of
+        the scores is corresponding to the feature selection process.
 
     References
     ----------
@@ -212,6 +217,7 @@ class FastCan(SelectorMixin, BaseEstimator):
             print()
         support = np.zeros(shape=self.n_features_in_, dtype=bool)
         support[indices] = True
+        self.indices_ = indices
         self.support_ = support
         self.scores_ = scores
         return self
