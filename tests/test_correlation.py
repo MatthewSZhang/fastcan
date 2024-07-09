@@ -2,15 +2,16 @@
 """Test FastCan"""
 
 import numpy as np
+import pytest
 from numpy.testing import (
     assert_almost_equal,
-    assert_array_equal,
     assert_array_almost_equal,
+    assert_array_equal,
 )
 from sklearn.cross_decomposition import CCA
 from sklearn.datasets import make_classification, make_regression
 from sklearn.linear_model import LinearRegression
-import pytest
+
 from fastcan import FastCan
 
 
