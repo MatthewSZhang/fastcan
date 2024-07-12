@@ -74,6 +74,7 @@ scikit-learn = ">=1.5.0,<1.6"
 [tool.pixi.feature.test.tasks]
 test = { cmd = "pytest", cwd = "tests" }
 test-coverage = { cmd = "rm -rf coverage .coverage && pytest tests --showlocals -v --cov=$PACKAGE tests/ --cov-report=html:coverage", env = { PACKAGE = "fastcan" } }
+test-coverage-xml = { cmd = "rm -rf cov.xml .coverage && pytest tests --showlocals -v --cov=$PACKAGE tests/ --cov-report=xml:cov.xml", env = { PACKAGE = "fastcan" } }
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "python -m build --no-isolation --wheel ."

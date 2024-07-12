@@ -21,7 +21,7 @@ wheels/
 # Used by pytest, pytest-cov
 .pytest_cache/
 .coverage
-cov_html/
+*.xml
 
 # Used by mypy
 .mypy_cache/
