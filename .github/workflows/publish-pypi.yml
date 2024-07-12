@@ -1,0 +1,25 @@
+# Publish a release to PyPI.
+
+name: "Publish to PyPI"
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version upload to pypi'
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+          merge-multiple: true
+
+      - name: Publish distribution to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1

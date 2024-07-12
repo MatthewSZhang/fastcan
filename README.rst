@@ -1,5 +1,31 @@
 FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 ====================================================================
+|Codecov| |CI| |PythonVersion| |PyPi| |Black| |uv| |pixi|
+
+
+.. |Codecov| image:: https://codecov.io/gh/MatthewSZhang/fastcan/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/MatthewSZhang/fastcan
+
+.. |CI| image:: https://github.com/MatthewSZhang/fastcan/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/MatthewSZhang/fastcan/actions
+
+.. |PythonVersion| image:: https://img.shields.io/pypi/pyversions/fastcan.svg
+   :target: https://pypi.org/project/fastcan/
+
+.. |PyPi| image:: https://img.shields.io/pypi/v/fastcan
+   :target: https://pypi.org/project/fastcan
+
+.. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
+
+.. |uv| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json
+   :target: https://github.com/astral-sh/uv
+
+.. |pixi| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json&style=flat-square
+   :target: https://pixi.sh
+
+
+
 
 FastCan is a Python implementation of the following papers.
 
