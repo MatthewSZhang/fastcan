@@ -34,8 +34,9 @@ jobs:
       run: |
         CMD=doctest pixi run doc
     - name: Test coverage
+      shell: bash
       run: |
-        pixi run test-coverage
+        FMT=xml pixi run test-coverage
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.5.0
       with:
@@ -64,6 +65,10 @@ jobs:
           CIBW_ARCHS_LINUX: auto64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_WINDOWS: auto64
+          CIBW_BEFORE_BUILD_LINUX: sudo apt install -y pkg-config && python -m pip install ninja
+          CIBW_BEFORE_BUILD_MACOS: brew install pkg-config && python -m pip install ninja
+          CIBW_BEFORE_BUILD_WINDOWS: choco install rtools -y --no-progress --force --version=4.0.0.20220206 && python -m pip install ninja
+
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
