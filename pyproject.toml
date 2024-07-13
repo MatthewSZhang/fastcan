@@ -32,10 +32,9 @@ fmt = ["black"]
 lint = ["ruff", "cython-lint"]
 type = ["mypy"]
 doc = ["furo"]
-build = ["cibuildwheel"]
 
 [build-system]
-requires = ["meson-python"]
+requires = ["meson-python", "cython", "scikit-learn", "build"]
 build-backend = "mesonpy"
 
 [tool.pixi.project]
@@ -71,7 +70,6 @@ test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report $FMT --cov=$PAC
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime,python-runtime,devel"
-build-ci = "python -m cibuildwheel --output-dir wheelhouse"
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
@@ -89,22 +87,6 @@ doc-clean = { cmd = "rm -rf $BUILDDIR generated", cwd = "doc", env = { BUILDDIR 
 
 [tool.pixi.environments]
 default = ["fmt", "lint", "type", "doc", "test", "build"]
-
-
-[tool.cibuildwheel]
-build = "cp3*-*"
-skip = ["pp*", "*i686*", "*win32", "*musllinux*", "*-macosx_universal2", "*-win_arm64", "*-manylinux_ppc64le", "*-manylinux_s390x"]
-before-build = "conda install -y pkg-config ninja"
-
-[tool.cibuildwheel.macos]
-repair-wheel-command = ""
-archs = ["x86_64", "arm64"]
-
-[tool.cibuildwheel.linux]
-archs = ["auto64"]
-
-[tool.cibuildwheel.windows]
-archs = ["auto64"]
 
 [tool.black]
 line-length = 88
