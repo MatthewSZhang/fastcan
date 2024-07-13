@@ -487,8 +487,8 @@ packages:
 - kind: pypi
   name: black
   version: 24.4.2
-  url: https://files.pythonhosted.org/packages/43/24/942b22571b0171be7c6f701cdc3e3b7221f5b522ef02cf82503a547a657b/black-24.4.2-cp312-cp312-win_amd64.whl
-  sha256: 415e686e87dbbe6f4cd5ef0fbf764af7b89f9057b97c908742b6008cc554b9c0
+  url: https://files.pythonhosted.org/packages/f4/75/3a29de3bda4006cc280d833b5d961cf7df3810a21f49e7a63a7e551fb351/black-24.4.2-cp312-cp312-macosx_10_9_x86_64.whl
+  sha256: accf49e151c8ed2c0cdc528691838afd217c50412534e876a19270fea1e28e2d
   requires_dist:
   - click>=8.0.0
   - mypy-extensions>=0.4.3
@@ -507,8 +507,8 @@ packages:
 - kind: pypi
   name: black
   version: 24.4.2
-  url: https://files.pythonhosted.org/packages/f4/75/3a29de3bda4006cc280d833b5d961cf7df3810a21f49e7a63a7e551fb351/black-24.4.2-cp312-cp312-macosx_10_9_x86_64.whl
-  sha256: accf49e151c8ed2c0cdc528691838afd217c50412534e876a19270fea1e28e2d
+  url: https://files.pythonhosted.org/packages/25/6d/eb15a1b155f755f43766cc473618c6e1de6555d6a1764965643f486dcf01/black-24.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: be8bef99eb46d5021bf053114442914baeb3649a89dc5f3a555c88737e5e98fc
   requires_dist:
   - click>=8.0.0
   - mypy-extensions>=0.4.3
@@ -547,8 +547,8 @@ packages:
 - kind: pypi
   name: black
   version: 24.4.2
-  url: https://files.pythonhosted.org/packages/25/6d/eb15a1b155f755f43766cc473618c6e1de6555d6a1764965643f486dcf01/black-24.4.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: be8bef99eb46d5021bf053114442914baeb3649a89dc5f3a555c88737e5e98fc
+  url: https://files.pythonhosted.org/packages/43/24/942b22571b0171be7c6f701cdc3e3b7221f5b522ef02cf82503a547a657b/black-24.4.2-cp312-cp312-win_amd64.whl
+  sha256: 415e686e87dbbe6f4cd5ef0fbf764af7b89f9057b97c908742b6008cc554b9c0
   requires_dist:
   - click>=8.0.0
   - mypy-extensions>=0.4.3
@@ -822,14 +822,14 @@ packages:
 - kind: pypi
   name: charset-normalizer
   version: 3.3.2
-  url: https://files.pythonhosted.org/packages/b6/7c/8debebb4f90174074b827c63242c23851bdf00a532489fba57fef3416e40/charset_normalizer-3.3.2-cp312-cp312-win_amd64.whl
-  sha256: 96b02a3dc4381e5494fad39be677abcb5e6634bf7b4fa83a6dd3112607547001
+  url: https://files.pythonhosted.org/packages/2e/7d/2259318c202f3d17f3fe6438149b3b9e706d1070fe3fcbb28049730bb25c/charset_normalizer-3.3.2-cp312-cp312-macosx_10_9_x86_64.whl
+  sha256: ddbb2551d7e0102e7252db79ba445cdab71b26640817ab1e3e3648dad515003b
   requires_python: '>=3.7.0'
 - kind: pypi
   name: charset-normalizer
   version: 3.3.2
-  url: https://files.pythonhosted.org/packages/2e/7d/2259318c202f3d17f3fe6438149b3b9e706d1070fe3fcbb28049730bb25c/charset_normalizer-3.3.2-cp312-cp312-macosx_10_9_x86_64.whl
-  sha256: ddbb2551d7e0102e7252db79ba445cdab71b26640817ab1e3e3648dad515003b
+  url: https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b
   requires_python: '>=3.7.0'
 - kind: pypi
   name: charset-normalizer
@@ -840,8 +840,8 @@ packages:
 - kind: pypi
   name: charset-normalizer
   version: 3.3.2
-  url: https://files.pythonhosted.org/packages/ee/fb/14d30eb4956408ee3ae09ad34299131fb383c47df355ddb428a7331cfa1e/charset_normalizer-3.3.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 90d558489962fd4918143277a773316e56c72da56ec7aa3dc3dbbe20fdfed15b
+  url: https://files.pythonhosted.org/packages/b6/7c/8debebb4f90174074b827c63242c23851bdf00a532489fba57fef3416e40/charset_normalizer-3.3.2-cp312-cp312-win_amd64.whl
+  sha256: 96b02a3dc4381e5494fad39be677abcb5e6634bf7b4fa83a6dd3112607547001
   requires_python: '>=3.7.0'
 - kind: conda
   name: clang
@@ -1239,16 +1239,16 @@ packages:
 - kind: pypi
   name: coverage
   version: 7.6.0
-  url: https://files.pythonhosted.org/packages/cb/db/242c44433c5d342c8bf83864131e56af8c1c1ea5645a825b1800c19ad9bf/coverage-7.6.0-cp312-cp312-win_amd64.whl
-  sha256: ca5d79cfdae420a1d52bf177de4bc2289c321d6c961ae321503b2ca59c17ae67
+  url: https://files.pythonhosted.org/packages/57/3a/287ea47cca84c92528b5f9b34b971f845b637d37c3eead9f10aede3531da/coverage-7.6.0-cp312-cp312-macosx_10_9_x86_64.whl
+  sha256: f7db0b6ae1f96ae41afe626095149ecd1b212b424626175a6633c2999eaad45b
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
 - kind: pypi
   name: coverage
   version: 7.6.0
-  url: https://files.pythonhosted.org/packages/57/3a/287ea47cca84c92528b5f9b34b971f845b637d37c3eead9f10aede3531da/coverage-7.6.0-cp312-cp312-macosx_10_9_x86_64.whl
-  sha256: f7db0b6ae1f96ae41afe626095149ecd1b212b424626175a6633c2999eaad45b
+  url: https://files.pythonhosted.org/packages/f2/aa/0419103c357bfd95a65d7b2e2249f9f1d79194241c5e87819cd81d36b96c/coverage-7.6.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 0086cd4fc71b7d485ac93ca4239c8f75732c2ae3ba83f6be1c9be59d9e2c6382
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
@@ -1263,8 +1263,8 @@ packages:
 - kind: pypi
   name: coverage
   version: 7.6.0
-  url: https://files.pythonhosted.org/packages/f2/aa/0419103c357bfd95a65d7b2e2249f9f1d79194241c5e87819cd81d36b96c/coverage-7.6.0-cp312-cp312-manylinux_2_5_x86_64.manylinux1_x86_64.manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 0086cd4fc71b7d485ac93ca4239c8f75732c2ae3ba83f6be1c9be59d9e2c6382
+  url: https://files.pythonhosted.org/packages/cb/db/242c44433c5d342c8bf83864131e56af8c1c1ea5645a825b1800c19ad9bf/coverage-7.6.0-cp312-cp312-win_amd64.whl
+  sha256: ca5d79cfdae420a1d52bf177de4bc2289c321d6c961ae321503b2ca59c17ae67
   requires_dist:
   - tomli ; python_full_version <= '3.11.0a6' and extra == 'toml'
   requires_python: '>=3.8'
@@ -1399,7 +1399,7 @@ packages:
   name: fastcan
   version: 0.1.26
   path: .
-  sha256: 53843bfaecdacc84b038476519fb1a9ba1ceedb0353fed49ebd9790535c75f6b
+  sha256: 8ddc38575a26732d636f3d69835f433864c86057daeb0705e2b4dfc3e167382a
   requires_dist:
   - scikit-learn>=1.5.0,<1.6
   - pytest ; extra == 'test'
@@ -3043,14 +3043,14 @@ packages:
 - kind: pypi
   name: markupsafe
   version: 2.1.5
-  url: https://files.pythonhosted.org/packages/3f/14/c3554d512d5f9100a95e737502f4a2323a1959f6d0d01e0d0997b35f7b10/MarkupSafe-2.1.5-cp312-cp312-win_amd64.whl
-  sha256: 823b65d8706e32ad2df51ed89496147a42a2a6e01c13cfb6ffb8b1e92bc910bb
+  url: https://files.pythonhosted.org/packages/48/d6/e7cd795fc710292c3af3a06d80868ce4b02bfbbf370b7cee11d282815a2a/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_x86_64.whl
+  sha256: 3c6b973f22eb18a789b1460b4b91bf04ae3f0c4234a0a6aa6b0a92f6f7b951d4
   requires_python: '>=3.7'
 - kind: pypi
   name: markupsafe
   version: 2.1.5
-  url: https://files.pythonhosted.org/packages/48/d6/e7cd795fc710292c3af3a06d80868ce4b02bfbbf370b7cee11d282815a2a/MarkupSafe-2.1.5-cp312-cp312-macosx_10_9_x86_64.whl
-  sha256: 3c6b973f22eb18a789b1460b4b91bf04ae3f0c4234a0a6aa6b0a92f6f7b951d4
+  url: https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5
   requires_python: '>=3.7'
 - kind: pypi
   name: markupsafe
@@ -3061,8 +3061,8 @@ packages:
 - kind: pypi
   name: markupsafe
   version: 2.1.5
-  url: https://files.pythonhosted.org/packages/0a/0d/2454f072fae3b5a137c119abf15465d1771319dfe9e4acbb31722a0fff91/MarkupSafe-2.1.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: f5dfb42c4604dddc8e4305050aa6deb084540643ed5804d7455b5df8fe16f5e5
+  url: https://files.pythonhosted.org/packages/3f/14/c3554d512d5f9100a95e737502f4a2323a1959f6d0d01e0d0997b35f7b10/MarkupSafe-2.1.5-cp312-cp312-win_amd64.whl
+  sha256: 823b65d8706e32ad2df51ed89496147a42a2a6e01c13cfb6ffb8b1e92bc910bb
   requires_python: '>=3.7'
 - kind: conda
   name: meson
@@ -3189,8 +3189,8 @@ packages:
 - kind: pypi
   name: mypy
   version: 1.10.1
-  url: https://files.pythonhosted.org/packages/f9/20/d33608e8dc3bc0f5966fc1f6c2d16671f0725dcca279beec47c3e19afd9d/mypy-1.10.1-cp312-cp312-win_amd64.whl
-  sha256: 3c4c2992f6ea46ff7fce0072642cfb62af7a2484efe69017ed8b095f7b39ef31
+  url: https://files.pythonhosted.org/packages/5d/86/3c3bdaccc3cbd1372acb15667a2c2cb773523a710a22e2748cbda9a7c1e2/mypy-1.10.1-cp312-cp312-macosx_10_9_x86_64.whl
+  sha256: d8681909f7b44d0b7b86e653ca152d6dff0eb5eb41694e163c6092124f8246d7
   requires_dist:
   - typing-extensions>=4.1.0
   - mypy-extensions>=1.0.0
@@ -3203,8 +3203,8 @@ packages:
 - kind: pypi
   name: mypy
   version: 1.10.1
-  url: https://files.pythonhosted.org/packages/5d/86/3c3bdaccc3cbd1372acb15667a2c2cb773523a710a22e2748cbda9a7c1e2/mypy-1.10.1-cp312-cp312-macosx_10_9_x86_64.whl
-  sha256: d8681909f7b44d0b7b86e653ca152d6dff0eb5eb41694e163c6092124f8246d7
+  url: https://files.pythonhosted.org/packages/ff/b5/cbccba4dca9703c4c467171e7f61ea6a1a75eae991208aa5bc7d49807f91/mypy-1.10.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: 6bacf8f3a3d7d849f40ca6caea5c055122efe70e81480c8328ad29c55c69e93e
   requires_dist:
   - typing-extensions>=4.1.0
   - mypy-extensions>=1.0.0
@@ -3231,8 +3231,8 @@ packages:
 - kind: pypi
   name: mypy
   version: 1.10.1
-  url: https://files.pythonhosted.org/packages/ff/b5/cbccba4dca9703c4c467171e7f61ea6a1a75eae991208aa5bc7d49807f91/mypy-1.10.1-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: 6bacf8f3a3d7d849f40ca6caea5c055122efe70e81480c8328ad29c55c69e93e
+  url: https://files.pythonhosted.org/packages/f9/20/d33608e8dc3bc0f5966fc1f6c2d16671f0725dcca279beec47c3e19afd9d/mypy-1.10.1-cp312-cp312-win_amd64.whl
+  sha256: 3c4c2992f6ea46ff7fce0072642cfb62af7a2484efe69017ed8b095f7b39ef31
   requires_dist:
   - typing-extensions>=4.1.0
   - mypy-extensions>=1.0.0
@@ -4026,14 +4026,14 @@ packages:
 - kind: pypi
   name: ruff
   version: 0.5.1
-  url: https://files.pythonhosted.org/packages/a8/9f/e236acf3b95b383a5241da0f758fc8688d1796837b6bec8ee528130c3dba/ruff-0.5.1-py3-none-win_amd64.whl
-  sha256: b1789bf2cd3d1b5a7d38397cac1398ddf3ad7f73f4de01b1e913e2abc7dfc51d
+  url: https://files.pythonhosted.org/packages/40/98/80295e661ba1219c584a2d6103277bce16c6ff7cd0d9e3597bb16c115113/ruff-0.5.1-py3-none-macosx_10_12_x86_64.whl
+  sha256: 204fb0a472f00f2e6280a7c8c7c066e11e20e23a37557d63045bf27a616ba61c
   requires_python: '>=3.7'
 - kind: pypi
   name: ruff
   version: 0.5.1
-  url: https://files.pythonhosted.org/packages/40/98/80295e661ba1219c584a2d6103277bce16c6ff7cd0d9e3597bb16c115113/ruff-0.5.1-py3-none-macosx_10_12_x86_64.whl
-  sha256: 204fb0a472f00f2e6280a7c8c7c066e11e20e23a37557d63045bf27a616ba61c
+  url: https://files.pythonhosted.org/packages/8a/d5/8271d42dd239b7c2d163615b3b01b1acfb187f5114bfca6d5a85e1d6a1eb/ruff-0.5.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
+  sha256: e216fc75a80ea1fbd96af94a6233d90190d5b65cc3d5dfacf2bd48c3e067d3e1
   requires_python: '>=3.7'
 - kind: pypi
   name: ruff
@@ -4044,8 +4044,8 @@ packages:
 - kind: pypi
   name: ruff
   version: 0.5.1
-  url: https://files.pythonhosted.org/packages/8a/d5/8271d42dd239b7c2d163615b3b01b1acfb187f5114bfca6d5a85e1d6a1eb/ruff-0.5.1-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: e216fc75a80ea1fbd96af94a6233d90190d5b65cc3d5dfacf2bd48c3e067d3e1
+  url: https://files.pythonhosted.org/packages/a8/9f/e236acf3b95b383a5241da0f758fc8688d1796837b6bec8ee528130c3dba/ruff-0.5.1-py3-none-win_amd64.whl
+  sha256: b1789bf2cd3d1b5a7d38397cac1398ddf3ad7f73f4de01b1e913e2abc7dfc51d
   requires_python: '>=3.7'
 - kind: conda
   name: scikit-learn

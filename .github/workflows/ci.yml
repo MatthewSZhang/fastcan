@@ -17,7 +17,7 @@ jobs:
     - name: Lint with ruff
       run: |
         pixi run lint
-    - name: Lint with ruff
+    - name: Lint with cython-lint
       run: |
         pixi run cython-lint
     - name: Format with black
@@ -54,6 +54,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - uses: prefix-dev/setup-pixi@v0.8.1
+      with:
+        environments: default
 
     - name: Build wheels
       uses: pypa/cibuildwheel@v2.19.2
@@ -65,9 +68,6 @@ jobs:
           CIBW_ARCHS_LINUX: auto64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_WINDOWS: auto64
-          CIBW_BEFORE_BUILD_LINUX: sudo apt install -y pkg-config && python -m pip install ninja
-          CIBW_BEFORE_BUILD_MACOS: brew install pkg-config && python -m pip install ninja
-          CIBW_BEFORE_BUILD_WINDOWS: choco install rtools -y --no-progress --force --version=4.0.0.20220206 && python -m pip install ninja
 
     - name: Upload package
       uses: actions/upload-artifact@v4
