@@ -28,24 +28,14 @@ classifiers=[
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
-build = ["build", "auditwheel"]
 fmt = ["black"]
 lint = ["ruff", "cython-lint"]
 type = ["mypy"]
 doc = ["furo"]
 
 [build-system]
-requires = ["setuptools", "wheel", "Cython>=3.0.10", "scikit-learn"]
-build-backend = "setuptools.build_meta"
-
-[tool.setuptools]
-include-package-data = true
-
-[tool.setuptools.package-data]
-fastcan = ["*.pyd", "*.so"]
-
-[tool.setuptools.packages.find]
-namespaces = false
+requires = ["meson-python"]
+build-backend = "mesonpy"
 
 [tool.pixi.project]
 channels = ["conda-forge"]
@@ -55,9 +45,12 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 fastcan = { path = ".", editable = true }
 
 [tool.pixi.build-dependencies]
-wheel = ">=0.43.0,<0.44"
 cython = ">=3.0.10,<3.1"
 scikit-learn = ">=1.5.0,<1.6"
+ninja = ">=1.12.1,<1.13"
+pkg-config = ">=0.29.2,<0.30"
+build = ">=0.7.0,<0.8"
+meson-python = ">=0.16.0,<0.17"
 
 [tool.pixi.target.osx-arm64.build-dependencies]
 compilers = ">=1.7.0,<1.8"
@@ -73,14 +66,11 @@ scikit-learn = ">=1.5.0,<1.6"
 
 [tool.pixi.feature.test.tasks]
 test = { cmd = "pytest", cwd = "tests" }
-test-coverage = { cmd = "rm -rf coverage .coverage && pytest tests --showlocals -v --cov=$PACKAGE tests/ --cov-report=html:coverage", env = { PACKAGE = "fastcan" } }
-test-coverage-xml = { cmd = "rm -rf cov.xml .coverage && pytest tests --showlocals -v --cov=$PACKAGE tests/ --cov-report=xml:cov.xml", env = { PACKAGE = "fastcan" } }
+test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report= --cov=$PACKAGE tests/", env = { PACKAGE = "fastcan" } }
+test-report = { cmd = "rm -rf cov_html .coverage && pytest --cov-report html:cov_html --cov=$PACKAGE tests/", env = { PACKAGE = "fastcan" } }
 
 [tool.pixi.feature.build.tasks]
-build-wheel = "python -m build --no-isolation --wheel ."
-
-[tool.pixi.feature.build.target.linux-64.tasks]
-build-wheel = "python -m build --no-isolation --wheel . && auditwheel repair dist/*linux_x86_64.whl"
+build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime,python-runtime,devel"
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
@@ -94,7 +84,7 @@ type = { cmd = "mypy . --ignore-missing-imports", cwd = "fastcan" }
 
 [tool.pixi.feature.doc.tasks]
 doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "doc", env = { SPHINXBUILD = "sphinx-build", CMD = "html", SOURCEDIR = ".", BUILDDIR = "_build", SPHINXOPTS = "" } }
-doc-clean = { cmd = "rm -rf $BUILDDIR && rm -rf generated", cwd = "doc", env = { BUILDDIR = "_build" } }
+doc-clean = { cmd = "rm -rf $BUILDDIR generated", cwd = "doc", env = { BUILDDIR = "_build" } }
 
 [tool.pixi.environments]
 default = ["fmt", "lint", "type", "doc", "test", "build"]

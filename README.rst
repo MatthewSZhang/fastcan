@@ -1,6 +1,6 @@
 FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 ====================================================================
-|Codecov| |CI| |PythonVersion| |PyPi| |Black| |uv| |pixi|
+|Codecov| |CI| |PythonVersion| |PyPi| |Black| |ruff| |pixi|
 
 
 .. |Codecov| image:: https://codecov.io/gh/MatthewSZhang/fastcan/branch/main/graph/badge.svg
@@ -18,8 +18,8 @@ FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 .. |Black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
    :target: https://github.com/psf/black
 
-.. |uv| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json
-   :target: https://github.com/astral-sh/uv
+.. |ruff| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/ruff/main/assets/badge/v2.json
+   :target: https://github.com/astral-sh/ruff
 
 .. |pixi| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json&style=flat-square
    :target: https://pixi.sh
