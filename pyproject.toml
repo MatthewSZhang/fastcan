@@ -94,6 +94,7 @@ default = ["fmt", "lint", "type", "doc", "test", "build"]
 [tool.cibuildwheel]
 build = "cp3*-*"
 skip = ["pp*", "*i686*", "*win32", "*musllinux*", "*-macosx_universal2", "*-win_arm64", "*-manylinux_ppc64le", "*-manylinux_s390x"]
+before-build = "conda install -y pkg-config ninja"
 
 [tool.cibuildwheel.macos]
 repair-wheel-command = ""
