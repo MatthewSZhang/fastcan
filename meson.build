@@ -1,6 +1,6 @@
 project(
   'fastcan',
-  'cython',
+  'c', 'cython',
   version: '0.1.26',
   license: 'MIT',
   meson_version: '>= 1.1.0',

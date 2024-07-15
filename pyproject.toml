@@ -48,7 +48,6 @@ fastcan = { path = ".", editable = true }
 cython = ">=3.0.10,<3.1"
 scikit-learn = ">=1.5.0,<1.6"
 ninja = ">=1.12.1,<1.13"
-pkg-config = ">=0.29.2,<0.30"
 build = ">=0.7.0,<0.8"
 meson-python = ">=0.16.0,<0.17"
 
