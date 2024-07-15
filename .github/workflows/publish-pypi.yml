@@ -3,11 +3,7 @@
 name: "Publish to PyPI"
 
 on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Version upload to pypi'
-        required: true
+  release:
 
 jobs:
   publish:
