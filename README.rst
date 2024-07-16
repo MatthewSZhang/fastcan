@@ -9,6 +9,9 @@ FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 .. |CI| image:: https://github.com/MatthewSZhang/fastcan/actions/workflows/ci.yml/badge.svg
    :target: https://github.com/MatthewSZhang/fastcan/actions
 
+.. |Doc| image:: https://readthedocs.org/projects/fastcan/badge/?version=latest
+   :target: https://fastcan.readthedocs.io/en/latest/?badge=latest
+
 .. |PythonVersion| image:: https://img.shields.io/pypi/pyversions/fastcan.svg
    :target: https://pypi.org/project/fastcan/
 
