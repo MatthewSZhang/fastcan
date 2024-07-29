@@ -11,9 +11,13 @@ from numpy.testing import (
 from sklearn.cross_decomposition import CCA
 from sklearn.datasets import make_classification, make_regression
 from sklearn.linear_model import LinearRegression
+from sklearn.utils.estimator_checks import check_estimator
 
 from fastcan import FastCan
 
+
+def test_fastcan_is_sklearn_estimator():
+    check_estimator(FastCan())
 
 def test_select_kbest_classif():
     # Test whether the relative univariate feature selection

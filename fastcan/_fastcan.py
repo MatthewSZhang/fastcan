@@ -26,13 +26,13 @@ class FastCan(SelectorMixin, BaseEstimator):
 
     Parameters
     ----------
-    n_features_to_select : int
+    n_features_to_select : int, default=1
         The parameter is the absolute number of features to select.
 
     inclusive_indices : array-like of shape (n_inclusions,), default=None
         The indices of the prerequisite features.
 
-    eta : bool, default=None
+    eta : bool, default=False
         Whether to use eta-cosine method.
 
     tol : float, default=0.01
@@ -94,16 +94,16 @@ class FastCan(SelectorMixin, BaseEstimator):
             Interval(Integral, 1, None, closed="left"),
         ],
         "inclusive_indices": [None, "array-like"],
-        "eta": ["boolean", None],
+        "eta": ["boolean"],
         "tol": [Interval(Real, 0, None, closed="neither")],
         "verbose": ["verbose"],
     }
 
     def __init__(
         self,
-        n_features_to_select,
+        n_features_to_select=1,
         inclusive_indices=None,
-        eta=None,
+        eta=False,
         tol=0.01,
         verbose=1,
     ):
@@ -132,8 +132,8 @@ class FastCan(SelectorMixin, BaseEstimator):
         """
         self._validate_params()
         # X y
-        check_X_params = {"order": "F"}
-        check_y_params = {"ensure_2d": False, "order": "F"}
+        check_X_params = {"order": "F", "dtype": float}
+        check_y_params = {"ensure_2d": False, "order": "F", "dtype": float}
         X, y = self._validate_data(
             X=X,
             y=y,
@@ -147,9 +147,9 @@ class FastCan(SelectorMixin, BaseEstimator):
 
         # inclusive_indices
         if self.inclusive_indices is None:
-            self.inclusive_indices = np.zeros(0, dtype=int)
+            inclusive_indices = np.zeros(0, dtype=int)
         else:
-            self.inclusive_indices = check_array(
+            inclusive_indices = check_array(
                 self.inclusive_indices,
                 ensure_2d=False,
                 dtype=int,
@@ -165,18 +165,12 @@ class FastCan(SelectorMixin, BaseEstimator):
                 f"must be <= n_features {n_features}."
             )
 
-        if self.inclusive_indices.shape[0] >= n_features:
+        if inclusive_indices.shape[0] >= n_features:
             raise ValueError(
-                f"n_inclusions {self.inclusive_indices.shape[0]} must "
+                f"n_inclusions {inclusive_indices.shape[0]} must "
                 f"be < n_features {n_features}."
             )
 
-        # Method determination
-        if self.eta is None:
-            if n_samples > n_features + n_outputs:
-                self.eta = True
-            else:
-                self.eta = False
         if n_samples < n_features + n_outputs and self.eta:
             raise ValueError(
                 "`eta` cannot be True, when n_samples < n_features+n_outputs."
@@ -197,7 +191,7 @@ class FastCan(SelectorMixin, BaseEstimator):
             y_transformed = y - y.mean(0)
 
         mask, indices, scores = self._prepare_data(
-            self.inclusive_indices,
+            inclusive_indices,
         )
         n_threads = _openmp_effective_n_threads()
         _forward_search(
