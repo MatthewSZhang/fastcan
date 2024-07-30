@@ -1,6 +1,6 @@
 [project]
 name = "fastcan"
-version = "0.1.33"
+version = "0.1.34"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
@@ -69,6 +69,7 @@ test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report $FMT --cov=$PAC
 
 [tool.pixi.feature.build.tasks]
 build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime,python-runtime,devel"
+build-sdist = "rm -rf dist && python -m build --sdist"
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }

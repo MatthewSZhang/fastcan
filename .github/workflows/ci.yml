@@ -43,6 +43,14 @@ jobs:
       uses: codecov/codecov-action@v4.5.0
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
+    - name: Build SDist
+      run: |
+        pixi run build-sdist
+    - name: Store artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: cibw-sdist
+        path: dist/*.tar.gz
 
 
   build:
