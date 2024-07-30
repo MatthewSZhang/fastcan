@@ -1392,9 +1392,9 @@ packages:
   requires_python: '>=3.9'
 - kind: pypi
   name: fastcan
-  version: 0.1.32
+  version: 0.1.33
   path: .
-  sha256: ef99f4363058f5a803ea66d1698021392eeec17441495ca1e236429080d56d26
+  sha256: 9bd44044c2ea6d2c6b237dd7d963f63a2c90d3ba565113f095e5f4122363baf8
   requires_dist:
   - scikit-learn>=1.5.0,<1.6
   - pytest ; extra == 'test'
