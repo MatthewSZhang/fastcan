@@ -50,6 +50,7 @@ scikit-learn = ">=1.5.0,<1.6"
 ninja = ">=1.12.1,<1.13"
 build = ">=0.7.0,<0.8"
 meson-python = ">=0.16.0,<0.17"
+uv = ">=0.2.30,<0.3"
 
 [tool.pixi.target.osx-arm64.build-dependencies]
 compilers = ">=1.7.0,<1.8"
