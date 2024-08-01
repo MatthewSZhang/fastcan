@@ -18,7 +18,7 @@ jobs:
 
     - name: Re-install local
       run: |
-        pixi global install uv
+        curl -LsSf https://astral.sh/uv/install.sh | sh
         pixi run rebuild
     - name: Lint with ruff
       run: |
