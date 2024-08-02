@@ -201,28 +201,27 @@ def test_cython_errors():
     y = rng.random((n_samples))
 
 
-    selector_zero_vector = FastCan(
+    selector_no_cand = FastCan(
         n_features_to_select=n_informative+1,
     )
+    selector_const_vector = FastCan(
+            n_features_to_select=2,
+        )
 
     with pytest.raises(
         ZeroDivisionError,
         match="Cannot normalize a vector of all zeros."
     ):
         # Zeros vector during orthogonalization
-        selector_zero_vector.fit(np.c_[x_sub, x_sub[:, 0]], y)
+        selector_const_vector.fit(np.zeros((3, 2)), [0, 0, 0])
 
     with pytest.raises(
         ZeroDivisionError,
         match="Cannot normalize a matrix containing a vector of all zeros."
     ):
         # Constant vector
-        selector_const_vector = FastCan(
-            n_features_to_select=2,
-        )
         selector_const_vector.fit(np.zeros((3, 2)), [1, 2, 3])
 
     with pytest.raises(RuntimeError, match=r"No candidate feature can .*"):
         # No candidate
-        selector_zero_vector.fit(np.c_[x_sub, x_sub[:, 0]+x_sub[:, 1]], y)
-
+        selector_no_cand.fit(np.c_[x_sub, x_sub[:, 0]+x_sub[:, 1]], y)
