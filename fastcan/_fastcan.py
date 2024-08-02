@@ -132,8 +132,13 @@ class FastCan(SelectorMixin, BaseEstimator):
         """
         self._validate_params()
         # X y
-        check_X_params = {"order": "F", "dtype": float}
-        check_y_params = {"ensure_2d": False, "order": "F", "dtype": float}
+        check_X_params = {"ensure_min_samples": 2, "order": "F", "dtype": float}
+        check_y_params = {
+            "ensure_min_samples": 2,
+            "ensure_2d": False,
+            "order": "F",
+            "dtype": float,
+        }
         X, y = self._validate_data(
             X=X,
             y=y,
@@ -205,10 +210,6 @@ class FastCan(SelectorMixin, BaseEstimator):
             indices=indices,
             scores=scores,
         )
-        if -1 in indices:
-            raise RuntimeError("The selection is interrupted by error!!!")
-        if self.verbose == 1:
-            print()
         support = np.zeros(shape=self.n_features_in_, dtype=bool)
         support[indices] = True
         self.indices_ = indices

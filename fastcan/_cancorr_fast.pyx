@@ -26,9 +26,9 @@ cdef int _iamax(
 
 cdef void _normv(
     floating[::1] x,            # IN/OUT
-) noexcept nogil:
+) except * nogil:
     """
-    Vector normialization by Euclidean norm.
+    Vector normalization by Euclidean norm.
     x (IN) : (1, n_samples) Vector.
     x (OUT) : (1, n_samples) Normalized vector.
     """
@@ -36,12 +36,15 @@ cdef void _normv(
         unsigned int n_samples = x.shape[0]
         floating x_norm
 
-    x_norm = 1.0/_nrm2(n_samples, &x[0], 1)
+    x_norm = _nrm2(n_samples, &x[0], 1)
+    if x_norm == 0.0:
+        raise ZeroDivisionError("Cannot normalize a vector of all zeros.")
+    x_norm = 1.0/x_norm
     _scal(n_samples, x_norm, &x[0], 1)
 
 cdef void _normm(
     floating[::1, :] X,     # IN/OUT
-) noexcept nogil:
+) except * nogil:
     """
     Matrix column-wise normalization by Euclidean norm.
     X (IN) : (n_samples, nx) Matrix.
@@ -55,7 +58,12 @@ cdef void _normm(
 
     # X = X/norm(X)
     for j in range(nx):
-        x_norm = 1.0/_nrm2(n_samples, &X[0, j], 1)
+        x_norm = _nrm2(n_samples, &X[0, j], 1)
+        if x_norm == 0.0:
+            raise ZeroDivisionError(
+                "Cannot normalize a matrix containing a vector of all zeros."
+            )
+        x_norm = 1.0/x_norm
         _scal(n_samples, x_norm, &X[0, j], 1)
 
 
@@ -135,7 +143,7 @@ cdef void _mgsvv(
 
 cdef void _orth(
     floating[::1, :] X,         # IN/OUT
-) noexcept nogil:
+) except * nogil:
     """Orthogonalization of a matrix by the modified Gram-Schmidt.
     X (IN) : (n_samples, n_features) Matrix.
     X (OUT) : (n_samples, n_features) Orthonormal matrix.
@@ -172,7 +180,7 @@ cpdef void _forward_search(
     uint8_t[::1] mask,                # IN/TEMP
     int32_t[::1] indices,             # OUT
     floating[::1] scores,             # OUT
-) noexcept nogil:
+) except * nogil:
     """
     Greedy search with SSC.
     X (IN) : (n_samples, n_features) Centered feature matrix.
@@ -236,12 +244,6 @@ cpdef void _forward_search(
 
             # Find max scores and update indices, X, mask, and scores
             index = _iamax(n_features, r2, 1)
-            if r2[index] <= 0:
-                raise RuntimeError(
-                    "No improvement can be found. "
-                    "The best candidate feature contributes the SSC score "
-                    f"{r2[index]} given the selected {i} features."
-                )
             indices[i] = index
             scores[i] = r2[index]
 

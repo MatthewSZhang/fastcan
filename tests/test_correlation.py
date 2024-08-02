@@ -196,24 +196,33 @@ def test_cython_errors():
     # Test whether fastcan raise cython errors properly
     rng = np.random.default_rng(0)
     n_samples = 20
-    n_informative = 15
-    x_1 = rng.random((n_samples, n_informative))
-    x_2 = x_1[:, 0]
-    X = np.c_[x_1, x_2]
+    n_informative = 3
+    x_sub = rng.random((n_samples, n_informative))
     y = rng.random((n_samples))
 
 
-    selector_non_singular = FastCan(
+    selector_zero_vector = FastCan(
         n_features_to_select=n_informative+1,
     )
 
-    with pytest.raises(RuntimeError, match="The selection is interrupted by error!!!"):
-        # No candidate
-        selector_non_singular.fit(X, y)
+    with pytest.raises(
+        ZeroDivisionError,
+        match="Cannot normalize a vector of all zeros."
+    ):
+        # Zeros vector during orthogonalization
+        selector_zero_vector.fit(np.c_[x_sub, x_sub[:, 0]], y)
 
-    with pytest.raises(RuntimeError, match="The selection is interrupted by error!!!"):
-        # No improvement
-        selector_no_improve = FastCan(
+    with pytest.raises(
+        ZeroDivisionError,
+        match="Cannot normalize a matrix containing a vector of all zeros."
+    ):
+        # Constant vector
+        selector_const_vector = FastCan(
             n_features_to_select=2,
         )
-        selector_no_improve.fit(np.zeros((3, 2)), np.zeros(3))
+        selector_const_vector.fit(np.zeros((3, 2)), [1, 2, 3])
+
+    with pytest.raises(RuntimeError, match=r"No candidate feature can .*"):
+        # No candidate
+        selector_zero_vector.fit(np.c_[x_sub, x_sub[:, 0]+x_sub[:, 1]], y)
+
