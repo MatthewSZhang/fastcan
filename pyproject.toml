@@ -1,6 +1,6 @@
 [project]
 name = "fastcan"
-version = "0.1.35"
+version = "0.1.36"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
@@ -34,7 +34,7 @@ type = ["mypy"]
 doc = ["furo"]
 
 [build-system]
-requires = ["meson-python", "cython", "scikit-learn", "build"]
+requires = ["meson-python", "cython", "scikit-learn", "build", "ninja"]
 build-backend = "mesonpy"
 
 [tool.pixi.project]
