@@ -34,7 +34,7 @@ type = ["mypy"]
 doc = ["furo"]
 
 [build-system]
-requires = ["meson-python", "cython", "scikit-learn", "build", "ninja"]
+requires = ["meson-python", "cython", "scikit-learn", "build"]
 build-backend = "mesonpy"
 
 [tool.pixi.project]

@@ -74,7 +74,9 @@ jobs:
           CIBW_ARCHS_LINUX: auto64
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_WINDOWS: auto64
-          CIBW_BEFORE_ALL_LINUX: yum install -y python3-devel
+          CIBW_BEFORE_ALL_LINUX: yum install -y ninja-build python3-devel
+          CIBW_BEFORE_ALL_WINDOWS: choco install ninja
+          CIBW_BEFORE_ALL_MACOS: brew install ninja
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
