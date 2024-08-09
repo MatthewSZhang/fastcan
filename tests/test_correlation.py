@@ -59,7 +59,7 @@ def test_select_kbest_classif():
     gtruth[:n_informative] = 1
     assert_array_equal(support, gtruth)
 
-def test_inclusive_indices():
+def test_indices_include():
     # Test whether fastcan can select informative features based
     # on some pre-include features
     n_samples = 20
@@ -79,7 +79,7 @@ def test_inclusive_indices():
 
     correlation_filter = FastCan(
         n_features_to_select=n_informative,
-        inclusive_indices=[0, 3]
+        indices_include=[0, 3]
     )
     correlation_filter.fit(X, y)
 
@@ -172,20 +172,36 @@ def test_raise_errors():
     selector_n_select = FastCan(
         n_features_to_select=n_features+1,
     )
-    selector_n_inclusive = FastCan(
+    selector_n_inclusions = FastCan(
         n_features_to_select=n_features,
-        inclusive_indices=range(n_features+1)
+        indices_include=range(n_features+1)
     )
     selector_eta_for_small_size_samples = FastCan(
         n_features_to_select=n_features,
         eta=True
     )
 
+    selector_indices_include_bounds = FastCan(
+        n_features_to_select=n_features,
+        indices_include=[-1]
+    )
+
+    selector_indices_include_ndim = FastCan(
+        n_features_to_select=n_features,
+        indices_include=[[0]]
+    )
+
     with pytest.raises(ValueError, match=r"n_features_to_select .*"):
         selector_n_select.fit(X, y)
 
     with pytest.raises(ValueError, match=r"n_inclusions .*"):
-        selector_n_inclusive.fit(X, y)
+        selector_n_inclusions.fit(X, y)
+
+    with pytest.raises(ValueError, match=r"Out of bounds. .*"):
+        selector_indices_include_bounds.fit(X, y)
+
+    with pytest.raises(ValueError, match=r"Found indices_include with dim .*"):
+        selector_indices_include_ndim.fit(X, y)
 
     with pytest.raises(ValueError, match=r"`eta` cannot be True, .*"):
         selector_eta_for_small_size_samples.fit(X, y)

@@ -7,7 +7,7 @@ from numbers import Integral, Real
 import numpy as np
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
-from sklearn.utils import check_array
+from sklearn.utils import check_array, check_consistent_length
 from sklearn.utils._openmp_helpers import _openmp_effective_n_threads
 from sklearn.utils._param_validation import Interval
 from sklearn.utils.validation import check_is_fitted
@@ -29,7 +29,7 @@ class FastCan(SelectorMixin, BaseEstimator):
     n_features_to_select : int, default=1
         The parameter is the absolute number of features to select.
 
-    inclusive_indices : array-like of shape (n_inclusions,), default=None
+    indices_include : array-like of shape (n_inclusions,), default=None
         The indices of the prerequisite features.
 
     eta : bool, default=False
@@ -93,7 +93,7 @@ class FastCan(SelectorMixin, BaseEstimator):
         "n_features_to_select": [
             Interval(Integral, 1, None, closed="left"),
         ],
-        "inclusive_indices": [None, "array-like"],
+        "indices_include": [None, "array-like"],
         "eta": ["boolean"],
         "tol": [Interval(Real, 0, None, closed="neither")],
         "verbose": ["verbose"],
@@ -102,13 +102,13 @@ class FastCan(SelectorMixin, BaseEstimator):
     def __init__(
         self,
         n_features_to_select=1,
-        inclusive_indices=None,
+        indices_include=None,
         eta=False,
         tol=0.01,
         verbose=1,
     ):
         self.n_features_to_select = n_features_to_select
-        self.inclusive_indices = inclusive_indices
+        self.indices_include = indices_include
         self.eta = eta
         self.tol = tol
         self.verbose = verbose
@@ -145,17 +145,19 @@ class FastCan(SelectorMixin, BaseEstimator):
             multi_output=True,
             validate_separately=(check_X_params, check_y_params),
         )
+        check_consistent_length(X, y)
+
         if y.ndim == 1:
             # reshape is necessary to preserve the data contiguity against vs
             # [:, np.newaxis] that does not.
             y = y.reshape(-1, 1)
 
-        # inclusive_indices
-        if self.inclusive_indices is None:
-            inclusive_indices = np.zeros(0, dtype=int)
+        # indices_include
+        if self.indices_include is None:
+            indices_include = np.zeros(0, dtype=int)
         else:
-            inclusive_indices = check_array(
-                self.inclusive_indices,
+            indices_include = check_array(
+                self.indices_include,
                 ensure_2d=False,
                 dtype=int,
                 ensure_min_samples=0,
@@ -170,13 +172,26 @@ class FastCan(SelectorMixin, BaseEstimator):
                 f"must be <= n_features {n_features}."
             )
 
-        if inclusive_indices.shape[0] >= n_features:
+        if indices_include.ndim != 1:
             raise ValueError(
-                f"n_inclusions {inclusive_indices.shape[0]} must "
+                f"Found indices_include with dim {indices_include.ndim}, "
+                "but expected == 1."
+            )
+
+        if indices_include.size >= n_features:
+            raise ValueError(
+                f"n_inclusions {indices_include.size} must "
                 f"be < n_features {n_features}."
             )
 
-        if n_samples < n_features + n_outputs and self.eta:
+        if np.any((indices_include < 0) | (indices_include >= n_features)):
+            raise ValueError(
+                "Out of bounds. "
+                f"All items in indices_include should be in [0, {n_features}). "
+                f"But got indices_include = {indices_include}."
+            )
+
+        if (n_samples < n_features + n_outputs) and self.eta:
             raise ValueError(
                 "`eta` cannot be True, when n_samples < n_features+n_outputs."
             )
@@ -196,7 +211,7 @@ class FastCan(SelectorMixin, BaseEstimator):
             y_transformed = y - y.mean(0)
 
         mask, indices, scores = self._prepare_data(
-            inclusive_indices,
+            indices_include,
         )
         n_threads = _openmp_effective_n_threads()
         _forward_search(
@@ -217,14 +232,14 @@ class FastCan(SelectorMixin, BaseEstimator):
         self.scores_ = scores
         return self
 
-    def _prepare_data(self, inclusive_indices):
+    def _prepare_data(self, indices_include):
         """Prepare data for _forward_search()
         When h-correlation method is used, n_samples_ = n_samples.
         When eta-cosine method is used, n_samples_ = n_features+n_outputs.
 
         Parameters
         ----------
-        inclusive_indices : array-like of shape (n_inclusions,), dtype=int
+        indices_include : array-like of shape (n_inclusions,), dtype=int
         The indices of the prerequisite features.
 
         Returns
@@ -243,8 +258,7 @@ class FastCan(SelectorMixin, BaseEstimator):
         mask = np.ones(self.n_features_in_, dtype=np.ubyte, order="F")
         # initiated with -1
         indices = np.full(self.n_features_to_select, -1, dtype=np.intc, order="F")
-        for i in range(inclusive_indices.shape[0]):
-            indices[i] = inclusive_indices[i]
+        indices[: indices_include.size] = indices_include
         scores = np.zeros(self.n_features_to_select, dtype=float, order="F")
         return mask, indices, scores
 
