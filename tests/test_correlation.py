@@ -220,23 +220,6 @@ def test_cython_errors():
     selector_no_cand = FastCan(
         n_features_to_select=n_informative+1,
     )
-    selector_const_vector = FastCan(
-            n_features_to_select=2,
-        )
-
-    with pytest.raises(
-        ZeroDivisionError,
-        match="Cannot normalize a vector of all zeros."
-    ):
-        # Zeros vector during orthogonalization
-        selector_const_vector.fit(np.zeros((3, 2)), [0, 0, 0])
-
-    with pytest.raises(
-        ZeroDivisionError,
-        match="Cannot normalize a matrix containing a vector of all zeros."
-    ):
-        # Constant vector
-        selector_const_vector.fit(np.zeros((3, 2)), [1, 2, 3])
 
     with pytest.raises(RuntimeError, match=r"No candidate feature can .*"):
         # No candidate

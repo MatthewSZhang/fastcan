@@ -5,6 +5,7 @@ Feature selection
 from numbers import Integral, Real
 
 import numpy as np
+from scipy.linalg import orth
 from sklearn.base import BaseEstimator
 from sklearn.feature_selection._base import SelectorMixin
 from sklearn.utils import check_array, check_consistent_length
@@ -205,12 +206,12 @@ class FastCan(SelectorMixin, BaseEstimator):
             qxy_transformed = singular_values.reshape(-1, 1) * unitary_arrays
             qxy_transformed = np.asfortranarray(qxy_transformed)
             X_transformed = qxy_transformed[:, :n_features]
-            y_transformed = qxy_transformed[:, n_features:]
+            y_transformed = orth(qxy_transformed[:, n_features:])
         else:
             X_transformed = X - X.mean(0)
-            y_transformed = y - y.mean(0)
+            y_transformed = orth(y - y.mean(0))
 
-        mask, indices, scores = self._prepare_data(
+        indices, scores = self._prepare_data(
             indices_include,
         )
         n_threads = _openmp_effective_n_threads()
@@ -221,7 +222,6 @@ class FastCan(SelectorMixin, BaseEstimator):
             tol=self.tol,
             num_threads=n_threads,
             verbose=self.verbose,
-            mask=mask,
             indices=indices,
             scores=scores,
         )
@@ -245,7 +245,7 @@ class FastCan(SelectorMixin, BaseEstimator):
         Returns
         -------
         mask : ndarray of shape (n_features,), dtype=np.ubyte, order='F'
-            Mask for valid candidate features.
+            Mask for invalid candidate features.
             The data type is unsigned char.
 
         indices: ndarray of shape (n_features_to_select,), dtype=np.intc, order='F'
@@ -255,12 +255,11 @@ class FastCan(SelectorMixin, BaseEstimator):
         scores: ndarray of shape (n_features_to_select,), dtype=float, order='F'
             The h-correlation/eta-cosine of selected features.
         """
-        mask = np.ones(self.n_features_in_, dtype=np.ubyte, order="F")
         # initiated with -1
         indices = np.full(self.n_features_to_select, -1, dtype=np.intc, order="F")
         indices[: indices_include.size] = indices_include
         scores = np.zeros(self.n_features_to_select, dtype=float, order="F")
-        return mask, indices, scores
+        return indices, scores
 
     def _get_support_mask(self):
         check_is_fitted(self)
