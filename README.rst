@@ -1,7 +1,9 @@
 FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 ====================================================================
-|Codecov| |CI| |Doc| |PythonVersion| |PyPi| |Black| |ruff| |pixi|
+|conda| |Codecov| |CI| |Doc| |PythonVersion| |PyPi| |Black| |ruff| |pixi|
 
+.. |conda| image:: https://img.shields.io/conda/vn/conda-forge/fastcan.svg
+   :target: https://anaconda.org/conda-forge/fastcan
 
 .. |Codecov| image:: https://codecov.io/gh/MatthewSZhang/fastcan/branch/main/graph/badge.svg
    :target: https://codecov.io/gh/MatthewSZhang/fastcan
@@ -43,9 +45,13 @@ FastCan is a Python implementation of the following papers.
 Installation
 ------------
 
-Install **FastCan**:
+Install **FastCan** via PyPi:
 
 * Run ``pip install fastcan``
+
+Or via conda-forge:
+
+* Run ``conda install -c conda-forge fastcan``
 
 Examples
 --------
@@ -58,9 +64,3 @@ Examples
 >>> selector = FastCan(n_features_to_select=2, verbose=0).fit(X, y)
 >>> selector.get_support()
 array([ True,  True, False])
-
-Uninstallation
---------------
-Uninstall **FastCan**:
-
-* Run ``pip uninstall fastcan``

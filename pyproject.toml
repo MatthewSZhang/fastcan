@@ -1,6 +1,6 @@
 [project]
 name = "fastcan"
-version = "0.2.0"
+version = "0.2.1"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
@@ -25,6 +25,12 @@ classifiers=[
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: Implementation :: CPython",
 ]
+
+[project.urls]
+homepage = "https://fastcan.readthedocs.io/en/latest/"
+source = "https://github.com/MatthewSZhang/fastcan"
+download = "https://pypi.org/project/fastcan/#files"
+tracker = "https://github.com/MatthewSZhang/fastcan/issues"
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-cov"]
@@ -51,14 +57,6 @@ ninja = ">=1.12.1,<1.13"
 build = ">=0.7.0,<0.8"
 meson-python = ">=0.16.0,<0.17"
 uv = ">=0.2.30,<0.3"
-
-[tool.pixi.target.osx-arm64.build-dependencies]
-compilers = ">=1.7.0,<1.8"
-llvm-openmp = ">=18.1.6,<18.2"
-
-[tool.pixi.target.osx-64.build-dependencies]
-compilers = ">=1.7.0,<1.8"
-llvm-openmp = ">=18.1.6,<18.2"
 
 [tool.pixi.dependencies]
 python = "~=3.12.0"
