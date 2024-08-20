@@ -69,7 +69,7 @@ test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report $FMT --cov=$PAC
 [tool.pixi.feature.build.tasks]
 build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime,python-runtime,devel"
 build-sdist = "rm -rf dist && python -m build --sdist"
-rebuild = "uv pip install --no-deps --force-reinstall -e ."
+rebuild = "rm -rf build && uv pip install --no-deps --force-reinstall -e ."
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
