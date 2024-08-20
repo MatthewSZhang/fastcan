@@ -3,13 +3,15 @@
 # Fast feature selection with sum squared canoncial correlation coefficents
 from libc.stdlib cimport malloc, free
 from libc.string cimport memset
-from cython cimport floating
+from cython cimport floating, final
 from cython.parallel import prange
 from scipy.linalg.cython_blas cimport isamax, idamax
 from sklearn.utils._cython_blas cimport ColMajor, NoTrans
 from sklearn.utils._cython_blas cimport _dot, _scal, _nrm2, _gemm, _axpy
 from sklearn.utils._typedefs cimport int32_t
 
+
+@final
 cdef unsigned int _bsum(
     bint* x,
     unsigned int n,
@@ -23,6 +25,8 @@ cdef unsigned int _bsum(
         total += x[i]
     return total
 
+
+@final
 cdef int _iamax(
     int n,
     const floating *x,
@@ -38,6 +42,8 @@ cdef int _iamax(
     else:
         return idamax(&n, <double *> x, &incx) - 1
 
+
+@final
 cdef bint _normv(
     floating[::1] x,            # IN/OUT
 ) noexcept nogil:
@@ -58,6 +64,8 @@ cdef bint _normv(
     _scal(n_samples, x_norm, &x[0], 1)
     return False
 
+
+@final
 cdef void _normm(
     floating[::1, :] X,     # IN/OUT
     bint* m,            # IN/OUT
@@ -85,6 +93,7 @@ cdef void _normm(
             _scal(n_samples, x_norm, &X[0, j], 1)
 
 
+@final
 cdef floating _sscvm(
     const floating[::1] w,      # IN
     const floating[::1, :] V,   # IN
@@ -114,6 +123,8 @@ cdef floating _sscvm(
     free(r)
     return r2
 
+
+@final
 cdef void _mgsvv(
     const floating[::1] w,      # IN
     floating[::1] x,            # IN/OUT
@@ -134,6 +145,7 @@ cdef void _mgsvv(
     _axpy(n_samples, -r, &w[0], 1, &x[0], 1)
 
 
+@final
 cpdef int _forward_search(
     floating[::1, :] X,               # IN/OUT
     floating[::1, :] V,               # IN
