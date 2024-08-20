@@ -10,6 +10,7 @@ from sklearn.utils._cython_blas cimport ColMajor, NoTrans
 from sklearn.utils._cython_blas cimport _dot, _scal, _nrm2, _gemm, _axpy
 from sklearn.utils._typedefs cimport int32_t
 
+
 @final
 cdef unsigned int _bsum(
     bint* x,
@@ -23,6 +24,7 @@ cdef unsigned int _bsum(
     for i in range(n):
         total += x[i]
     return total
+
 
 @final
 cdef int _iamax(
@@ -39,6 +41,7 @@ cdef int _iamax(
         return isamax(&n, <float *> x, &incx) - 1
     else:
         return idamax(&n, <double *> x, &incx) - 1
+
 
 @final
 cdef bint _normv(
@@ -60,6 +63,7 @@ cdef bint _normv(
     x_norm = 1.0/x_norm
     _scal(n_samples, x_norm, &x[0], 1)
     return False
+
 
 @final
 cdef void _normm(
@@ -87,6 +91,7 @@ cdef void _normm(
         else:
             x_norm = 1.0/x_norm
             _scal(n_samples, x_norm, &X[0, j], 1)
+
 
 @final
 cdef floating _sscvm(
@@ -118,6 +123,7 @@ cdef floating _sscvm(
     free(r)
     return r2
 
+
 @final
 cdef void _mgsvv(
     const floating[::1] w,      # IN
@@ -137,6 +143,7 @@ cdef void _mgsvv(
     r = _dot(n_samples, &w[0], 1, &x[0], 1)
     # x = x - w*r
     _axpy(n_samples, -r, &w[0], 1, &x[0], 1)
+
 
 @final
 cpdef int _forward_search(
