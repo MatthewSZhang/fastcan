@@ -32,15 +32,29 @@ source = "https://github.com/MatthewSZhang/fastcan"
 download = "https://pypi.org/project/fastcan/#files"
 tracker = "https://github.com/MatthewSZhang/fastcan/issues"
 
-[project.optional-dependencies]
-test = ["pytest", "pytest-cov"]
-fmt = ["black"]
-lint = ["ruff", "cython-lint"]
-type = ["mypy"]
-doc = ["furo"]
+[tool.pixi.feature.test.dependencies]
+pytest = "*"
+pytest-cov = "*"
+
+[tool.pixi.feature.fmt.dependencies]
+black = "*"
+
+[tool.pixi.feature.lint.dependencies]
+ruff = "*"
+cython-lint = "*"
+
+[tool.pixi.feature.type.dependencies]
+mypy = "*"
+
+[tool.pixi.feature.doc.dependencies]
+furo = "*"
+
+[tool.pixi.feature.build.dependencies]
+python-build = "*"
+uv = "*"
 
 [build-system]
-requires = ["meson-python", "cython", "scikit-learn", "build"]
+requires = ["meson-python>=0.16.0", "Cython>=3.0.10", "scikit-learn>=1.5.0"]
 build-backend = "mesonpy"
 
 [tool.pixi.project]
@@ -52,14 +66,15 @@ fastcan = { path = ".", editable = true }
 
 [tool.pixi.build-dependencies]
 cython = ">=3.0.10,<3.1"
-scikit-learn = ">=1.5.0,<1.6"
-ninja = ">=1.12.1,<1.13"
-build = ">=0.7.0,<0.8"
 meson-python = ">=0.16.0,<0.17"
-uv = ">=0.2.30,<0.3"
+ninja = ">=1.12.1,<1.13"
+
+[tool.pixi.host-dependencies]
+meson-python = ">=0.16.0,<0.17"
+cython = ">=3.0.10,<3.1"
+scikit-learn = ">=1.5.0,<1.6"
 
 [tool.pixi.dependencies]
-python = "~=3.12.0"
 scikit-learn = ">=1.5.0,<1.6"
 
 [tool.pixi.feature.test.tasks]
@@ -69,7 +84,7 @@ test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report $FMT --cov=$PAC
 [tool.pixi.feature.build.tasks]
 build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime,python-runtime,devel"
 build-sdist = "rm -rf dist && python -m build --sdist"
-rebuild = "uv pip install --no-deps --force-reinstall -e ."
+rebuild = "rm -rf build && uv pip install --no-deps --force-reinstall -e ."
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
