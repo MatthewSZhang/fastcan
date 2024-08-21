@@ -1166,7 +1166,7 @@ packages:
   name: fastcan
   version: 0.2.1
   path: .
-  sha256: c19c345a9206ddd2790c8b3bdf6c4e1108eb209d2bbc5caec19a3f24430fa595
+  sha256: 297d6f4ebe837dc804e31e8ecf7343329e0478975ad110b15cad8e52e0dbee4d
   requires_dist:
   - scikit-learn>=1.5.0,<1.6
   requires_python: '>=3.9'

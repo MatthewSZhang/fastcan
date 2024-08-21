@@ -54,7 +54,7 @@ python-build = "*"
 uv = "*"
 
 [build-system]
-requires = ["meson-python"]
+requires = ["meson-python>=0.16.0", "Cython>=3.0.10"]
 build-backend = "mesonpy"
 
 [tool.pixi.project]
