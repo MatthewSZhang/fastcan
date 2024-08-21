@@ -16,7 +16,11 @@ jobs:
     - uses: prefix-dev/setup-pixi@v0.8.1
       with:
         environments: default
-        cache: false
+        cache: true
+
+    - name: Re-install local
+      run: |
+        pixi run rebuild
 
     - name: Lint with ruff
       run: |
