@@ -32,6 +32,9 @@ source = "https://github.com/MatthewSZhang/fastcan"
 download = "https://pypi.org/project/fastcan/#files"
 tracker = "https://github.com/MatthewSZhang/fastcan/issues"
 
+[project.optional-dependencies]
+doc = ["furo"]
+
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
 pytest-cov = "*"
@@ -45,9 +48,6 @@ cython-lint = "*"
 
 [tool.pixi.feature.type.dependencies]
 mypy = "*"
-
-[tool.pixi.feature.doc.dependencies]
-furo = "*"
 
 [tool.pixi.feature.build.dependencies]
 python-build = "*"
