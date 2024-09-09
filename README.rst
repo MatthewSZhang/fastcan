@@ -38,7 +38,7 @@ FastCan is a Python implementation of the following papers.
     Orthogonal least squares based fast feature selection for
     linear classification. Pattern Recognition, 123, 108419.
 
-#. Zhang, S., Wang, T., Sun L., Worden, K., & Cross, E. J. (2024).
+#. Zhang, S., Wang, T., Worden, K., Sun L., & Cross, E. J. (2024).
     Canonical-correlation-based fast feature selection for
     structural health monitoring.
 
