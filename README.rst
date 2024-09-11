@@ -30,18 +30,6 @@ FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
    :target: https://pixi.sh
 
 
-
-
-FastCan is a Python implementation of the following papers.
-
-#. Zhang, S., & Lang, Z. Q. (2022).
-    Orthogonal least squares based fast feature selection for
-    linear classification. Pattern Recognition, 123, 108419.
-
-#. Zhang, S., Wang, T., Worden, K., Sun L., & Cross, E. J. (2024).
-    Canonical-correlation-based fast feature selection for
-    structural health monitoring.
-
 Installation
 ------------
 
@@ -64,3 +52,43 @@ Examples
 >>> selector = FastCan(n_features_to_select=2, verbose=0).fit(X, y)
 >>> selector.get_support()
 array([ True,  True, False])
+
+
+Citation
+--------
+
+FastCan is a Python implementation of the following papers.
+
+If you use the `h-correlation` algorithm in your work please cite the following reference:
+
+.. code:: bibtex
+
+   @article{ZHANG2022108419,
+      title = {Orthogonal least squares based fast feature selection for linear classification},
+      journal = {Pattern Recognition},
+      volume = {123},
+      pages = {108419},
+      year = {2022},
+      issn = {0031-3203},
+      doi = {https://doi.org/10.1016/j.patcog.2021.108419},
+      url = {https://www.sciencedirect.com/science/article/pii/S0031320321005951},
+      author = {Sikai Zhang and Zi-Qiang Lang},
+      keywords = {Feature selection, Orthogonal least squares, Canonical correlation analysis, Linear discriminant analysis, Multi-label, Multivariate time series, Feature interaction},
+      }
+
+If you use the `eta-cosine` algorithm in your work please cite the following reference:
+
+.. code:: bibtex
+
+   @article{ZHANG2025111895,
+      title = {Canonical-correlation-based fast feature selection for structural health monitoring},
+      journal = {Mechanical Systems and Signal Processing},
+      volume = {223},
+      pages = {111895},
+      year = {2025},
+      issn = {0888-3270},
+      doi = {https://doi.org/10.1016/j.ymssp.2024.111895},
+      url = {https://www.sciencedirect.com/science/article/pii/S0888327024007933},
+      author = {Sikai Zhang and Tingna Wang and Keith Worden and Limin Sun and Elizabeth J. Cross},
+      keywords = {Multivariate feature selection, Filter method, Canonical correlation analysis, Feature interaction, Feature redundancy, Structural health monitoring},
+      }
