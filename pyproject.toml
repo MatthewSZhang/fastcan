@@ -1,6 +1,6 @@
 [project]
 name = "fastcan"
-version = "0.2.1"
+version = "0.2.2"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
@@ -84,8 +84,8 @@ scikit-learn = ">=1.5.0,<1.6"
 scikit-learn = ">=1.5.0,<1.6"
 
 [tool.pixi.tasks]
-time-h = { cmd = "python -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'" }
-time-eta = { cmd = "python -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, eta=True, verbose=0).fit(X, y)'" }
+time-h = "python -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'"
+time-eta = "python -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, eta=True, verbose=0).fit(X, y)'"
 
 [tool.pixi.feature.test.tasks]
 test = { cmd = "pytest", cwd = "tests" }

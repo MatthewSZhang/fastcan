@@ -1520,9 +1520,9 @@ packages:
   timestamp: 1720869435725
 - kind: pypi
   name: fastcan
-  version: 0.2.1
+  version: 0.2.2
   path: .
-  sha256: 15b71e2287ad10abdea6f903750875f6f5b38250808c6e40ef6cb54f1e008ff3
+  sha256: e68d895181c7c80c180d4b519639df7b7a36ff9c28d6c81a2f01f01ecdc91b80
   requires_dist:
   - scikit-learn>=1.5.0,<1.6
   - furo ; extra == 'doc'
