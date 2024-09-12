@@ -169,11 +169,12 @@ cpdef int _forward_search(
     """
     cdef:
         unsigned int n_samples = X.shape[0]
-        unsigned int n_features = X.shape[1]
+        # OpenMP (in Windows) requires signed integral for prange
+        int j, n_features = X.shape[1]
         floating* r2 = <floating*> malloc(sizeof(floating) * n_features)
         bint* mask = <bint*> malloc(sizeof(bint) * n_features)
         floating g, ssc = 0.0
-        unsigned int i, j
+        unsigned int i
         int index = -1
 
     memset(&r2[0], 0, n_features * sizeof(floating))
