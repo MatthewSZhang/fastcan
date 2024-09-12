@@ -134,12 +134,18 @@ class FastCan(SelectorMixin, BaseEstimator):
         """
         self._validate_params()
         # X y
-        check_X_params = {"ensure_min_samples": 2, "order": "F", "dtype": float}
+        check_X_params = {
+            "ensure_min_samples": 2,
+            "order": "F",
+            "dtype": float,
+            "force_writeable": True,
+        }
         check_y_params = {
             "ensure_min_samples": 2,
             "ensure_2d": False,
             "order": "F",
             "dtype": float,
+            "force_writeable": True,
         }
         X, y = self._validate_data(
             X=X,
