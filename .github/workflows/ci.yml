@@ -72,7 +72,7 @@ jobs:
       uses: pypa/cibuildwheel@v2.19.2
       env:
           CIBW_BUILD: cp3*-*
-          CIBW_SKIP: pp* *i686* *win32 *musllinux* *-macosx_universal2 *-win_arm64 *-manylinux_ppc64le *-manylinux_s390x
+          CIBW_SKIP: pp* *i686* *musllinux* *-macosx_universal2 *-manylinux_ppc64le *-manylinux_s390x
           CIBW_PROJECT_REQUIRES_PYTHON: ">=3.9"
           CIBW_ARCHS_LINUX: auto64
           CIBW_ARCHS_MACOS: x86_64 arm64
@@ -80,6 +80,7 @@ jobs:
           CIBW_BEFORE_ALL_LINUX: yum install -y ninja-build python3-devel
           CIBW_BEFORE_ALL_WINDOWS: choco install ninja
           CIBW_BEFORE_ALL_MACOS: brew install ninja
+          CIBW_CONFIG_SETTINGS_WINDOWS: "setup-args=--vsenv"
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
