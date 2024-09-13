@@ -80,6 +80,7 @@ jobs:
           CIBW_BEFORE_ALL_LINUX: yum install -y ninja-build python3-devel
           CIBW_BEFORE_ALL_WINDOWS: choco install ninja
           CIBW_BEFORE_ALL_MACOS: brew install ninja
+          CIBW_CONFIG_SETTINGS_WINDOWS: "setup-args=--vsenv"
     - name: Upload package
       uses: actions/upload-artifact@v4
       with:
