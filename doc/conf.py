@@ -40,6 +40,8 @@ extensions = [
     "sphinx.ext.napoleon",
     # Link to other project's documentation (see mapping below)
     "sphinx.ext.intersphinx",
+    "sphinx_gallery.gen_gallery",
+    "sphinx_design",
 ]
 
 # List of patterns, relative to source directory, that match files and
@@ -67,14 +69,7 @@ intersphinx_mapping = {
     "sklearn": ("https://scikit-learn.org/stable", None),
 }
 
-# add substitutions that should be available in every file
-rst_prolog = """
-.. |numpy_dtype| replace:: numpy data type
-.. _numpy_dtype: https://numpy.org/doc/stable/user/basics.types.html
-
-.. |sklearn_cython_dtype| replace:: sklearn cython data type
-.. _sklearn_cython_dtype: https://github.com/scikit-learn/scikit-learn/blob/main/sklearn/utils/_typedefs.pxd
-
-.. |sphinx_link| replace:: rst Markup Spec
-.. _sphinx_link: https://docutils.sourceforge.io/docs/ref/rst/restructuredtext.html
-"""
+sphinx_gallery_conf = {
+    "examples_dirs": ["../examples"],
+    "gallery_dirs": ["auto_examples"],
+}

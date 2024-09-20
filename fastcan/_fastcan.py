@@ -20,10 +20,6 @@ class FastCan(SelectorMixin, BaseEstimator):
     """Forward feature selector according to the sum of squared
     canonical correlation coefficients (SSC).
 
-    .. note::
-
-        The numpy data types used for Cython can be found in
-        |numpy_dtype|_ and |sklearn_cython_dtype|_.
 
     Parameters
     ----------
@@ -56,7 +52,7 @@ class FastCan(SelectorMixin, BaseEstimator):
         Names of features seen during :term:`fit`. Defined only when `X`
         has feature names that are all strings.
 
-    indices_ : ndarray of shape (n_features_to_select,), dtype=float
+    indices_ : ndarray of shape (n_features_to_select,), dtype=int
         The indices of the selected features. The order of the indices
         is corresponding to the feature selection process.
 

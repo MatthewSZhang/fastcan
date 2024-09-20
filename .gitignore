@@ -29,3 +29,5 @@ wheels/
 # Used by sphinx
 doc/_build/
 doc/generated/
+doc/auto_examples/
+doc/sg_execution_times.rst
