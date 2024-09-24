@@ -42,6 +42,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx_gallery.gen_gallery",
     "sphinx_design",
+    "matplotlib.sphinxext.plot_directive",
 ]
 
 # List of patterns, relative to source directory, that match files and

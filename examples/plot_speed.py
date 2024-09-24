@@ -39,6 +39,30 @@ y = rng.random((3000, 5))
 
 from sklearn.cross_decomposition import CCA
 
+def ssc(X, y):
+    """Sum of the squared canonical correlation coefficients.
+    Parameters
+    ----------
+    X : array-like of shape (n_samples, n_features)
+        Feature matrix.
+
+    y : array-like of shape (n_samples, n_outputs)
+        Target matrix.
+
+    Returns
+    -------
+    ssc : float
+        Sum of the squared canonical correlation coefficients.
+    """
+    n_components = min(X.shape[1], y.shape[1])
+    cca = CCA(n_components=n_components)
+    X_c, y_c = cca.fit_transform(X, y)
+    corrcoef = np.diagonal(
+        np.corrcoef(X_c, y_c, rowvar=False),
+        offset=n_components
+    )
+    return sum(corrcoef**2)
+
 
 def baseline(X, y, t):
     """Baseline method using CCA from sklearn.
@@ -64,24 +88,16 @@ def baseline(X, y, t):
         the scores is corresponding to the feature selection process.
     """
     n_samples, n_features = X.shape
-    n_targets = y.shape[1]
     mask = np.zeros(n_features, dtype=bool)
     r2 = np.zeros(n_features, dtype=float)
     indices  = np.zeros(t, dtype=int)
     scores = np.zeros(t, dtype=float)
     X_selected = np.zeros((n_samples, 0), dtype=float)
     for i in range(t):
-        n_components = min(i+1, n_targets)
-        cca = CCA(n_components=n_components)
         for j in range(n_features):
             if not mask[j]:
                 X_candidate = np.column_stack((X_selected, X[:, j]))
-                X_c, y_c = cca.fit_transform(X_candidate, y)
-                corrcoef = np.diagonal(
-                    np.corrcoef(X_c, y_c, rowvar=False),
-                    offset=n_components
-                )
-                r2[j] = sum(corrcoef**2)
+                r2[j] = ssc(X_candidate, y)
         d = np.argmax(r2)
         indices[i] = d
         scores[i] = r2[d]
