@@ -12,12 +12,13 @@
 .. currentmodule:: fastcan
 
 
-FastCan Class
+API Reference
 -------------
 .. autosummary::
    :toctree: generated/
 
    FastCan
+   ssc
 
 Useful Links
 ------------
