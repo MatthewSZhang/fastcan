@@ -1,4 +1,3 @@
-# pylint: skip-file
 """Test FastCan"""
 
 import numpy as np
