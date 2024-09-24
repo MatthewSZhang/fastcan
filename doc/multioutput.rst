@@ -6,4 +6,4 @@
 Multioutput feature selection
 ==============================
 
-We can use :class:`FastCan` for multioutput feature selection.
+We can use :class:`FastCan` to handle multioutput feature selection.
