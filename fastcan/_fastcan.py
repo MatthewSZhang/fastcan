@@ -59,7 +59,7 @@ class FastCan(SelectorMixin, BaseEstimator):
     support_ : ndarray of shape (n_features,), dtype=bool
         The mask of selected features.
 
-    scores_: ndarray of shape (n_features_to_select,), dtype=float
+    scores_ : ndarray of shape (n_features_to_select,), dtype=float
         The h-correlation/eta-cosine of selected features. The order of
         the scores is corresponding to the feature selection process.
 
