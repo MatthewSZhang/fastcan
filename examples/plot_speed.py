@@ -3,9 +3,11 @@
 Computational speed comparison
 ==============================
 
+.. currentmodule:: fastcan
+
 In this examples, we will compare the computational speed of three different feature
-selection methods: h-correlation based :class:`fastcan.FastCan`, eta-cosine based
-:class:`fastcan.FastCan`, and baseline model based on
+selection methods: h-correlation based :class:`FastCan`, eta-cosine based
+:class:`FastCan`, and baseline model based on
 ``sklearn.cross_decomposition.CCA``.
 
 """

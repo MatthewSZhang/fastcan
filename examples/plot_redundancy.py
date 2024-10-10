@@ -3,6 +3,8 @@
 Feature selection performance on redundant features
 ===================================================
 
+.. currentmodule:: fastcan
+
 In this examples, we will compare the performance of feature selectors on the
 datasets, which contain redundant features.
 Here four types of features should be distinguished:
@@ -88,7 +90,7 @@ def make_redundant(
 # ---------------------
 # This function is used to compute the number of correct features missed by selectors.
 #
-# * For independent informative features, selectors should select all of them
+# * For independent informative features, selectors should select all of them.
 # * For dependent informative features, selectors only need to select any
 #   ``n_dep_info``-combination of the set ``dep_info_ids`` + ``redundant_ids``. That
 #   means if the indices of dependent informative features are :math:`[0, 1]` and the
@@ -114,13 +116,13 @@ def get_n_missed(
 # %%
 # Prepare selectors
 # -----------------
-# We compare :class:`fastcan.FastCan` with eight selectors of :mod:`sklearn`, which
+# We compare :class:`FastCan` with eight selectors of :mod:`sklearn`, which
 # include the Select From a Model (SFM) algorithm, the Recursive Feature Elimination
 # (RFE) algorithm, the Sequential Feature Selection (SFS) algorithm, and Select K Best
 # (SKB) algorithm.
 # The list of the selectors are given below:
 #
-# * fastcan: :class:`fastcan.FastCan` selector
+# * fastcan: :class:`FastCan` selector
 # * skb_reg: is the SKB algorithm ranking features with ANOVA (analysis of variance)
 #   F-statistic and p-values
 # * skb_mir: is the SKB algorithm ranking features mutual information for regression
@@ -197,7 +199,7 @@ for i in range(N_REPEATED):
 # %%
 # Plot results
 # ------------
-# :class:`fastcan.FastCan` correctly selects all informative features with zero missed
+# :class:`FastCan` correctly selects all informative features with zero missed
 # features.
 
 import matplotlib.pyplot as plt

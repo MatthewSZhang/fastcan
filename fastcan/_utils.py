@@ -81,9 +81,7 @@ def ols(X, y, t=1):
         The scores of selected features. The order of
         the scores is corresponding to the feature selection process.
     """
-    X, y = check_X_y(
-        X, y, dtype=float, ensure_2d=True
-    )
+    X, y = check_X_y(X, y, dtype=float, ensure_2d=True)
     n_features = X.shape[1]
     w = X / np.linalg.norm(X, axis=0)
     v = y / np.linalg.norm(y)
@@ -100,11 +98,11 @@ def ols(X, y, t=1):
         d = np.argmax(r2)
         indices[i] = d
         scores[i] = r2[d]
-        if i == t-1:
+        if i == t - 1:
             return indices, scores
         mask[d] = True
         r2[d] = 0
         for j in range(n_features):
             if not mask[j]:
-                w[:, j] = w[:, j] - w[:, d]*(w[:, d] @ w[:, j])
+                w[:, j] = w[:, j] - w[:, d] * (w[:, d] @ w[:, j])
                 w[:, j] /= np.linalg.norm(w[:, j], axis=0)
