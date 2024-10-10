@@ -40,6 +40,7 @@ jobs:
     - name: Test with doctest
       shell: bash
       run: |
+        pixi run doc
         CMD=doctest pixi run doc
     - name: Test coverage
       shell: bash
@@ -69,7 +70,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Build wheels
-      uses: pypa/cibuildwheel@v2.19.2
+      uses: pypa/cibuildwheel@v2.21.3
       env:
           CIBW_BUILD: cp3*-*
           CIBW_SKIP: pp* *i686* *musllinux* *-macosx_universal2 *-manylinux_ppc64le *-manylinux_s390x
