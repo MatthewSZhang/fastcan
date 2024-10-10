@@ -1,5 +1,5 @@
-FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
-====================================================================
+FastCan: A Fast Canonical-Correlation-Based Feature Selection Algorithm
+=======================================================================
 |conda| |Codecov| |CI| |Doc| |PythonVersion| |PyPi| |Black| |ruff| |pixi|
 
 .. |conda| image:: https://img.shields.io/conda/vn/conda-forge/fastcan.svg
@@ -29,6 +29,16 @@ FastCan: A Fast Canonical-Correlation-Based Feature Selection Method
 .. |pixi| image:: https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/prefix-dev/pixi/main/assets/badge/v0.json&style=flat-square
    :target: https://pixi.sh
 
+FastCan is a feature selection method, which has following advantages:
+
+#. Extremely **fast**. See :ref:`sphx_glr_auto_examples_plot_speed.py`.
+
+#. Support unsupervised feature selection.
+
+#. Support multioutput feature selection.
+
+#. Skip redundant features.
+
 
 Installation
 ------------
@@ -41,25 +51,22 @@ Or via conda-forge:
 
 * Run ``conda install -c conda-forge fastcan``
 
-Examples
---------
+Getting Started
+---------------
 >>> from fastcan import FastCan
->>> X = [[ 0.87, -1.34,  0.31 ],
-...     [-2.79, -0.02, -0.85 ],
-...     [-1.34, -0.48, -2.55 ],
-...     [ 1.92,  1.48,  0.65 ]]
->>> y = [0, 1, 0, 1]
->>> selector = FastCan(n_features_to_select=2, verbose=0).fit(X, y)
->>> selector.get_support()
-array([ True,  True, False])
+>>> X = [[1, 0], [0, 1]]
+>>> y = [1, 0]
+>>> FastCan(verbose=0).fit(X, y).get_support()
+array([ True, False])
 
+Check :ref:`User Guild <user_guide>` and :ref:`Examples <examples>` for more information.
 
 Citation
 --------
 
 FastCan is a Python implementation of the following papers.
 
-If you use the `h-correlation` algorithm in your work please cite the following reference:
+If you use the `h-correlation` method in your work please cite the following reference:
 
 .. code:: bibtex
 
@@ -76,7 +83,7 @@ If you use the `h-correlation` algorithm in your work please cite the following 
       keywords = {Feature selection, Orthogonal least squares, Canonical correlation analysis, Linear discriminant analysis, Multi-label, Multivariate time series, Feature interaction},
       }
 
-If you use the `eta-cosine` algorithm in your work please cite the following reference:
+If you use the `eta-cosine` method in your work please cite the following reference:
 
 .. code:: bibtex
 

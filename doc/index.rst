@@ -13,15 +13,22 @@
 
 
 API Reference
-~~~~~~~~~~~~~
+-------------
 .. autosummary::
    :toctree: generated/
 
    FastCan
    ssc
 
+Useful Links
+------------
+.. toctree::
 
-...................
+   User Guild <user_guide>
+   Examples <auto_examples/index>
+
+API Compatibility
+-----------------
 
 The API of this package is align with scikit-learn.
 
