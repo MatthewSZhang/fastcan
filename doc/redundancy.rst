@@ -27,7 +27,7 @@ which gives large rounding-errors when linearly redundant features appears.
 * `"Canonical-correlation-based fast feature selection for structural
   health monitoring" <https://doi.org/10.1016/j.ymssp.2024.111895>`_
   Zhang, S., Wang, T., Worden, K., Sun L., & Cross, E. J.
-  Mechanical Systems and Signal Processing, 223:111895 (2025).
+  Mechanical Systems and Signal Processing, 223, 111895 (2025).
 
 .. rubric:: Examples
 

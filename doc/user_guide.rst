@@ -6,6 +6,7 @@ User Guide
 
 .. toctree::
    :numbered:
+   :maxdepth: 1
 
    intuitive.rst
    unsupervised.rst

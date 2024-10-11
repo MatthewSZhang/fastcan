@@ -23,6 +23,7 @@ API Reference
 Useful Links
 ------------
 .. toctree::
+   :maxdepth: 2
 
    User Guild <user_guide>
    Examples <auto_examples/index>
