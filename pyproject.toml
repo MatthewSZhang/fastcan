@@ -11,7 +11,7 @@ license = { file = "LICENSE" }
 
 dependencies = ["scikit-learn>=1.5.0,<1.6"]
 
-classifiers=[
+classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
@@ -33,7 +33,7 @@ download = "https://pypi.org/project/fastcan/#files"
 tracker = "https://github.com/MatthewSZhang/fastcan/issues"
 
 [project.optional-dependencies]
-doc = ["furo"]
+docs = ["furo", "matplotlib", "sphinx_gallery", "sphinx-design"]
 
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
@@ -81,6 +81,7 @@ cython = ">=3.0.10,<3.1"
 scikit-learn = ">=1.5.0,<1.6"
 
 [tool.pixi.dependencies]
+python = ">=3.12.0,<3.13"
 scikit-learn = ">=1.5.0,<1.6"
 
 [tool.pixi.tasks]
@@ -106,12 +107,12 @@ cython-lint = { cmd = "cython-lint .", cwd = "fastcan" }
 [tool.pixi.feature.type.tasks]
 type = { cmd = "mypy . --ignore-missing-imports", cwd = "fastcan" }
 
-[tool.pixi.feature.doc.tasks]
+[tool.pixi.feature.docs.tasks]
 doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "doc", env = { SPHINXBUILD = "sphinx-build", CMD = "html", SOURCEDIR = ".", BUILDDIR = "_build", SPHINXOPTS = "" } }
-doc-clean = { cmd = "rm -rf $BUILDDIR generated", cwd = "doc", env = { BUILDDIR = "_build" } }
+doc-clean = { cmd = "rm -rf $BUILDDIR generated auto_examples", cwd = "doc", env = { BUILDDIR = "_build" } }
 
 [tool.pixi.environments]
-default = ["fmt", "lint", "type", "doc", "test", "build"]
+default = ["fmt", "lint", "type", "docs", "test", "build"]
 
 [tool.black]
 line-length = 88
@@ -127,6 +128,7 @@ exclude = '''
   | build
   | dist
   | doc/_build
+  | doc/auto_examples
 )/
 '''
 
@@ -146,7 +148,14 @@ lint.ignore = [
 # max line length for black
 line-length = 88
 
-exclude = [".git", "__pycache__", "dist", "doc/_build", "build"]
+exclude = [
+    ".git",
+    "__pycache__",
+    "dist",
+    "doc/_build",
+    "doc/auto_examples",
+    "build",
+]
 
 [tool.ruff.lint.per-file-ignores]
 # It's fine not to put the import at the top of the file in the examples
