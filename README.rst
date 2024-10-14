@@ -31,16 +31,17 @@ FastCan: A Fast Canonical-Correlation-Based Feature Selection Algorithm
 
 FastCan is a feature selection method, which has following advantages:
 
-#. Extremely **fast**. See :ref:`sphx_glr_auto_examples_plot_speed.py`.
+#. Extremely **fast**.
 
-#. Support unsupervised feature selection. See :ref:`Unsupervised feature selection <unsupervised>`.
+#. Support unsupervised feature selection.
 
-#. Support multioutput feature selection. See :ref:`Multioutput feature selection <multioutput>`.
+#. Support multioutput feature selection.
 
-#. Skip redundant features. See :ref:`Feature redundancy <redundancy>`.
+#. Skip redundant features.
 
-#. Evalaute relative usefulness of features. See :ref:`sphx_glr_auto_examples_plot_intuitive.py`.
+#. Evalaute relative usefulness of features.
 
+Check `Home Page <https://fastcan.readthedocs.io/en/latest/?badge=latest>`_ for more information.
 
 Installation
 ------------
@@ -61,7 +62,6 @@ Getting Started
 >>> FastCan(verbose=0).fit(X, y).get_support()
 array([ True, False])
 
-Check :ref:`User Guild <user_guide>` and :ref:`Examples <examples>` in `Home Page <https://fastcan.readthedocs.io/en/latest/?badge=latest>`_ for more information.
 
 Citation
 --------
