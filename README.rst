@@ -33,11 +33,13 @@ FastCan is a feature selection method, which has following advantages:
 
 #. Extremely **fast**. See :ref:`sphx_glr_auto_examples_plot_speed.py`.
 
-#. Support unsupervised feature selection.
+#. Support unsupervised feature selection. See :ref:`Unsupervised feature selection <unsupervised>`.
 
-#. Support multioutput feature selection.
+#. Support multioutput feature selection. See :ref:`Multioutput feature selection <multioutput>`.
 
-#. Skip redundant features.
+#. Skip redundant features. See :ref:`Feature redundancy <redundancy>`.
+
+#. Evalaute relative usefulness of features. See :ref:`sphx_glr_auto_examples_plot_intuitive.py`.
 
 
 Installation

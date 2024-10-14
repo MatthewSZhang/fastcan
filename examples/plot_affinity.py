@@ -1,6 +1,6 @@
 """
 =================
-Affine Invariance
+Affine invariance
 =================
 
 .. currentmodule:: fastcan

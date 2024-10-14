@@ -23,7 +23,6 @@ relationship with Fisher's criterion in LDA (Linear Discriminant Analysis).
 from sklearn import datasets
 from sklearn.preprocessing import OneHotEncoder
 
-
 X, y = datasets.load_iris(return_X_y=True)
 # drop="first" is necessary, otherwise, the transformed target is not full column rank
 y_enc = OneHotEncoder(
@@ -40,8 +39,8 @@ y_enc = OneHotEncoder(
 
 import numpy as np
 from scipy import linalg
-from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.covariance import empirical_covariance
+from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 
 clf = LinearDiscriminantAnalysis(solver="eigen").fit(X, y)
 Sw = clf.covariance_  # within scatter

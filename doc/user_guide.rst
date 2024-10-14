@@ -8,7 +8,6 @@ User Guide
    :numbered:
    :maxdepth: 1
 
-   intuitive.rst
    unsupervised.rst
    multioutput.rst
    redundancy.rst

@@ -19,6 +19,7 @@ API Reference
 
    FastCan
    ssc
+   ols
 
 Useful Links
 ------------

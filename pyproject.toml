@@ -11,7 +11,7 @@ license = { file = "LICENSE" }
 
 dependencies = ["scikit-learn>=1.5.0,<1.6"]
 
-classifiers=[
+classifiers = [
     "Development Status :: 4 - Beta",
     "License :: OSI Approved :: MIT License",
     "Programming Language :: Python",
