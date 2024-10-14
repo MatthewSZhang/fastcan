@@ -1,7 +1,7 @@
 project(
   'fastcan',
   'c', 'cython',
-  version: '0.2.4',
+  version: '0.2.5',
   license: 'MIT',
   meson_version: '>= 1.1.0',
   default_options: [

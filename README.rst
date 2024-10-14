@@ -61,7 +61,7 @@ Getting Started
 >>> FastCan(verbose=0).fit(X, y).get_support()
 array([ True, False])
 
-Check :ref:`User Guild <user_guide>` and :ref:`Examples <examples>` for more information.
+Check :ref:`User Guild <user_guide>` and :ref:`Examples <examples>` in `Home Page <https://fastcan.readthedocs.io/en/latest/?badge=latest>`_ for more information.
 
 Citation
 --------
