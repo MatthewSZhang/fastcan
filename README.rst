@@ -39,7 +39,7 @@ FastCan is a feature selection method, which has following advantages:
 
 #. Skip redundant features.
 
-#. Evalaute relative usefulness of features.
+#. Evaluate relative usefulness of features.
 
 Check `Home Page <https://fastcan.readthedocs.io/en/latest/?badge=latest>`_ for more information.
 
