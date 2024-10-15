@@ -1,7 +1,7 @@
 """
-===================================================
-Feature selection performance on redundant features
-===================================================
+=================================
+Performance on redundant features
+=================================
 
 .. currentmodule:: fastcan
 
@@ -109,8 +109,7 @@ def get_n_missed(
     n_missed_dep = len(
         np.setdiff1d(dep_info_ids+redundant_ids, selected_ids)
     )-n_redundant
-    if n_missed_dep < 0:
-        n_missed_dep = 0
+    n_missed_dep = max(n_missed_dep, 0)
     return n_missed_indep+n_missed_dep
 
 # %%
@@ -160,7 +159,7 @@ N_SELECTED = len(DEP_INFO_IDS+INDEP_INFO_IDS)
 N_REPEATED = 10
 
 selector_dict = {
-    "fastcan": FastCan(N_SELECTED, verbose=0),
+    "fastcan": FastCan(N_SELECTED, tol=1e-7, verbose=0),
     "skb_reg": SelectKBest(f_regression, k=N_SELECTED),
     "skb_mir": SelectKBest(mutual_info_regression, k=N_SELECTED),
     "sfm_lsvr": SelectFromModel(lsvr, max_features=N_SELECTED, threshold=-np.inf),
@@ -179,7 +178,7 @@ N_SELECTORS = len(selector_dict)
 n_missed = np.zeros((N_REPEATED, N_SELECTORS), dtype=int)
 
 for i in range(N_REPEATED):
-    X, y = make_redundant(
+    data, target = make_redundant(
         n_samples=N_SAMPLES,
         n_features=N_FEATURES,
         dep_info_ids=DEP_INFO_IDS,
@@ -188,7 +187,7 @@ for i in range(N_REPEATED):
         random_seed=i,
     )
     for j, selector in enumerate(selector_dict.values()):
-        result_ids = selector.fit(X, y).get_support(indices=True)
+        result_ids = selector.fit(data, target).get_support(indices=True)
         n_missed[i, j] = get_n_missed(
             dep_info_ids=DEP_INFO_IDS,
             indep_info_ids=INDEP_INFO_IDS,

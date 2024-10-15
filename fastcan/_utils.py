@@ -80,6 +80,17 @@ def ols(X, y, t=1):
     scores : ndarray of shape (n_features_to_select,), dtype=float
         The scores of selected features. The order of
         the scores is corresponding to the feature selection process.
+
+    Examples
+    --------
+    >>> from fastcan import ols
+    >>> X = [[1, 0, 0], [0, 1, 0], [0, 0, 1], [0, 0, 0]]
+    >>> y = [1, 0, 1, 0]
+    >>> indices, scores = ols(X, y, 2)
+    >>> indices
+    array([0, 2])
+    >>> scores
+    array([0.5, 0.5])
     """
     X, y = check_X_y(X, y, dtype=float, ensure_2d=True)
     n_features = X.shape[1]
