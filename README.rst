@@ -57,10 +57,27 @@ Or via conda-forge:
 Getting Started
 ---------------
 >>> from fastcan import FastCan
->>> X = [[1, 0], [0, 1]]
->>> y = [1, 0]
->>> FastCan(verbose=0).fit(X, y).get_support()
-array([ True, False])
+>>> X = [[ 0.87, -1.34,  0.31 ],
+...     [-2.79, -0.02, -0.85 ],
+...     [-1.34, -0.48, -2.55 ],
+...     [ 1.92,  1.48,  0.65 ]]
+>>> y = [0, 1, 0, 1]
+>>> selector = FastCan(n_features_to_select=2, verbose=0).fit(X, y)
+>>> selector.get_support()
+array([ True,  True, False])
+>>> selector.get_support(indices=True) # Sorted indices
+array([0, 1])
+>>> selector.indices_ # Indices in selection order
+array([1, 0], dtype=int32)
+>>> selector.scores_ # Scores for selected features in selection order
+array([0.64276838, 0.09498243])
+>>> # Here Feature 2 must be included
+>>> selector = FastCan(n_features_to_select=2, indices_include=[2], verbose=0).fit(X, y)
+>>> # We can find the feature which is useful when working with Feature 2 
+>>> selector.indices_
+array([2, 1], dtype=int32)
+>>> selector.scores_
+array([0.16632562, 0.50544788])
 
 
 Citation

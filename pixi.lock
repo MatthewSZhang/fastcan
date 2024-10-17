@@ -713,6 +713,7 @@ packages:
   - ld64 >=530
   - llvm-openmp
   license: BSD-3-Clause
+  license_family: BSD
   purls: []
   size: 6220
   timestamp: 1728985386241
@@ -731,6 +732,7 @@ packages:
   - ld64 >=530
   - llvm-openmp
   license: BSD-3-Clause
+  license_family: BSD
   purls: []
   size: 6210
   timestamp: 1728985474611
@@ -1442,6 +1444,7 @@ packages:
   - python_abi 3.12.* *_cp312
   - tomli
   license: Apache-2.0
+  license_family: APACHE
   purls:
   - pkg:pypi/coverage?source=hash-mapping
   size: 363035
@@ -1463,6 +1466,7 @@ packages:
   - vc >=14.2,<15
   - vc14_runtime >=14.29.30139
   license: Apache-2.0
+  license_family: APACHE
   purls:
   - pkg:pypi/coverage?source=hash-mapping
   size: 387904
@@ -1483,6 +1487,7 @@ packages:
   - python_abi 3.12.* *_cp312
   - tomli
   license: Apache-2.0
+  license_family: APACHE
   purls:
   - pkg:pypi/coverage?source=hash-mapping
   size: 362059
@@ -1502,6 +1507,7 @@ packages:
   - python_abi 3.12.* *_cp312
   - tomli
   license: Apache-2.0
+  license_family: APACHE
   purls:
   - pkg:pypi/coverage?source=hash-mapping
   size: 361178
@@ -1519,6 +1525,7 @@ packages:
   - c-compiler 1.8.0 hf48404e_1
   - clangxx_osx-arm64 17.*
   license: BSD-3-Clause
+  license_family: BSD
   purls: []
   size: 6261
   timestamp: 1728985417226
@@ -1535,6 +1542,7 @@ packages:
   - c-compiler 1.8.0 hfc4bf79_1
   - clangxx_osx-64 17.*
   license: BSD-3-Clause
+  license_family: BSD
   purls: []
   size: 6235
   timestamp: 1728985479382
@@ -1855,6 +1863,7 @@ packages:
   - ld64 >=530
   - llvm-openmp
   license: BSD-3-Clause
+  license_family: BSD
   purls: []
   size: 6265
   timestamp: 1728985477352
@@ -1874,6 +1883,7 @@ packages:
   - ld64 >=530
   - llvm-openmp
   license: BSD-3-Clause
+  license_family: BSD
   purls: []
   size: 6288
   timestamp: 1728985414156
@@ -2756,6 +2766,7 @@ packages:
   - libgomp 14.2.0 h77fa898_1
   - libgcc-ng ==14.2.0=*_1
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 848745
   timestamp: 1729027721139
@@ -2771,6 +2782,7 @@ packages:
   depends:
   - libgcc 14.2.0 h77fa898_1
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 54142
   timestamp: 1729027726517
@@ -2820,6 +2832,7 @@ packages:
   constrains:
   - libgfortran-ng ==14.2.0=*_1
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 53997
   timestamp: 1729027752995
@@ -2865,6 +2878,7 @@ packages:
   depends:
   - libgfortran 14.2.0 h69a702a_1
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 54106
   timestamp: 1729027945817
@@ -2918,6 +2932,7 @@ packages:
   constrains:
   - libgfortran 14.2.0
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 1462645
   timestamp: 1729027735353
@@ -2933,6 +2948,7 @@ packages:
   depends:
   - _libgcc_mutex 0.1 conda_forge
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 460992
   timestamp: 1729027639220
@@ -3269,6 +3285,7 @@ packages:
   depends:
   - libgcc 14.2.0 h77fa898_1
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 3893695
   timestamp: 1729027746910
@@ -3284,6 +3301,7 @@ packages:
   depends:
   - libstdcxx 14.2.0 hc0a3c3a_1
   license: GPL-3.0-only WITH GCC-exception-3.1
+  license_family: GPL
   purls: []
   size: 54105
   timestamp: 1729027780628
