@@ -97,7 +97,7 @@ def ols(X, y, t=1):
     w = X / np.linalg.norm(X, axis=0)
     v = y / np.linalg.norm(y)
     mask = np.zeros(n_features, dtype=bool)
-    r2 = np.zeros(n_features)
+    r2 = np.zeros(n_features, dtype=float)
     indices = np.zeros(t, dtype=int)
     scores = np.zeros(t, dtype=float)
 
