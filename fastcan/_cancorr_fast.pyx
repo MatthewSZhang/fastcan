@@ -155,7 +155,6 @@ cpdef int _forward_search(
         int index = -1
 
     memset(&r2[0], 0, n_features * sizeof(floating))
-    memset(&mask[0], False, n_features * sizeof(bint))
 
     for i in range(t):
         if i == 0:
