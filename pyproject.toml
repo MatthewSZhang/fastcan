@@ -9,7 +9,7 @@ requires-python = ">=3.9"
 readme = "README.rst"
 license = { file = "LICENSE" }
 
-dependencies = ["scikit-learn>=1.5.0,<1.6"]
+dependencies = ["scikit-learn>=1.5.0"]
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -65,9 +65,9 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 fastcan = { path = ".", editable = true }
 
 [tool.pixi.build-dependencies]
-cython = ">=3.0.10,<3.1"
-meson-python = ">=0.16.0,<0.17"
-ninja = ">=1.12.1,<1.13"
+cython = ">=3.0.10"
+meson-python = ">=0.16.0"
+ninja = ">=1.12.1"
 
 [tool.pixi.target.osx-64.build-dependencies]
 compilers = "*"
@@ -76,13 +76,13 @@ compilers = "*"
 compilers = "*"
 
 [tool.pixi.host-dependencies]
-meson-python = ">=0.16.0,<0.17"
-cython = ">=3.0.10,<3.1"
-scikit-learn = ">=1.5.0,<1.6"
+meson-python = ">=0.16.0"
+cython = ">=3.0.10"
+scikit-learn = ">=1.5.0"
 
 [tool.pixi.dependencies]
-python = ">=3.12.0,<3.13"
-scikit-learn = ">=1.5.0,<1.6"
+python = ">=3.12.0"
+scikit-learn = ">=1.5.0"
 
 [tool.pixi.tasks]
 time-h = "python -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'"
