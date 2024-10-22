@@ -48,7 +48,11 @@ extensions = [
 # directories to ignore when looking for source files.
 exclude_patterns = ["_build"]
 
-autodoc_default_options = {"members": True, "inherited-members": True}
+# Hide class prefix in right sidebar.
+toc_object_entries_show_parents = "hide"
+
+# Add any paths that contain templates here, relative to this directory.
+templates_path = ["templates"]
 
 # generate autosummary even if no references
 autosummary_generate = True
