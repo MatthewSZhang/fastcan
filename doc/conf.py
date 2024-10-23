@@ -41,6 +41,7 @@ extensions = [
     # Link to other project's documentation (see mapping below)
     "sphinx.ext.intersphinx",
     "sphinx_gallery.gen_gallery",
+    # for dropdown directive
     "sphinx_design",
 ]
 
