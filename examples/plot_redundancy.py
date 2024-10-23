@@ -159,6 +159,7 @@ N_SELECTED = len(DEP_INFO_IDS+INDEP_INFO_IDS)
 N_REPEATED = 10
 
 selector_dict = {
+    # Smaller `tol` makes fastcan more sensitive to redundancy
     "fastcan": FastCan(N_SELECTED, tol=1e-7, verbose=0),
     "skb_reg": SelectKBest(f_regression, k=N_SELECTED),
     "skb_mir": SelectKBest(mutual_info_regression, k=N_SELECTED),
