@@ -5,11 +5,11 @@ FastCan: A Fast Canonical-Correlation-Based Feature Selection Algorithm
 .. |conda| image:: https://img.shields.io/conda/vn/conda-forge/fastcan.svg
    :target: https://anaconda.org/conda-forge/fastcan
 
-.. |Codecov| image:: https://codecov.io/gh/MatthewSZhang/fastcan/branch/main/graph/badge.svg
-   :target: https://codecov.io/gh/MatthewSZhang/fastcan
+.. |Codecov| image:: https://codecov.io/gh/scikit-learn-contrib/fastcan/branch/main/graph/badge.svg
+   :target: https://codecov.io/gh/scikit-learn-contrib/fastcan
 
-.. |CI| image:: https://github.com/MatthewSZhang/fastcan/actions/workflows/ci.yml/badge.svg
-   :target: https://github.com/MatthewSZhang/fastcan/actions
+.. |CI| image:: https://github.com/scikit-learn-contrib/fastcan/actions/workflows/ci.yml/badge.svg
+   :target: https://github.com/scikit-learn-contrib/fastcan/actions
 
 .. |Doc| image:: https://readthedocs.org/projects/fastcan/badge/?version=latest
    :target: https://fastcan.readthedocs.io/en/latest/?badge=latest

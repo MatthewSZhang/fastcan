@@ -1684,7 +1684,7 @@ packages:
   name: fastcan
   version: 0.2.7
   path: .
-  sha256: 7482153ff3b9b40a773a0464258a6089b0f3e987710d428283e402fb51aae009
+  sha256: 624e3741a374c38866d0fc7637a384cffd3379575e043e7b6f7f49403faf4271
   requires_dist:
   - scikit-learn>=1.5.0
   - furo ; extra == 'docs'

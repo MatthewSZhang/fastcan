@@ -28,9 +28,9 @@ classifiers = [
 
 [project.urls]
 homepage = "https://fastcan.readthedocs.io/en/latest/"
-source = "https://github.com/MatthewSZhang/fastcan"
+source = "https://github.com/scikit-learn-contrib/fastcan"
 download = "https://pypi.org/project/fastcan/#files"
-tracker = "https://github.com/MatthewSZhang/fastcan/issues"
+tracker = "https://github.com/scikit-learn-contrib/fastcan/issues"
 
 [project.optional-dependencies]
 docs = ["furo", "matplotlib", "sphinx_gallery", "sphinx-design"]
