@@ -8,12 +8,12 @@ from cython.parallel import prange
 from scipy.linalg.cython_blas cimport isamax, idamax
 from sklearn.utils._cython_blas cimport ColMajor, NoTrans
 from sklearn.utils._cython_blas cimport _dot, _scal, _nrm2, _gemm, _axpy
-from sklearn.utils._typedefs cimport int32_t
+from sklearn.utils._typedefs cimport int32_t, uint8_t
 
 
 @final
 cdef int _bsum(
-    const bint* x,
+    const uint8_t* x,
     int n,
 ) noexcept nogil:
     """Computes the sum of the vector of bool elements.
@@ -129,6 +129,7 @@ cpdef int _forward_search(
     floating tol,                     # IN
     int num_threads,                  # IN
     int verbose,                      # IN
+    uint8_t[::1] mask,                # IN/TEMP
     int32_t[::1] indices,             # OUT
     floating[::1] scores,             # OUT
 ) except -1 nogil:
@@ -140,6 +141,7 @@ cpdef int _forward_search(
               is orthonormal to selected features and M.
     t : Non-negative integer. The number of features to be selected.
     tol : Tolerance for linear dependence check.
+    mask (n_features, ) Mask for candidate features.
     indices: (t,) The indices vector of selected features, initiated with -1.
     scores: (t,) The h-correlation/eta-cosine of selected features.
     """
@@ -149,7 +151,6 @@ cpdef int _forward_search(
         # OpenMP (in Windows) requires signed integral for prange
         int n_features = X.shape[1]
         floating* r2 = <floating*> malloc(sizeof(floating) * n_features)
-        bint* mask = <bint*> malloc(sizeof(bint) * n_features)
         floating g, ssc = 0.0
         int i, j
         int index = -1
@@ -160,7 +161,8 @@ cpdef int _forward_search(
         if i == 0:
             # Preprocessing
             for j in range(n_features):
-                mask[j] = _normv(&X[0, j], n_samples)
+                if not mask[j]:
+                    mask[j] = _normv(&X[0, j], n_samples)
         else:
             mask[index] = True
             r2[index] = 0
@@ -204,5 +206,4 @@ cpdef int _forward_search(
         with gil:
             print()
     free(r2)
-    free(mask)
     return 0

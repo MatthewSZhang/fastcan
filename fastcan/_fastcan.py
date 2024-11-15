@@ -29,6 +29,9 @@ class FastCan(SelectorMixin, BaseEstimator):
     indices_include : array-like of shape (n_inclusions,), default=None
         The indices of the prerequisite features.
 
+    indices_exclude : array-like of shape (n_exclusions,), default=None
+        The indices of the excluded features.
+
     eta : bool, default=False
         Whether to use eta-cosine method.
 
@@ -63,6 +66,16 @@ class FastCan(SelectorMixin, BaseEstimator):
         The h-correlation/eta-cosine of selected features. The order of
         the scores is corresponding to the feature selection process.
 
+    X_transformed_ : ndarray of shape (n_samples_, n_features), dtype=float, order='F'
+        Transformed feature matrix.
+        When h-correlation method is used, n_samples_ = n_samples.
+        When eta-cosine method is used, n_samples_ = n_features+n_outputs.
+
+    y_transformed_ : ndarray of shape (n_samples_, n_outputs), dtype=float, order='F'
+        Transformed target matrix.
+        When h-correlation method is used, n_samples_ = n_samples.
+        When eta-cosine method is used, n_samples_ = n_features+n_outputs.
+
     References
     ----------
     * Zhang, S., & Lang, Z. Q. (2022).
@@ -88,6 +101,7 @@ class FastCan(SelectorMixin, BaseEstimator):
             Interval(Integral, 1, None, closed="left"),
         ],
         "indices_include": [None, "array-like"],
+        "indices_exclude": [None, "array-like"],
         "eta": ["boolean"],
         "tol": [Interval(Real, 0, None, closed="neither")],
         "verbose": ["verbose"],
@@ -97,12 +111,14 @@ class FastCan(SelectorMixin, BaseEstimator):
         self,
         n_features_to_select=1,
         indices_include=None,
+        indices_exclude=None,
         eta=False,
         tol=0.01,
         verbose=1,
     ):
         self.n_features_to_select = n_features_to_select
         self.indices_include = indices_include
+        self.indices_exclude = indices_exclude
         self.eta = eta
         self.tol = tol
         self.verbose = verbose
@@ -152,17 +168,6 @@ class FastCan(SelectorMixin, BaseEstimator):
             # [:, np.newaxis] that does not.
             y = y.reshape(-1, 1)
 
-        # indices_include
-        if self.indices_include is None:
-            indices_include = np.zeros(0, dtype=int)
-        else:
-            indices_include = check_array(
-                self.indices_include,
-                ensure_2d=False,
-                dtype=int,
-                ensure_min_samples=0,
-            )
-
         n_samples, n_features = X.shape
         n_outputs = y.shape[1]
 
@@ -172,29 +177,12 @@ class FastCan(SelectorMixin, BaseEstimator):
                 f"must be <= n_features {n_features}."
             )
 
-        if indices_include.ndim != 1:
-            raise ValueError(
-                f"Found indices_include with dim {indices_include.ndim}, "
-                "but expected == 1."
-            )
-
-        if indices_include.size >= n_features:
-            raise ValueError(
-                f"n_inclusions {indices_include.size} must "
-                f"be < n_features {n_features}."
-            )
-
-        if np.any((indices_include < 0) | (indices_include >= n_features)):
-            raise ValueError(
-                "Out of bounds. "
-                f"All items in indices_include should be in [0, {n_features}). "
-                f"But got indices_include = {indices_include}."
-            )
-
         if (n_samples < n_features + n_outputs) and self.eta:
             raise ValueError(
                 "`eta` cannot be True, when n_samples < n_features+n_outputs."
             )
+        indices_include = self._check_indices_params(self.indices_include, n_features)
+        indices_exclude = self._check_indices_params(self.indices_exclude, n_features)
 
         if self.eta:
             xy_hstack = np.hstack((X, y))
@@ -204,23 +192,28 @@ class FastCan(SelectorMixin, BaseEstimator):
             )[1:]
             qxy_transformed = singular_values.reshape(-1, 1) * unitary_arrays
             qxy_transformed = np.asfortranarray(qxy_transformed)
-            X_transformed = qxy_transformed[:, :n_features]
-            y_transformed = orth(qxy_transformed[:, n_features:])
+            self.X_transformed_ = qxy_transformed[:, :n_features]
+            self.y_transformed_ = orth(qxy_transformed[:, n_features:])
         else:
-            X_transformed = X - X.mean(0)
-            y_transformed = orth(y - y.mean(0))
+            self.X_transformed_ = X - X.mean(0)
+            self.y_transformed_ = orth(y - y.mean(0))
 
-        indices, scores = self._prepare_data(
-            indices_include,
-        )
+        # initiated with -1
+        indices = np.full(self.n_features_to_select, -1, dtype=np.intc, order="F")
+        indices[: indices_include.size] = indices_include
+        scores = np.zeros(self.n_features_to_select, dtype=float, order="F")
+        mask = np.zeros(n_features, dtype=np.ubyte, order="F")
+        mask[indices_exclude] = True
+
         n_threads = _openmp_effective_n_threads()
         _forward_search(
-            X=X_transformed,
-            V=y_transformed,
+            X=self.X_transformed_,
+            V=self.y_transformed_,
             t=self.n_features_to_select,
             tol=self.tol,
             num_threads=n_threads,
             verbose=self.verbose,
+            mask=mask,
             indices=indices,
             scores=scores,
         )
@@ -231,34 +224,37 @@ class FastCan(SelectorMixin, BaseEstimator):
         self.scores_ = scores
         return self
 
-    def _prepare_data(self, indices_include):
-        """Prepare data for _forward_search()
-        When h-correlation method is used, n_samples_ = n_samples.
-        When eta-cosine method is used, n_samples_ = n_features+n_outputs.
+    def _check_indices_params(self, indices_params, n_features):
+        """Check indices_include or indices_exclude."""
+        if indices_params is None:
+            indices_params = np.zeros(0, dtype=int)
+        else:
+            indices_params = check_array(
+                indices_params,
+                ensure_2d=False,
+                dtype=int,
+                ensure_min_samples=0,
+            )
 
-        Parameters
-        ----------
-        indices_include : array-like of shape (n_inclusions,), dtype=int
-        The indices of the prerequisite features.
+        if indices_params.ndim != 1:
+            raise ValueError(
+                f"Found indices_params with dim {indices_params.ndim}, "
+                "but expected == 1."
+            )
 
-        Returns
-        -------
-        mask : ndarray of shape (n_features,), dtype=np.ubyte, order='F'
-            Mask for invalid candidate features.
-            The data type is unsigned char.
+        if indices_params.size >= n_features:
+            raise ValueError(
+                f"The number of indices in indices_params {indices_params.size} must "
+                f"be < n_features {n_features}."
+            )
 
-        indices: ndarray of shape (n_features_to_select,), dtype=np.intc, order='F'
-            The indices vector of selected features, initiated with -1.
-            The data type is signed int.
-
-        scores: ndarray of shape (n_features_to_select,), dtype=float, order='F'
-            The h-correlation/eta-cosine of selected features.
-        """
-        # initiated with -1
-        indices = np.full(self.n_features_to_select, -1, dtype=np.intc, order="F")
-        indices[: indices_include.size] = indices_include
-        scores = np.zeros(self.n_features_to_select, dtype=float, order="F")
-        return indices, scores
+        if np.any((indices_params < 0) | (indices_params >= n_features)):
+            raise ValueError(
+                "Out of bounds. "
+                f"All items in indices_params should be in [0, {n_features}). "
+                f"But got indices_params = {indices_params}."
+            )
+        return indices_params
 
     def _get_support_mask(self):
         check_is_fitted(self)

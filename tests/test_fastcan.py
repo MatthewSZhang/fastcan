@@ -58,13 +58,14 @@ def test_select_kbest_classif():
     gtruth[:n_informative] = 1
     assert_array_equal(support, gtruth)
 
-def test_indices_include():
+def test_indices_include_exclude():
     # Test whether fastcan can select informative features based
-    # on some pre-include features
+    # on some pre-include features and pre-exclude features
     n_samples = 20
     n_features = 20
     n_targets = 8
     n_informative = 5
+    indices_params = [0, 3]
 
     X, y = make_regression(
         n_samples=n_samples,
@@ -76,16 +77,24 @@ def test_indices_include():
         random_state=0,
     )
 
-    correlation_filter = FastCan(
+    include_filter = FastCan(
         n_features_to_select=n_informative,
-        indices_include=[0, 3]
+        indices_include=indices_params
     )
-    correlation_filter.fit(X, y)
+    exclude_filter = FastCan(
+        n_features_to_select=n_informative,
+        indices_exclude=indices_params
+    )
+    include_filter.fit(X, y)
+    exclude_filter.fit(X, y)
 
-    support = correlation_filter.get_support()
+    include_support = include_filter.get_support()
+    exclude_support = exclude_filter.get_support()
     gtruth = np.zeros(n_features)
     gtruth[:n_informative] = 1
-    assert_array_equal(support, gtruth)
+    assert_array_equal(include_support, gtruth)
+    gtruth[indices_params] = 0
+    assert_array_equal(exclude_support[:n_informative], gtruth[:n_informative])
 
 def test_ssc_consistent_with_cca():
     # Test whether the ssc got from the fastcan is consistent
@@ -193,13 +202,13 @@ def test_raise_errors():
     with pytest.raises(ValueError, match=r"n_features_to_select .*"):
         selector_n_select.fit(X, y)
 
-    with pytest.raises(ValueError, match=r"n_inclusions .*"):
+    with pytest.raises(ValueError, match=r"The number of indices .*"):
         selector_n_inclusions.fit(X, y)
 
     with pytest.raises(ValueError, match=r"Out of bounds. .*"):
         selector_indices_include_bounds.fit(X, y)
 
-    with pytest.raises(ValueError, match=r"Found indices_include with dim .*"):
+    with pytest.raises(ValueError, match=r"Found indices_params with dim .*"):
         selector_indices_include_ndim.fit(X, y)
 
     with pytest.raises(ValueError, match=r"`eta` cannot be True, .*"):
@@ -223,3 +232,5 @@ def test_cython_errors():
     with pytest.raises(RuntimeError, match=r"No candidate feature can .*"):
         # No candidate
         selector_no_cand.fit(np.c_[x_sub, x_sub[:, 0]+x_sub[:, 1]], y)
+
+test_indices_include_exclude()
