@@ -199,6 +199,20 @@ def test_raise_errors():
         indices_include=[[0]]
     )
 
+    selector_include_exclude_intersect = FastCan(
+        n_features_to_select=n_features,
+        indices_include=[0, 1],
+        indices_exclude=[1, 2],
+    )
+    selector_n_candidates = FastCan(
+        n_features_to_select=n_features,
+        indices_exclude=[1, 2],
+    )
+    selector_too_many_inclusions = FastCan(
+        n_features_to_select=2,
+        indices_include=[1, 2, 3],
+    )
+
     with pytest.raises(ValueError, match=r"n_features_to_select .*"):
         selector_n_select.fit(X, y)
 
@@ -213,6 +227,15 @@ def test_raise_errors():
 
     with pytest.raises(ValueError, match=r"`eta` cannot be True, .*"):
         selector_eta_for_small_size_samples.fit(X, y)
+
+    with pytest.raises(ValueError, match=r"`indices_include` and `indices_exclu.*"):
+        selector_include_exclude_intersect.fit(X, y)
+
+    with pytest.raises(ValueError, match=r"n_features - n_features_to_select - n_e.*"):
+        selector_n_candidates.fit(X, y)
+
+    with pytest.raises(ValueError, match=r"n_features_to_select - n_inclusions sho.*"):
+        selector_too_many_inclusions.fit(X, y)
 
 
 @pytest.mark.filterwarnings("ignore::pytest.PytestUnraisableExceptionWarning")

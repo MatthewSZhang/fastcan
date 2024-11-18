@@ -18,6 +18,7 @@ API Reference
    :toctree: generated/
 
    FastCan
+   refine
    ssc
    ols
 
