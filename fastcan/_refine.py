@@ -93,6 +93,7 @@ def refine(selector, drop=1, max_iter=None, verbose=1):
 
     n_inclusions = indices_include.size
     n_selections = n_features_to_select - n_inclusions
+    n_threads = _openmp_effective_n_threads()
 
     if drop == "all":
         drop = np.arange(1, n_selections)
@@ -126,7 +127,6 @@ def refine(selector, drop=1, max_iter=None, verbose=1):
                 rolled_indices[:-drop_n],
                 indices_exclude,
             )
-            n_threads = _openmp_effective_n_threads()
             _forward_search(
                 X=X_transformed_,
                 V=selector.y_transformed_,

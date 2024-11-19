@@ -5,7 +5,7 @@ from sklearn.datasets import make_classification
 from fastcan import FastCan, refine
 
 
-def test_select_refine_random_cls():
+def test_select_refine_cls():
     # Test whether refine work correctly with random samples.
     n_samples = 200
     n_features = 20

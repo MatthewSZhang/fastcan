@@ -194,6 +194,10 @@ cpdef int _forward_search(
 
             # Find max scores and update indices, X, mask, and scores
             index = _iamax(n_features, &r2[0], 1)
+            if r2[index] == 0:
+                raise RuntimeError(
+                    f"No improvement can be found when selecting the {i}th feature."
+                )
             indices[i] = index
             scores[i] = r2[index]
 

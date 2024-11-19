@@ -19,6 +19,7 @@ API Reference
 
    FastCan
    refine
+   extend
    ssc
    ols
 

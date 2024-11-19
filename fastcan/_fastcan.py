@@ -77,6 +77,12 @@ class FastCan(SelectorMixin, BaseEstimator):
         When h-correlation method is used, `n_samples_` = n_samples.
         When eta-cosine method is used, `n_samples_` = n_features+n_outputs.
 
+    indices_include_ : ndarray of shape (n_inclusions,), dtype=int
+        The indices of the prerequisite features.
+
+    indices_exclude_ : array-like of shape (n_exclusions,), dtype=int
+        The indices of the excluded features.
+
     References
     ----------
     * Zhang, S., & Lang, Z. Q. (2022).
