@@ -12,8 +12,8 @@ from fastcan import FastCan, extend
 def test_select_extend_cls():
     # Test whether refine work correctly with random samples.
     n_samples = 200
-    n_features = 20
-    n_informative = 10
+    n_features = 30
+    n_informative = 20
     n_classes = 8
     n_repeated = 5
     n_to_select = 18
