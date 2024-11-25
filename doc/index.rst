@@ -22,6 +22,13 @@ API Reference
    extend
    ssc
    ols
+   make_poly_ids
+   make_poly_features
+   make_time_shift_features
+   make_time_shift_ids
+   make_narx
+   print_narx
+   Narx
 
 Useful Links
 ------------

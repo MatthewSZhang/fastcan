@@ -1,9 +1,7 @@
 """Test feature selection extend"""
 import numpy as np
 import pytest
-from numpy.testing import (
-    assert_array_equal,
-)
+from numpy.testing import assert_array_equal
 from sklearn.datasets import make_classification
 
 from fastcan import FastCan, extend
