@@ -38,6 +38,7 @@ docs = ["furo", "matplotlib", "sphinx_gallery", "sphinx-design"]
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
 pytest-cov = "*"
+pandas = "*"
 
 [tool.pixi.feature.fmt.dependencies]
 black = "*"
