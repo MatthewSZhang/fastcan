@@ -50,6 +50,7 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1):
 
     batch_size : int, default=1
         The number of features in a mini-batch.
+        It is recommended that batch_size be less than n_samples.
 
     Returns
     -------
