@@ -24,10 +24,11 @@ from ._fastcan import FastCan, _prepare_search
         "batch_size": [
             Interval(Integral, 1, None, closed="left"),
         ],
+        "verbose": ["verbose"],
     },
     prefer_skip_nested_validation=False,
 )
-def minibatch(X, y, n_features_to_select=1, batch_size=1):
+def minibatch(X, y, n_features_to_select=1, batch_size=1, verbose=1):
     """FastCan selection with mini batches.
 
     It is suitable for selecting a very large number of features
@@ -52,6 +53,9 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1):
         The number of features in a mini-batch.
         It is recommended that batch_size be less than n_samples.
 
+    verbose : int, default=1
+        The verbosity level.
+
     Returns
     -------
     indices : ndarray of shape (n_features_to_select,), dtype=int
@@ -62,7 +66,7 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1):
     >>> from fastcan import minibatch
     >>> X = [[1, 1, 0], [0.01, 0, 0], [-1, 0, 1], [0, 0, 0]]
     >>> y = [1, 0, -1, 0]
-    >>> indices = minibatch(X, y, 3, batch_size=2)
+    >>> indices = minibatch(X, y, 3, batch_size=2, verbose=0)
     >>> print(f"Indices: {indices}")
     Indices: [0 1 2]
     """
@@ -81,15 +85,14 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1):
 
     n_threads = _openmp_effective_n_threads()
 
-    output_arange = np.r_[np.arange(n_outputs, step=batch_size, dtype=int), n_outputs]
     n_to_select_split = np.diff(
         np.linspace(
-            0, n_features_to_select, num=output_arange.size, endpoint=True, dtype=int
+            0, n_features_to_select, num=n_outputs + 1, endpoint=True, dtype=int
         )
     )
     indices_select = np.zeros(0, dtype=int)
-    for i in range(n_to_select_split.size):
-        y_i = y[:, output_arange[i] : output_arange[i + 1]]
+    for i in range(n_outputs):
+        y_i = y[:, i]
         batch_split_i = np.diff(
             np.r_[
                 np.arange(n_to_select_split[i], step=batch_size, dtype=int),
@@ -122,4 +125,10 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1):
                     scores=scores,
                 )
             indices_select = np.r_[indices_select, indices]
+            if verbose == 1:
+                print(
+                    f"Progress: {indices_select.size}/{n_features_to_select}", end="\r"
+                )
+    if verbose == 1:
+        print()
     return indices_select

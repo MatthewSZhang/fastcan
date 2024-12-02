@@ -39,7 +39,6 @@ def test_select_minibatch_cls():
     assert np.unique(indices).size == n_to_select
     assert indices.size == n_to_select
 
-
 def test_minibatch_error():
     # Test refine raise error.
     n_samples = 200
@@ -63,5 +62,3 @@ def test_minibatch_error():
 
     with pytest.raises(ValueError, match=r"n_features_to_select .*"):
         _ = minibatch(X, y, n_features+1, batch_size=3)
-
-test_select_minibatch_cls()
