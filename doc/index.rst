@@ -19,7 +19,7 @@ API Reference
 
    FastCan
    refine
-   extend
+   minibatch
    ssc
    ols
    make_poly_ids

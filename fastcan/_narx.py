@@ -453,8 +453,8 @@ class Narx(BaseEstimator, RegressorMixin):
             # fit a one-step-ahead Narx model
             xy_hstack = np.c_[X, y]
             osa_narx = LinearRegression()
-            time_shift_terms = make_time_shift_features(xy_hstack, self.time_shift_ids_)
-            poly_terms = make_poly_features(time_shift_terms, self.poly_ids_)
+            time_shift_vars = make_time_shift_features(xy_hstack, self.time_shift_ids_)
+            poly_terms = make_poly_features(time_shift_vars, self.poly_ids_)
 
             osa_narx.fit(poly_terms, y)
             if coef_init is None:
@@ -644,6 +644,7 @@ def print_narx(
     | X[k-0,9] | 68  |
     """
     check_is_fitted(narx)
+
     def _get_variable_str(time_shift_id):
         if time_shift_id[0] < narx.n_features_in_:
             variable_str = f"X[k-{time_shift_id[1]},{time_shift_id[0]}]"
@@ -822,13 +823,13 @@ def make_narx(
         ),
         0,
     )
-    time_shift_terms = make_time_shift_features(xy_hstack, time_shift_ids_all)
+    time_shift_vars = make_time_shift_features(xy_hstack, time_shift_ids_all)
 
     poly_ids_all = make_poly_ids(
         time_shift_ids_all.shape[0],
         poly_degree,
     )
-    poly_terms = make_poly_features(time_shift_terms, poly_ids_all)
+    poly_terms = make_poly_features(time_shift_vars, poly_ids_all)
 
     csf = FastCan(
         n_features_to_select,

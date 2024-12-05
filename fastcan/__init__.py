@@ -2,8 +2,8 @@
 The :mod:`fastcan` module implements algorithms, including
 """
 
-from ._extend import extend
 from ._fastcan import FastCan
+from ._minibatch import minibatch
 from ._narx import (
     Narx,
     make_narx,
@@ -21,7 +21,7 @@ __all__ = [
     "ssc",
     "ols",
     "refine",
-    "extend",
+    "minibatch",
     "make_narx",
     "print_narx",
     "Narx",
