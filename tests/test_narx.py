@@ -50,7 +50,7 @@ def test_narx(nan):
     assert narx_default.poly_ids.shape[0] ==\
            params["n_features_to_select"]
 
-    params["include_zero_delay"] = [False, True, False]
+    params["include_zero_delay"] = [False, True]
     narx_0_delay = make_narx(X=X, y=y, **params)
     time_shift_ids = narx_0_delay.time_shift_ids
     time_ids_u0 = time_shift_ids[time_shift_ids[:, 0] == 0]
@@ -67,8 +67,8 @@ def test_narx(nan):
     if time_ids_u1.size != 0:
         assert time_ids_u1[0, 1] == 0
 
-    params["drop"] = 1
-    params["max_iter"] = 10
+    params["refine_drop"] = 1
+    params["refine_max_iter"] = 10
     narx_drop = make_narx(X=X, y=y, **params)
     assert np.any(
         narx_drop.poly_ids !=\
@@ -124,5 +124,3 @@ def test_narx(nan):
     poly_ids = make_poly_ids(time_shift_ids.shape[0]+1, 2)
     with pytest.raises(ValueError, match=r"The element x of poly_ids should .*"):
         narx_osa = Narx(time_shift_ids=time_shift_ids, poly_ids=poly_ids).fit(X, y)
-
-test_narx(True)
