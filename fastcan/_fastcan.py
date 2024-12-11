@@ -12,7 +12,7 @@ from sklearn.feature_selection._base import SelectorMixin
 from sklearn.utils import check_array, check_consistent_length
 from sklearn.utils._openmp_helpers import _openmp_effective_n_threads
 from sklearn.utils._param_validation import Interval
-from sklearn.utils.validation import check_is_fitted
+from sklearn.utils.validation import check_is_fitted, validate_data
 
 from ._cancorr_fast import _forward_search  # type: ignore
 
@@ -162,7 +162,8 @@ class FastCan(SelectorMixin, BaseEstimator):
             "dtype": float,
             "force_writeable": True,
         }
-        X, y = self._validate_data(
+        X, y = validate_data(
+            self,
             X=X,
             y=y,
             multi_output=True,

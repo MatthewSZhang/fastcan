@@ -1,6 +1,6 @@
 [project]
 name = "fastcan"
-version = "0.2.7"
+version = "0.3.0"
 description = "A fast canonical-correlation-based feature selection method"
 authors = [
     { name = "Matthew Sikai Zhang", email = "matthew.szhang91@gmail.com" },
@@ -9,7 +9,7 @@ requires-python = ">=3.9"
 readme = "README.rst"
 license = { file = "LICENSE" }
 
-dependencies = ["scikit-learn>=1.5.0"]
+dependencies = ["scikit-learn>=1.6.0"]
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -23,6 +23,7 @@ classifiers = [
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: Implementation :: CPython",
 ]
 
@@ -55,7 +56,7 @@ python-build = "*"
 uv = "*"
 
 [build-system]
-requires = ["meson-python>=0.16.0", "Cython>=3.0.10", "scikit-learn>=1.5.0"]
+requires = ["meson-python>=0.16.0", "Cython>=3.0.10", "scikit-learn>=1.6.0"]
 build-backend = "mesonpy"
 
 [tool.pixi.project]
@@ -79,11 +80,11 @@ compilers = "*"
 [tool.pixi.host-dependencies]
 meson-python = ">=0.16.0"
 cython = ">=3.0.10"
-scikit-learn = ">=1.5.0"
+scikit-learn = ">=1.6.0"
 
 [tool.pixi.dependencies]
 python = ">=3.12.0"
-scikit-learn = ">=1.5.0"
+scikit-learn = ">=1.6.0"
 
 [tool.pixi.tasks]
 time-h = "python -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'"
