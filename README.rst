@@ -73,11 +73,24 @@ array([1, 0], dtype=int32)
 array([0.91162413, 0.71089547])
 >>> # Here Feature 2 must be included
 >>> selector = FastCan(n_features_to_select=2, indices_include=[2], verbose=0).fit(X, y)
->>> # We can find the feature which is useful when working with Feature 2 
+>>> # We can find the feature which is useful when working with Feature 2
 >>> selector.indices_
 array([2, 0], dtype=int32)
 >>> selector.scores_
 array([0.34617598, 0.95815008])
+
+
+NARX Time Series Modelling
+--------------------------
+FastCan can be used for system identification.
+In particular, we provide a submodule `fastcan.narx` to build Nonlinear AutoRegressive eXogenous (NARX) models.
+For more information, check our `Home Page <https://fastcan.readthedocs.io/en/latest/?badge=latest>`_.
+
+
+Support Free-Threaded Wheels
+----------------------------
+FastCan has support for free-threaded (also known as nogil) CPython 3.13.
+For more information about free-threaded CPython, check `how to install a free-threaded CPython <https://py-free-threading.github.io/installing_cpython/>`_.
 
 
 Citation
