@@ -9,7 +9,7 @@ In this examples, we will compare the robustness of the three feature
 selection methods on affine transformed features.
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%
@@ -41,14 +41,12 @@ print("OLS: ", np.sort(ids_ols))
 print("FastCan: ", np.sort(ids_fastcan))
 
 
-
 # %%
 # Affine transformation
 # ---------------------
 # In this test, the 10 features of ``diabetes`` dataset will be randomly polluted
 # by the affine transformation. The three feature selection methods will select
 # three features from the polluted features. The more stable the result, the better.
-
 
 
 n_features = X.shape[1]
@@ -75,7 +73,7 @@ for i in range(10):
 
 import matplotlib.pyplot as plt
 
-bin_lims = np.arange(n_features+1)
+bin_lims = np.arange(n_features + 1)
 counts_omp, _ = np.histogram(ids_omp_all, bins=bin_lims)
 counts_ols, _ = np.histogram(ids_ols_all, bins=bin_lims)
 counts_fastcan, _ = np.histogram(ids_fastcan_all, bins=bin_lims)

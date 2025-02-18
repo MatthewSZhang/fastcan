@@ -8,7 +8,7 @@ Multi-step-ahead NARX model
 In this example, we will compare one-step-ahead NARX and multi-step-ahead NARX.
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%

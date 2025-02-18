@@ -2,6 +2,9 @@
 Feature selection with mini-batch.
 """
 
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 from copy import deepcopy
 from numbers import Integral
 
@@ -54,7 +57,7 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1, verbose=1):
         The parameter is the absolute number of features to select.
 
     batch_size : int, default=1
-        The number of features in a mini-batch.
+        The upper bound of the number of features in a mini-batch.
         It is recommended that batch_size be less than n_samples.
 
     verbose : int, default=1
@@ -110,17 +113,23 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1, verbose=1):
                 indices_include,
                 indices_select,
             )
-            _forward_search(
-                X=deepcopy(X_transformed_),
-                V=y_i,
-                t=batch_size_temp,
-                tol=0.01,
-                num_threads=n_threads,
-                verbose=0,
-                mask=mask,
-                indices=indices,
-                scores=scores,
-            )
+            try:
+                _forward_search(
+                    X=deepcopy(X_transformed_),
+                    V=y_i,
+                    t=batch_size_temp,
+                    tol=0.01,
+                    num_threads=n_threads,
+                    verbose=0,
+                    mask=mask,
+                    indices=indices,
+                    scores=scores,
+                )
+            except RuntimeError:
+                # If the batch size is too large, _forward_search cannot find enough
+                # samples to form a non-singular matrix. Then, reduce the batch size.
+                indices = indices[indices != -1]
+                batch_size_temp = indices.size
             indices_select = np.r_[indices_select, indices]
             n_selected_i += batch_size_temp
             if verbose == 1:

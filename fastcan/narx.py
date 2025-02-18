@@ -3,6 +3,9 @@ The module related to nonlinear autoregressive exogenous (NARX) model for system
 identification.
 """
 
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 import math
 from itertools import combinations_with_replacement
 from numbers import Integral

@@ -1,5 +1,8 @@
 """Utils functions."""
 
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 from numbers import Integral
 
 import numpy as np

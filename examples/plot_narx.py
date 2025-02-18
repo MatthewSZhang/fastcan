@@ -9,7 +9,7 @@ In this example, we illustrate how to build a polynomial
 NARX model for time series prediction.
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%
@@ -26,19 +26,24 @@ NARX model for time series prediction.
 # :math:`u_0` and :math:`u_1` are input signals,
 # and :math:`y` is the output signal.
 
-
 import numpy as np
 
 rng = np.random.default_rng(12345)
 n_samples = 1000
 max_delay = 3
 e = rng.normal(0, 0.1, n_samples)
-u0 = rng.uniform(0, 1, n_samples+max_delay)
-u1 = rng.normal(0, 0.1, n_samples+max_delay)
-y = np.zeros(n_samples+max_delay)
-for i in range(max_delay, n_samples+max_delay):
-    y[i] = 0.5*y[i-1]+0.3*u0[i]**2+2*u0[i-1]*u0[i-3]+1.5*u0[i-2]*u1[i-3]+1
-y = y[max_delay:]+e
+u0 = rng.uniform(0, 1, n_samples + max_delay)
+u1 = rng.normal(0, 0.1, n_samples + max_delay)
+y = np.zeros(n_samples + max_delay)
+for i in range(max_delay, n_samples + max_delay):
+    y[i] = (
+        0.5 * y[i - 1]
+        + 0.3 * u0[i] ** 2
+        + 2 * u0[i - 1] * u0[i - 3]
+        + 1.5 * u0[i - 2] * u1[i - 3]
+        + 1
+    )
+y = y[max_delay:] + e
 X = np.c_[u0[max_delay:], u1[max_delay:]]
 
 # %%
@@ -75,9 +80,9 @@ X = np.c_[u0[max_delay:], u1[max_delay:]]
 from fastcan.narx import make_time_shift_features, make_time_shift_ids
 
 time_shift_ids = make_time_shift_ids(
-    n_features=3, # Number of inputs (2) and output (1) signals
-    max_delay=3, # Maximum time delays
-    include_zero_delay = [True, True, False], # Whether to include zero delay
+    n_features=3,  # Number of inputs (2) and output (1) signals
+    max_delay=3,  # Maximum time delays
+    include_zero_delay=[True, True, False],  # Whether to include zero delay
     # for each signal. The output signal should not have zero delay.
 )
 
@@ -90,8 +95,8 @@ time_shift_vars = make_time_shift_features(np.c_[X, y], time_shift_ids)
 from fastcan.narx import make_poly_features, make_poly_ids
 
 poly_ids = make_poly_ids(
-    n_features=time_shift_vars.shape[1], # Number of time-shifted variables
-    degree=2, # Maximum polynomial degree
+    n_features=time_shift_vars.shape[1],  # Number of time-shifted variables
+    degree=2,  # Maximum polynomial degree
 )
 
 poly_terms = make_poly_features(time_shift_vars, poly_ids)
@@ -105,7 +110,7 @@ poly_terms = make_poly_features(time_shift_vars, poly_ids)
 from fastcan import FastCan
 
 selector = FastCan(
-    n_features_to_select=4, # 4 terms should be selected
+    n_features_to_select=4,  # 4 terms should be selected
 ).fit(poly_terms, y)
 
 support = selector.get_support()
@@ -124,7 +129,7 @@ from fastcan.narx import NARX, print_narx
 
 narx_model = NARX(
     time_shift_ids=time_shift_ids,
-    poly_ids = selected_poly_ids,
+    poly_ids=selected_poly_ids,
 )
 
 narx_model.fit(X, y)
@@ -158,7 +163,7 @@ from sklearn.metrics import r2_score
 
 y_pred = narx_model.predict(
     X[:100],
-    y_init=y[:narx_model.max_delay_] # Set the initial values of the prediction to
+    y_init=y[: narx_model.max_delay_],  # Set the initial values of the prediction to
     # the true values
 )
 

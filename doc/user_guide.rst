@@ -13,3 +13,4 @@ User Guide
    redundancy.rst
    ols_and_omp.rst
    narx.rst
+   pruning.rst

@@ -12,7 +12,7 @@ selection methods: h-correlation based :class:`FastCan`, eta-cosine based
 
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%
@@ -69,7 +69,7 @@ def baseline(X, y, t):
     n_samples, n_features = X.shape
     mask = np.zeros(n_features, dtype=bool)
     r2 = np.zeros(n_features, dtype=float)
-    indices  = np.zeros(t, dtype=int)
+    indices = np.zeros(t, dtype=int)
     scores = np.zeros(t, dtype=float)
     X_selected = np.zeros((n_samples, 0), dtype=float)
     for i in range(t):
@@ -84,6 +84,7 @@ def baseline(X, y, t):
         r2[d] = 0
         X_selected = np.column_stack((X_selected, X[:, d]))
     return indices, scores
+
 
 # %%
 # Elapsed time comparison
@@ -128,12 +129,10 @@ t_h = timeit(
 t_eta = timeit(
     f"s = FastCan({n_features_to_select}, eta=True, verbose=0).fit(X, y)",
     number=10,
-    globals=globals()
+    globals=globals(),
 )
 t_base = timeit(
-    f"indices, _ = baseline(X, y, {n_features_to_select})",
-    number=10,
-    globals=globals()
+    f"indices, _ = baseline(X, y, {n_features_to_select})", number=10, globals=globals()
 )
 print(f"Elapsed time using h correlation algorithm: {t_h:.5f} seconds")
 print(f"Elapsed time using eta cosine algorithm: {t_eta:.5f} seconds")
@@ -186,12 +185,12 @@ for i in range(n_features_max):
     time_eta[i] = timeit(
         f"s = FastCan({i+1}, eta=True, verbose=0).fit(X, y)",
         number=10,
-        globals=globals()
+        globals=globals(),
     )
 
-feature_num = np.arange(n_features_max, dtype=int)+1
-plt.plot(feature_num, time_h, label = "h-correlation")
-plt.plot(feature_num, time_eta, label = r'$\eta$-cosine')
+feature_num = np.arange(n_features_max, dtype=int) + 1
+plt.plot(feature_num, time_h, label="h-correlation")
+plt.plot(feature_num, time_eta, label=r"$\eta$-cosine")
 plt.title("Elapsed Time Comparison")
 plt.xlabel("Number of Selected Features")
 plt.ylabel("Elapsed Time (s)")

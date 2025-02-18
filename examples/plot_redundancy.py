@@ -23,7 +23,7 @@ Here four types of features should be distinguished:
     will be much easier.
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%
@@ -82,8 +82,9 @@ def make_redundant(
     X = rng.random((n_samples, n_features))
     y = np.dot(X[:, info_ids], informative_coef)
 
-    X[:, redundant_ids] = X[:, dep_info_ids]@redundant_coef
+    X[:, redundant_ids] = X[:, dep_info_ids] @ redundant_coef
     return X, y
+
 
 # %%
 # Define score function
@@ -97,20 +98,17 @@ def make_redundant(
 #   indices of the redundant features are :math:`[5]`, then the correctly selected
 #   indices can be any of :math:`[0, 1]`, :math:`[0, 5]`, and :math:`[1, 5]`.
 
-def get_n_missed(
-    dep_info_ids,
-    indep_info_ids,
-    redundant_ids,
-    selected_ids
-):
+
+def get_n_missed(dep_info_ids, indep_info_ids, redundant_ids, selected_ids):
     """Get the number of features miss selected."""
     n_redundant = len(redundant_ids)
     n_missed_indep = len(np.setdiff1d(indep_info_ids, selected_ids))
-    n_missed_dep = len(
-        np.setdiff1d(dep_info_ids+redundant_ids, selected_ids)
-    )-n_redundant
+    n_missed_dep = (
+        len(np.setdiff1d(dep_info_ids + redundant_ids, selected_ids)) - n_redundant
+    )
     n_missed_dep = max(n_missed_dep, 0)
-    return n_missed_indep+n_missed_dep
+    return n_missed_indep + n_missed_dep
+
 
 # %%
 # Prepare selectors
@@ -146,8 +144,8 @@ from sklearn.svm import LinearSVR
 
 from fastcan import FastCan
 
-lsvr = LinearSVR(C = 1, dual="auto", max_iter=100000, random_state=0)
-rfr = RandomForestRegressor(n_estimators = 10, random_state=0)
+lsvr = LinearSVR(C=1, dual="auto", max_iter=100000, random_state=0)
+rfr = RandomForestRegressor(n_estimators=10, random_state=0)
 
 
 N_SAMPLES = 1000
@@ -155,7 +153,7 @@ N_FEATURES = 10
 DEP_INFO_IDS = [2, 4, 7, 9]
 INDEP_INFO_IDS = [0, 1, 6]
 REDUNDANT_IDS = [5, 8]
-N_SELECTED = len(DEP_INFO_IDS+INDEP_INFO_IDS)
+N_SELECTED = len(DEP_INFO_IDS + INDEP_INFO_IDS)
 N_REPEATED = 10
 
 selector_dict = {
@@ -204,8 +202,8 @@ for i in range(N_REPEATED):
 
 import matplotlib.pyplot as plt
 
-fig, ax = plt.subplots(figsize = (8, 5))
-rects = ax.bar(selector_dict.keys(), n_missed.sum(0), width = 0.5)
+fig, ax = plt.subplots(figsize=(8, 5))
+rects = ax.bar(selector_dict.keys(), n_missed.sum(0), width=0.5)
 ax.bar_label(rects, n_missed.sum(0), padding=3)
 plt.xlabel("Selector")
 plt.ylabel("No. of missed features")
