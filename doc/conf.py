@@ -14,7 +14,7 @@ from datetime import datetime
 # sys.path.insert(0, os.path.abspath(".."))
 # General information about the project.
 project = "fastcan"
-copyright = f"{datetime.now().year}, fastcan developers (MIT License)"
+copyright = f"2024 - {datetime.now().year}, fastcan developers (MIT License)"
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -25,7 +25,7 @@ copyright = f"{datetime.now().year}, fastcan developers (MIT License)"
 release = importlib.metadata.version(project)
 
 # The short X.Y version.
-version = '.'.join(release.split('.')[:2])
+version = ".".join(release.split(".")[:2])
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration

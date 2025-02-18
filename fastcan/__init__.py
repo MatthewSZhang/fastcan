@@ -3,6 +3,9 @@ The implementation of fast canonical correlation analysis based feature selectio
 algorithm.
 """
 
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 from . import narx, utils
 from ._fastcan import FastCan
 from ._minibatch import minibatch

@@ -2,6 +2,9 @@
 Refine fastcan selection results
 """
 
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 from copy import deepcopy
 from numbers import Integral
 

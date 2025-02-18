@@ -1,10 +1,32 @@
 """Test feature selection with mini-batch"""
 import numpy as np
 import pytest
-from sklearn.datasets import make_classification
+from sklearn.cluster import KMeans
+from sklearn.datasets import load_iris, make_classification
 from sklearn.preprocessing import OneHotEncoder
 
 from fastcan import minibatch
+
+
+def test_data_pruning():
+    # Test large batch size issue for data pruning
+    n_atoms = 10
+    random_state = 0
+    n_to_select = 100
+    batch_size = 5
+
+    X, _ = load_iris(return_X_y=True)
+    kmeans = KMeans(
+        n_clusters=n_atoms,
+        random_state=random_state,
+    ).fit(X)
+    atoms = kmeans.cluster_centers_
+    indices = minibatch(
+        X.T, atoms.T, n_to_select, batch_size=batch_size, verbose=0
+    )
+    assert np.unique(indices).size == n_to_select
+    assert indices.size == n_to_select
+
 
 
 def test_select_minibatch_cls():

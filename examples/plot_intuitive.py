@@ -9,7 +9,7 @@ Let's intuitively understand the two methods, h-correlation and eta-cosine,
 in :class:`FastCan`.
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%
@@ -28,7 +28,6 @@ in :class:`FastCan`.
 # property, so that the usefullness of each feature can be added together without
 # redundancy.
 
-
 import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib.patches import Patch
@@ -37,8 +36,9 @@ from sklearn.linear_model import LinearRegression
 
 from fastcan import FastCan
 
-plt.rcParams['axes.spines.right'] = False
-plt.rcParams['axes.spines.top'] = False
+plt.rcParams["axes.spines.right"] = False
+plt.rcParams["axes.spines.top"] = False
+
 
 def get_r2(feats, target, feats_selected=None):
     """Get R-squared between [feats_selected, feat_i] and target."""
@@ -54,29 +54,30 @@ def get_r2(feats, target, feats_selected=None):
         r2[i] = lr.fit(feats_i, target).score(feats_i, target)
     return r2
 
+
 def plot_bars(ids, r2_left, r2_selected):
     """Plot the relative R-squared with a bar plot."""
-    legend_selected = Patch(color='tab:green', label='X_selected')
-    legend_cand = Patch(color='tab:blue', label='x_i: candidates')
-    legend_best = Patch(color='tab:orange', label='Best candidate')
+    legend_selected = Patch(color="tab:green", label="X_selected")
+    legend_cand = Patch(color="tab:blue", label="x_i: candidates")
+    legend_best = Patch(color="tab:orange", label="Best candidate")
     n_features = len(ids)
     n_selected = len(r2_selected)
 
-    left = np.zeros(n_features)+sum(r2_selected)
+    left = np.zeros(n_features) + sum(r2_selected)
     left_selected = np.cumsum(r2_selected)
     left_selected = np.r_[0, left_selected]
     left_selected = left_selected[:-1]
     left[:n_selected] = left_selected
 
-    label = [""]*n_features
-    label[np.argmax(r2_left)+n_selected] = f"{max(r2_left):.5f}"
+    label = [""] * n_features
+    label[np.argmax(r2_left) + n_selected] = f"{max(r2_left):.5f}"
 
-    colors = ["tab:blue"]*(n_features - n_selected)
+    colors = ["tab:blue"] * (n_features - n_selected)
     colors[np.argmax(r2_left)] = "tab:orange"
-    colors = ["tab:green"]*n_selected + colors
+    colors = ["tab:green"] * n_selected + colors
 
     hbars = plt.barh(ids, width=np.r_[score_selected, r2_left], color=colors, left=left)
-    plt.axvline(x = sum(r2_selected), color = 'tab:orange', linestyle="--")
+    plt.axvline(x=sum(r2_selected), color="tab:orange", linestyle="--")
     plt.bar_label(hbars, label)
     plt.yticks(np.arange(n_features))
     plt.xlabel("R-squared between [X_selected, x_i] and y")
@@ -84,13 +85,13 @@ def plot_bars(ids, r2_left, r2_selected):
     plt.legend(handles=[legend_selected, legend_cand, legend_best])
     plt.show()
 
+
 X, y = load_diabetes(return_X_y=True)
 
 
 id_left = np.arange(X.shape[1])
 id_selected = []
 score_selected = []
-
 
 
 score_0 = get_r2(X, y)
@@ -114,11 +115,10 @@ index = np.argmax(score_0)
 id_selected += [id_left[index]]
 score_selected += [score_0[index]]
 id_left = np.delete(id_left, index)
-score_1 = get_r2(X[:, id_left], y, X[:, id_selected])-sum(score_selected)
+score_1 = get_r2(X[:, id_left], y, X[:, id_selected]) - sum(score_selected)
 
 
 plot_bars(np.r_[id_selected, id_left], score_1, score_selected)
-
 
 
 # %%
@@ -133,10 +133,9 @@ index = np.argmax(score_1)
 id_selected += [id_left[index]]
 score_selected += [score_1[index]]
 id_left = np.delete(id_left, index)
-score_2 = get_r2(X[:, id_left], y, X[:, id_selected])-sum(score_selected)
+score_2 = get_r2(X[:, id_left], y, X[:, id_selected]) - sum(score_selected)
 
 plot_bars(np.r_[id_selected, id_left], score_2, score_selected)
-
 
 
 # %%
@@ -180,7 +179,7 @@ id_selected = [index]
 score_selected = [score_0[index]]
 id_left = np.arange(X.shape[1])
 id_left = np.delete(id_left, index)
-score_1_7 = get_r2(X[:, id_left], y, X[:, id_selected])-sum(score_selected)
+score_1_7 = get_r2(X[:, id_left], y, X[:, id_selected]) - sum(score_selected)
 
 plot_bars(np.r_[id_selected, id_left], score_1_7, score_selected)
 

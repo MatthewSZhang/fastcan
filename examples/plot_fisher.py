@@ -10,7 +10,7 @@ between the features ``X`` and the one-hot encoded target ``y`` has equivalent
 relationship with Fisher's criterion in LDA (Linear Discriminant Analysis).
 """
 
-# Authors: Sikai Zhang
+# Authors: The fastcan developers
 # SPDX-License-Identifier: MIT
 
 # %%
@@ -49,11 +49,11 @@ Sb = St - Sw  # between scatter
 fishers_criterion, _ = linalg.eigh(Sb, Sw)
 
 fishers_criterion = np.sort(fishers_criterion)[::-1]
-n_nonzero = min(X.shape[1], clf.classes_.shape[0]-1)
+n_nonzero = min(X.shape[1], clf.classes_.shape[0] - 1)
 # remove the eigenvalues which are close to zero
 fishers_criterion = fishers_criterion[:n_nonzero]
 # get canonical correlation coefficients from convert Fisher's criteria
-r2 = fishers_criterion/(1+fishers_criterion)
+r2 = fishers_criterion / (1 + fishers_criterion)
 
 # %%
 # Compute SSC

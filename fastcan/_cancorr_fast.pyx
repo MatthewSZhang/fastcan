@@ -1,6 +1,9 @@
-# Author: Matthew Sikai Zhang <matthew.szhang91@gmail.com>
-#
-# Fast feature selection with sum squared canoncial correlation coefficents
+"""
+Fast feature selection with sum squared canoncial correlation coefficents
+"""
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 from libc.stdlib cimport malloc, free
 from libc.string cimport memset
 from cython cimport floating, final

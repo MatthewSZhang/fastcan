@@ -2,6 +2,9 @@
 Feature selection
 """
 
+# Authors: The fastcan developers
+# SPDX-License-Identifier: MIT
+
 from copy import deepcopy
 from numbers import Integral, Real
 
