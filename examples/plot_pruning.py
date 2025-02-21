@@ -72,7 +72,7 @@ def _fastcan_pruning(
     ).fit(X)
     atoms = kmeans.cluster_centers_
     ids_fastcan = minibatch(
-        X.T, atoms.T, n_samples_to_select, batch_size=batch_size, tol=1e-6, verbose=0
+        X.T, atoms.T, n_samples_to_select, batch_size=batch_size, tol=1e-9, verbose=0
     )
     pruned_lr = LogisticRegression(max_iter=110).fit(X[ids_fastcan], y[ids_fastcan])
     return pruned_lr.coef_, pruned_lr.intercept_
