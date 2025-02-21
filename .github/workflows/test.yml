@@ -3,9 +3,9 @@ name: Test
 on:
   workflow_call:
   push:
-    branches: [ "main", "*.X" ]
+    branches: ["*.X"]
   pull_request:
-    branches: [ "main", "*.X" ]
+    branches: ["*.X"]
 
 jobs:
   test:
