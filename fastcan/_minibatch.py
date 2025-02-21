@@ -6,7 +6,7 @@ Feature selection with mini-batch.
 # SPDX-License-Identifier: MIT
 
 from copy import deepcopy
-from numbers import Integral
+from numbers import Integral, Real
 
 import numpy as np
 from sklearn.utils._openmp_helpers import _openmp_effective_n_threads
@@ -27,11 +27,12 @@ from ._fastcan import _prepare_search
         "batch_size": [
             Interval(Integral, 1, None, closed="left"),
         ],
+        "tol": [Interval(Real, 0, None, closed="neither")],
         "verbose": ["verbose"],
     },
     prefer_skip_nested_validation=True,
 )
-def minibatch(X, y, n_features_to_select=1, batch_size=1, verbose=1):
+def minibatch(X, y, n_features_to_select=1, batch_size=1, tol=0.01, verbose=1):
     """Feature selection using :class:`fastcan.FastCan` with mini batches.
 
     It is suitable for selecting a very large number of features
@@ -59,6 +60,9 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1, verbose=1):
     batch_size : int, default=1
         The upper bound of the number of features in a mini-batch.
         It is recommended that batch_size be less than n_samples.
+
+    tol : float, default=0.01
+        Tolerance for linear dependence check.
 
     verbose : int, default=1
         The verbosity level.
@@ -118,7 +122,7 @@ def minibatch(X, y, n_features_to_select=1, batch_size=1, verbose=1):
                     X=deepcopy(X_transformed_),
                     V=y_i,
                     t=batch_size_temp,
-                    tol=0.01,
+                    tol=tol,
                     num_threads=n_threads,
                     verbose=0,
                     mask=mask,
