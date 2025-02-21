@@ -173,8 +173,11 @@ selector_dict = {
 # Run test
 # --------
 
+import time
+
 N_SELECTORS = len(selector_dict)
 n_missed = np.zeros((N_REPEATED, N_SELECTORS), dtype=int)
+elapsed_time = np.zeros((N_REPEATED, N_SELECTORS), dtype=float)
 
 for i in range(N_REPEATED):
     data, target = make_redundant(
@@ -186,7 +189,9 @@ for i in range(N_REPEATED):
         random_seed=i,
     )
     for j, selector in enumerate(selector_dict.values()):
+        start_time = time.time()
         result_ids = selector.fit(data, target).get_support(indices=True)
+        elapsed_time[i, j] = time.time() - start_time
         n_missed[i, j] = get_n_missed(
             dep_info_ids=DEP_INFO_IDS,
             indep_info_ids=INDEP_INFO_IDS,
@@ -202,10 +207,14 @@ for i in range(N_REPEATED):
 
 import matplotlib.pyplot as plt
 
-fig, ax = plt.subplots(figsize=(8, 5))
-rects = ax.bar(selector_dict.keys(), n_missed.sum(0), width=0.5)
-ax.bar_label(rects, n_missed.sum(0), padding=3)
+fig = plt.figure(figsize=(8, 5))
+ax1 = fig.add_subplot()
+ax2 = ax1.twinx()
+ax1.set_ylabel("No. of missed features")
+ax2.set_ylabel("Elapsed time (s)")
+rects = ax1.bar(selector_dict.keys(), n_missed.sum(0), width=0.5)
+ax1.bar_label(rects, n_missed.sum(0), padding=3)
+ax2.semilogy(selector_dict.keys(), elapsed_time.mean(0), marker="o", color="tab:orange")
 plt.xlabel("Selector")
-plt.ylabel("No. of missed features")
 plt.title("Performance of selectors on datasets with linearly redundant features")
 plt.show()
