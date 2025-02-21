@@ -75,7 +75,6 @@ def _fastcan_pruning(
         X.T, atoms.T, n_samples_to_select, batch_size=batch_size, verbose=0
     )
     pruned_lr = LogisticRegression(max_iter=1000).fit(X[ids_fastcan], y[ids_fastcan])
-    print(atoms[-1], ids_fastcan[-10:])
     return pruned_lr.coef_, pruned_lr.intercept_
 
 
