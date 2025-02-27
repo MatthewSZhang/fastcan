@@ -102,6 +102,12 @@ build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime
 build-sdist = "rm -rf dist && python -m build --sdist"
 rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e ."
 
+# Needed on Windows CI to compile with Visual Studio compiler
+# otherwise Meson detects a MINGW64 platform and use MINGW64
+# toolchain
+[tool.pixi.feature.build.target.win-64.tasks]
+rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e . -Csetup-args=--vsenv"
+
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
 
