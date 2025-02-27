@@ -38,3 +38,6 @@ jobs:
         run: |
           pixi run doc
           CMD=doctest pixi run doc
+      - name: Test nogil
+        run: |
+          pixi run nogil-eta

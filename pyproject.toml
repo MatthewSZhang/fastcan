@@ -102,12 +102,6 @@ build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime
 build-sdist = "rm -rf dist && python -m build --sdist"
 rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e ."
 
-# Needed on Windows CI to compile with Visual Studio compiler
-# otherwise Meson detects a MINGW64 platform and use MINGW64
-# toolchain
-[tool.pixi.feature.build.target.win-64.tasks]
-rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e . -Csetup-args=--vsenv"
-
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
 
@@ -130,6 +124,14 @@ nogil-h = { cmd = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fa
 nogil-eta = { cmd = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20); s = FastCan(100, eta=True, verbose=0).fit(X, y)'", depends-on = [
     "nogil-build",
 ] }
+
+# Needed on Windows CI to compile with Visual Studio compiler
+# otherwise Meson detects a MINGW64 platform and use MINGW64
+# toolchain
+[tool.pixi.feature.build.target.win-64.tasks]
+rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e . -Csetup-args=--vsenv"
+[tool.pixi.feature.nogil.target.win-64.tasks]
+nogil-build = { cmd = "pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true -Csetup-args=--vsenv" }
 
 [tool.pixi.environments]
 dev = ["docs", "test", "build"]
