@@ -8,8 +8,16 @@ on:
     branches: ["*.X"]
 
 jobs:
+  call-lint:
+    uses: ./.github/workflows/lint.yml
+    secrets: inherit
+
   test:
-    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
 
     steps:
       - uses: actions/checkout@v4
@@ -22,18 +30,6 @@ jobs:
         run: |
           pixi run rebuild
 
-      - name: Lint with ruff
-        run: |
-          pixi run lint
-      - name: Lint with cython-lint
-        run: |
-          pixi run cython-lint
-      - name: Format with black
-        run: |
-          pixi run fmt
-      - name: Type check with mypy
-        run: |
-          pixi run type
       - name: Test with pytest
         run: |
           pixi run test
@@ -42,19 +38,3 @@ jobs:
         run: |
           pixi run doc
           CMD=doctest pixi run doc
-      - name: Test coverage
-        shell: bash
-        run: |
-          FMT=xml pixi run test-coverage
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v5
-        with:
-          token: ${{ secrets.CODECOV_TOKEN }}
-      - name: Build SDist
-        run: |
-          pixi run build-sdist
-      - name: Store artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: cibw-sdist
-          path: dist/*.tar.gz
