@@ -71,12 +71,12 @@ mypy = "*"
 
 [tool.pixi.feature.build.dependencies]
 python-build = "*"
-uv = "*"
+pip = "*"
 
 [tool.pixi.feature.nogil.dependencies]
 python-freethreading = "*"
 meson-python = "*"
-uv = "*"
+pip = "*"
 
 [tool.pixi.feature.nogil.pypi-dependencies]
 scikit-learn = { index = "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple" }
@@ -100,7 +100,7 @@ test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report $FMT --cov=$PAC
 [tool.pixi.feature.build.tasks]
 build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime,python-runtime,devel"
 build-sdist = "rm -rf dist && python -m build --sdist"
-rebuild = "rm -rf build && uv pip install --no-deps --force-reinstall -e ."
+rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e ."
 
 [tool.pixi.feature.fmt.tasks]
 fmt = { cmd = "black .", cwd = "fastcan" }
@@ -117,7 +117,7 @@ doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "do
 doc-clean = { cmd = "rm -rf $BUILDDIR generated auto_examples", cwd = "doc", env = { BUILDDIR = "_build" } }
 
 [tool.pixi.feature.nogil.tasks]
-nogil-build = { cmd = "uv pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true" }
+nogil-build = { cmd = "pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true" }
 nogil-h = { cmd = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20); s = FastCan(100, verbose=0).fit(X, y)'", depends-on = [
     "nogil-build",
 ] }
