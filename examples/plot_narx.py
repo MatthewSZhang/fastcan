@@ -145,7 +145,7 @@ from fastcan.narx import make_narx
 auto_narx_model = make_narx(
     X=X,
     y=y,
-    n_features_to_select=4,
+    n_terms_to_select=4,
     max_delay=3,
     poly_degree=2,
     verbose=0,
