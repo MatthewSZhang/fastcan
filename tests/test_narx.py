@@ -254,26 +254,3 @@ def test_sample_weight():
     coef_ = narx.coef_
 
     assert np.any(coef_w != coef_)
-
-import numpy as np
-from fastcan.narx import NARX, print_narx
-rng = np.random.default_rng(12345)
-n_samples = 1000
-max_delay = 3
-e = rng.normal(0, 0.1, n_samples)
-u = rng.uniform(0, 1, n_samples+max_delay) # input
-y = np.zeros(n_samples+max_delay) # output
-for i in range(max_delay, n_samples+max_delay):
-    y[i] = 0.5*y[i-1] + 0.7*u[i-2] + 1.5*u[i-1]*u[i-3] + 1
-y = y[max_delay:]+e
-X = u[max_delay:].reshape(-1, 1)
-time_shift_ids = [[0, 1], # u(k-1)
-                  [0, 2], # u(k-2)
-                  [0, 3], # u(k-3)
-                  [1, 1]] # y(k-1)
-poly_ids = [[0, 2], # 1*u(k-1)
-            [0, 4], # 1*y(k-1)
-            [1, 3]] # u(k-1)*u(k-3)
-narx = NARX(time_shift_ids=time_shift_ids,
-            poly_ids=poly_ids).fit(X, y, coef_init="one_step_ahead")
-print_narx(narx)
