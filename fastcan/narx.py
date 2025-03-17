@@ -420,11 +420,12 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             NARX whose coefficients and intercept are initialized by the array.
 
             .. note::
-                When coef_init is None, missing values (i.e., np.nan) are allowed.
+                When coef_init is `one_step_ahead`, the model will be trained as a
+                Multi-Step-Ahead NARX, rather than a One-Step-Ahead NARX.
 
         **params : dict
             Keyword arguments passed to
-            `scipy.optimize.least_squares`.
+            `scipy.optimize.minimize`.
 
         Returns
         -------
