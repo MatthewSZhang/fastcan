@@ -54,6 +54,10 @@ fastcan = { path = ".", editable = true }
 cython = ">=3.0.10"
 meson-python = ">=0.16.0"
 
+[tool.pixi.feature.jupyter.dependencies]
+notebook = "*"
+matplotlib = "*"
+
 [tool.pixi.feature.test.dependencies]
 pytest = "*"
 pytest-cov = "*"
@@ -134,7 +138,7 @@ rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e . -Csetup-
 nogil-build = { cmd = "pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true -Csetup-args=--vsenv" }
 
 [tool.pixi.environments]
-dev = ["docs", "test", "build"]
+dev = ["docs", "test", "build", "jupyter"]
 lint = { features = ["fmt", "lint", "type"], no-default-feature = true }
 nogil = { features = ["nogil"], no-default-feature = true }
 
