@@ -3,9 +3,19 @@
 import numpy as np
 import pytest
 from numpy.testing import assert_array_equal
+from sklearn.metrics import r2_score
 from sklearn.utils.estimator_checks import check_estimator
 
-from fastcan.narx import NARX, make_narx, make_poly_ids, make_time_shift_ids, print_narx
+from fastcan.narx import (
+    NARX,
+    _fd2pt,
+    _mask_missing_value,
+    _pt2fd,
+    make_narx,
+    make_poly_ids,
+    make_time_shift_ids,
+    print_narx,
+)
 
 
 def test_narx_is_sklearn_estimator():
@@ -23,8 +33,8 @@ def test_time_ids():
         make_time_shift_ids(3, 2, [False, True, False, True])
 
 
-@pytest.mark.parametrize("nan", [False, True])
 @pytest.mark.parametrize("multi_output", [False, True])
+@pytest.mark.parametrize("nan", [False, True])
 def test_narx(nan, multi_output):
     """Test NARX"""
     if multi_output:
@@ -82,6 +92,27 @@ def test_narx(nan, multi_output):
         X[X_nan_ids] = np.nan
         y[y_nan_ids] = np.nan
 
+    if multi_output:
+        narx_score = make_narx(
+            X,
+            y,
+            n_terms_to_select=[5, 4],
+            max_delay=3,
+            poly_degree=2,
+            verbose=0,
+        ).fit(X, y)
+    else:
+        narx_score = make_narx(
+            X,
+            y,
+            n_terms_to_select=4,
+            max_delay=3,
+            poly_degree=2,
+            verbose=0,
+        ).fit(X, y)
+
+    assert r2_score(*_mask_missing_value(y, narx_score.predict(X, y_init=y))) > 0.5
+
     params = {
         "n_terms_to_select": rng.integers(low=2, high=4),
         "max_delay": rng.integers(low=0, high=10),
@@ -91,13 +122,13 @@ def test_narx(nan, multi_output):
     narx_default = make_narx(X=X, y=y, **params)
 
     if multi_output:
-        assert narx_default.poly_ids.shape[0] == params["n_terms_to_select"]*2
+        assert narx_default.feat_ids.shape[0] == params["n_terms_to_select"]*2
     else:
-        assert narx_default.poly_ids.shape[0] == params["n_terms_to_select"]
+        assert narx_default.feat_ids.shape[0] == params["n_terms_to_select"]
 
     params["include_zero_delay"] = [False, True]
     narx_0_delay = make_narx(X=X, y=y, **params)
-    time_shift_ids = narx_0_delay.time_shift_ids
+    _, time_shift_ids = _fd2pt(narx_0_delay.feat_ids, narx_0_delay.delay_ids)
     time_ids_u0 = time_shift_ids[time_shift_ids[:, 0] == 0]
     time_ids_u1 = time_shift_ids[time_shift_ids[:, 0] == 1]
     time_ids_y = time_shift_ids[time_shift_ids[:, 0] == 2]
@@ -107,7 +138,7 @@ def test_narx(nan, multi_output):
 
     params["static_indices"] = [1]
     narx_static = make_narx(X=X, y=y, **params)
-    time_shift_ids = narx_static.time_shift_ids
+    _, time_shift_ids = _fd2pt(narx_static.feat_ids, narx_static.delay_ids)
     time_ids_u1 = time_shift_ids[time_shift_ids[:, 0] == 1]
     if time_ids_u1.size != 0:
         assert time_ids_u1[0, 1] == 0
@@ -127,17 +158,18 @@ def test_narx(nan, multi_output):
         output_ids[-1] = 1
     else:
         output_ids = None
+    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
     narx_osa = NARX(
-        time_shift_ids=time_shift_ids, poly_ids=poly_ids, output_ids=output_ids
+        feat_ids=feat_ids, delay_ids=delay_ids, output_ids=output_ids
     ).fit(X, y)
     assert narx_osa.coef_.size == poly_ids.shape[0]
     narx_osa_msa = narx_drop.fit(X, y, coef_init="one_step_ahead")
     narx_osa_msa_coef = narx_osa_msa.coef_
-    assert np.any(narx_osa_msa_coef != narx_drop_coef)
     narx_array_init_msa = narx_osa_msa.fit(
         X, y, coef_init=np.zeros(narx_osa_msa_coef.size + n_outputs)
     )
-    assert np.any(narx_array_init_msa.coef_ != narx_osa_msa_coef)
+    assert np.any(narx_array_init_msa.coef_ != narx_drop_coef)
+    assert np.any(narx_osa_msa_coef != narx_array_init_msa.coef_)
 
     if multi_output:
         y_init = np.ones((narx_array_init_msa.max_delay_, n_outputs))
@@ -155,15 +187,16 @@ def test_narx(nan, multi_output):
         X.shape[1] + n_outputs + 1, 3, include_zero_delay=False
     )
     poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
+    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
     if multi_output:
         n_terms = poly_ids.shape[0]
         output_ids = [0] * n_terms
         output_ids[-1] = 1
     else:
         output_ids = None
-    with pytest.raises(ValueError, match=r"The element x of the first column of tim.*"):
+    with pytest.raises(ValueError, match=r"The element x of feat_ids should satisfy.*"):
         narx_osa = NARX(
-            time_shift_ids=time_shift_ids, poly_ids=poly_ids, output_ids=output_ids
+            feat_ids=feat_ids, delay_ids=delay_ids, output_ids=output_ids
         ).fit(X, y)
 
     time_shift_ids = np.array(
@@ -175,43 +208,66 @@ def test_narx(nan, multi_output):
         ]
     )
     poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
+    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
     n_terms = poly_ids.shape[0]
     output_ids = [0] * n_terms
     output_ids[-1] = 1
-    with pytest.raises(ValueError, match=r"The element x of the second column of ti.*"):
+    with pytest.raises(ValueError, match=r"The element x of delay_ids should be -1.*"):
         narx_osa = NARX(
-            time_shift_ids=time_shift_ids, poly_ids=poly_ids, output_ids=output_ids
+            feat_ids=feat_ids, delay_ids=delay_ids, output_ids=output_ids
         ).fit(X, y)
 
     time_shift_ids = make_time_shift_ids(
         X.shape[1] + n_outputs, 3, include_zero_delay=False
     )
-    poly_ids = make_poly_ids(time_shift_ids.shape[0] + n_outputs, 2)
+    poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
+    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    delay_ids_shape_err = np.delete(delay_ids, 0, axis=0)
     n_terms = poly_ids.shape[0]
     output_ids = [0] * n_terms
     output_ids[-1] = 1
-    with pytest.raises(ValueError, match=r"The element x of poly_ids should .*"):
+    with pytest.raises(
+        ValueError, match=r"The shape of delay_ids should be equal to .*"
+    ):
         narx_osa = NARX(
-            time_shift_ids=time_shift_ids, poly_ids=poly_ids, output_ids=output_ids
+            feat_ids=feat_ids, delay_ids=delay_ids_shape_err, output_ids=output_ids
+        ).fit(X, y)
+    delay_ids_max_err = np.copy(delay_ids)
+    delay_ids_max_err[0, 1] = X.shape[0]
+    with pytest.raises(
+        ValueError, match=r"The element x of delay_ids should satisfy -1.*"
+    ):
+        narx_osa = NARX(
+            feat_ids=feat_ids, delay_ids=delay_ids_max_err, output_ids=output_ids
         ).fit(X, y)
 
 
 def test_mulit_output_warn_error():
     X = np.random.rand(10, 2)
     y = np.random.rand(10, 2)
-    time_shift_ids = [[0, 1], [1, 1]]
-    poly_ids = [[1, 1], [2, 2]]
-    output_ids = [0]
+    time_shift_ids = np.array([[0, 1], [1, 1]])
+    poly_ids = np.array([[1, 1], [2, 2]])
+    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
 
     with pytest.warns(UserWarning, match="output_ids got"):
-        narx = NARX(time_shift_ids=time_shift_ids, poly_ids=poly_ids)
+        narx = NARX(feat_ids=feat_ids, delay_ids=delay_ids)
         narx.fit(X, y)
 
     with pytest.raises(ValueError, match="The length of output_ids should"):
         narx = NARX(
-        time_shift_ids=time_shift_ids,
-        poly_ids=poly_ids,
-        output_ids=output_ids,
+        feat_ids=feat_ids,
+        delay_ids=delay_ids,
+        output_ids=[0],
+    )
+        narx.fit(X, y)
+
+    with pytest.raises(
+        ValueError, match=r"The element x of output_ids should satisfy 0 <=.*"
+    ):
+        narx = NARX(
+        feat_ids=feat_ids,
+        delay_ids=delay_ids,
+        output_ids=[0, 2],
     )
         narx.fit(X, y)
 

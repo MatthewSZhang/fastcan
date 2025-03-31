@@ -15,7 +15,7 @@ In this example, we will compare one-step-ahead NARX and multi-step-ahead NARX.
 # Nonlinear system
 # ----------------
 #
-# `Duffing equation <https://en.wikipedia.org/wiki/Duffing_equation>` is used to
+# `Duffing equation <https://en.wikipedia.org/wiki/Duffing_equation>`_ is used to
 # generate simulated data. The mathematical model is given by
 #
 # .. math::
@@ -130,7 +130,7 @@ narx_model.fit(u_train, y_train)
 y_train_osa_pred = narx_model.predict(u_train, y_init=y_train[:max_delay])
 y_test_osa_pred = narx_model.predict(u_test, y_init=y_test[:max_delay])
 
-narx_model.fit(u_train, y_train, coef_init="one_step_ahead", method="Nelder-Mead")
+narx_model.fit(u_train, y_train, coef_init="one_step_ahead")
 y_train_msa_pred = narx_model.predict(u_train, y_init=y_train[:max_delay])
 y_test_msa_pred = narx_model.predict(u_test, y_init=y_test[:max_delay])
 
@@ -169,7 +169,7 @@ narx_model.fit(u_all, y_all)
 y_train_osa_pred = narx_model.predict(u_train, y_init=y_train[:max_delay])
 y_test_osa_pred = narx_model.predict(u_test, y_init=y_test[:max_delay])
 
-narx_model.fit(u_all, y_all, coef_init="one_step_ahead", method="Nelder-Mead")
+narx_model.fit(u_all, y_all, coef_init="one_step_ahead")
 y_train_msa_pred = narx_model.predict(u_train, y_init=y_train[:max_delay])
 y_test_msa_pred = narx_model.predict(u_test, y_init=y_test[:max_delay])
 
