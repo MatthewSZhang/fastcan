@@ -51,12 +51,10 @@ def test_simple():
         output_ids=output_ids,
     )
 
-
-    e1 = y_hat_1 - y
     grad_truth = np.array([
-        np.sum(e1*np.array([0, y_hat_1[0, 0], y_hat_1[1, 0]+coef_1[0]]).reshape(-1, 1)),
-        np.sum(e1*np.array([0, X[0, 0], X[0, 0]*coef_1[0]+X[0, 0]]).reshape(-1, 1)),
-        np.sum(e1*np.array([0, 1, coef_1[0]+1]).reshape(-1, 1)),
+        np.sum(np.array([0, y_hat_1[0, 0], y_hat_1[1, 0]+coef_1[0]]).reshape(-1, 1)),
+        np.sum(np.array([0, X[0, 0], X[0, 0]*coef_1[0]+X[0, 0]]).reshape(-1, 1)),
+        np.sum(np.array([0, 1, coef_1[0]+1]).reshape(-1, 1)),
     ])
 
 
@@ -74,7 +72,6 @@ def test_simple():
     )
 
     assert_almost_equal(grad.sum(axis=0), grad_truth, decimal=4)
-
 
 def test_complex():
     """Complex model"""
@@ -178,7 +175,7 @@ def test_complex():
         delay_ids=delay_ids,
         output_ids=output_ids,
     )
-    loss_0 = 0.5*np.sum((y_hat_0 - y)**2)
+    e_0 = y_hat_0 - y
 
     delta_w = 0.00001
     for i in range(len(coef)+len(intercept)):
@@ -202,8 +199,7 @@ def test_complex():
             output_ids=output_ids,
         )
 
-        e1 = y_hat_1 - y
-        loss_1 = 0.5*np.sum((e1)**2)
-        grad_num = (loss_1 - loss_0) / delta_w
+        e_1 = y_hat_1 - y
+        grad_num = (e_1 - e_0).sum(axis=1) / delta_w
 
-        assert_allclose(grad.sum(axis=0)[i], grad_num, rtol=1e-1)
+        assert_allclose(grad.sum(axis=0)[i], grad_num.sum(), rtol=1e-1)
