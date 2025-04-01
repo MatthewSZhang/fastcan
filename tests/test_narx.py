@@ -310,3 +310,27 @@ def test_sample_weight():
     coef_ = narx.coef_
 
     assert np.any(coef_w != coef_)
+
+def test_divergence():
+    # Test divergence of NARX model
+    rng = np.random.default_rng(12345)
+    n_samples = 100
+    max_delay = 3
+    e = rng.normal(0, 0.1, n_samples)
+    u0 = rng.uniform(0, 1, n_samples + max_delay)
+    u1 = rng.normal(0, 0.1, n_samples)
+    y = np.zeros(n_samples + max_delay)
+    for i in range(max_delay, n_samples + max_delay):
+        y[i] = (
+            0.5 * y[i - 1]
+            + 0.3 * u0[i] ** 2
+            + 2 * u0[i - 1] * u0[i - 3]
+            + 1.5 * u0[i - 2] * u1[i - max_delay]
+            + 1
+        )
+    y = y[max_delay:] + e
+    X = np.c_[u0[max_delay:], u1]
+    narx = make_narx(X, y, 3, 3, 2)
+    narx.fit(X, y, coef_init=[-10, 0, 0, 0])
+    y_hat = narx.predict(X, y)
+    assert np.all(y_hat<=1e20)

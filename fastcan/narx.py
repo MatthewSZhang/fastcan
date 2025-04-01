@@ -406,10 +406,10 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
     >>> print_narx(narx)
     | yid |        Term        |   Coef   |
     =======================================
-    |  0  |     Intercept      |  1.008   |
-    |  0  |    y_hat[k-1,0]    |  0.498   |
-    |  0  |      X[k-2,0]      |  0.701   |
-    |  0  | X[k-1,0]*X[k-3,0]  |  1.496   |
+    |  0  |     Intercept      |  1.069   |
+    |  0  |    y_hat[k-1,0]    |  0.478   |
+    |  0  |      X[k-2,0]      |  0.716   |
+    |  0  | X[k-1,0]*X[k-3,0]  |  1.504   |
     """
 
     _parameter_constraints: dict = {
