@@ -2,8 +2,10 @@
 
 import numpy as np
 from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
+from scipy.integrate import odeint
+from sklearn.metrics import r2_score
 
-from fastcan.narx import NARX
+from fastcan.narx import NARX, make_narx
 
 
 def test_simple():
@@ -203,3 +205,78 @@ def test_complex():
         grad_num = (e_1 - e_0).sum(axis=1) / delta_w
 
         assert_allclose(grad.sum(axis=0)[i], grad_num.sum(), rtol=1e-1)
+
+
+def test_score_nan():
+    """Test fitting scores when data contain nan."""
+    def duffing_equation(y, t):
+        """Non-autonomous system"""
+        y1, y2 = y
+        u = 2.5 * np.cos(2 * np.pi * t)
+        dydt = [y2, -0.1 * y2 + y1 - 0.25 * y1**3 + u]
+        return dydt
+
+
+    dur = 10
+    n_samples = 1000
+
+    y0 = None
+    if y0 is None:
+        n_init = 10
+        x0 = np.linspace(0, 2, n_init)
+        y0_y = np.cos(np.pi * x0)
+        y0_x = np.sin(np.pi * x0)
+        y0 = np.c_[y0_x, y0_y]
+    else:
+        n_init = len(y0)
+
+    dur = 10
+    n_samples = 1000
+    rng = np.random.default_rng(12345)
+    e_train = rng.normal(0, 0.001, n_samples)
+    e_test = rng.normal(0, 0.001, n_samples)
+
+    t = np.linspace(0, dur, n_samples)
+
+    sol = odeint(duffing_equation, [0.6, 0.8], t)
+    u_train = 2.5 * np.cos(2 * np.pi * t).reshape(-1, 1)
+    y_train = sol[:, 0] + e_train
+
+    sol = odeint(duffing_equation, [0.6, -0.8], t)
+    u_test = 2.5 * np.cos(2 * np.pi * t).reshape(-1, 1)
+    y_test = sol[:, 0] + e_test
+
+    max_delay = 3
+
+    narx_model = make_narx(
+        X=u_train,
+        y=y_train,
+        n_terms_to_select=5,
+        max_delay=max_delay,
+        poly_degree=3,
+        verbose=0,
+    )
+
+    narx_model.fit(u_train, y_train, coef_init="one_step_ahead")
+    y_train_msa_pred = narx_model.predict(u_train, y_init=y_train[:max_delay])
+    y_test_msa_pred = narx_model.predict(u_test, y_init=y_test[:max_delay])
+
+    assert r2_score(y_train, y_train_msa_pred) > 0.99
+    assert r2_score(y_test, y_test_msa_pred) > -1
+
+    u_all = np.r_[u_train, [[np.nan]], u_test]
+    y_all = np.r_[y_train, [np.nan], y_test]
+    narx_model = make_narx(
+        X=u_all,
+        y=y_all,
+        n_terms_to_select=5,
+        max_delay=max_delay,
+        poly_degree=3,
+        verbose=0,
+    )
+    narx_model.fit(u_all, y_all, coef_init="one_step_ahead")
+    y_train_msa_pred = narx_model.predict(u_train, y_init=y_train[:max_delay])
+    y_test_msa_pred = narx_model.predict(u_test, y_init=y_test[:max_delay])
+
+    assert r2_score(y_train, y_train_msa_pred) > 0.98
+    assert r2_score(y_test, y_test_msa_pred) > 0.99

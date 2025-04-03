@@ -648,10 +648,10 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
     @staticmethod
     def _expression(X, y_hat, coef, intercept, feat_ids, delay_ids, output_ids, k):
         y_pred = np.copy(intercept)
-        for i, term_id in enumerate(feat_ids):
+        for i, feat_id in enumerate(feat_ids):
             output_i = output_ids[i]
             y_pred[output_i] += coef[i] * NARX._evaluate_term(
-                term_id, delay_ids[i], X, y_hat, k
+                feat_id, delay_ids[i], X, y_hat, k
             )
         return y_pred
 
@@ -759,13 +759,22 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         x_ids = np.arange(n_x)
 
         dydx = np.zeros((n_samples, n_y, n_x), dtype=float)
-        for k in range(max_delay, n_samples):
+        at_init = True
+        init_k = 0
+        for k in range(n_samples):
+            if not np.all(np.isfinite(X[k])):
+                at_init = True
+                init_k = k + 1
+                continue
+            if k - init_k == max_delay:
+                at_init = False
+
+            if at_init:
+                continue
             # Compute terms for time step k
             terms = np.ones(n_x, dtype=float)
             for j in range(n_coefs):
                 terms[j] = NARX._evaluate_term(feat_ids[j], delay_ids[j], X, y_hat, k)
-            if not np.all(np.isfinite(terms)):
-                break
 
             # Update constant terms of Jacobian
             dydx[k, y_ids, x_ids] = terms
