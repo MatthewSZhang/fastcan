@@ -83,8 +83,8 @@ dur = 10
 n_samples = 1000
 
 rng = np.random.default_rng(12345)
-e_train = rng.normal(0, 0.001, n_samples)
-e_test = rng.normal(0, 0.001, n_samples)
+e_train = rng.normal(0, 0.0002, n_samples)
+e_test = rng.normal(0, 0.0002, n_samples)
 t = np.linspace(0, dur, n_samples)
 
 sol = odeint(duffing_equation, [0.6, 0.8], t)
