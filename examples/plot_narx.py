@@ -125,10 +125,10 @@ selected_poly_ids = poly_ids[support]
 # In the printed NARX model, it is found that :class:`FastCan` selects the correct
 # terms and the coefficients are close to the true values.
 
-from fastcan.narx import NARX, _pt2fd, print_narx
+from fastcan.narx import NARX, print_narx, tp2fd
 
 # Convert poly_ids and time_shift_ids to feat_ids and delay_ids
-feat_ids, delay_ids = _pt2fd(selected_poly_ids, time_shift_ids)
+feat_ids, delay_ids = tp2fd(time_shift_ids, selected_poly_ids)
 
 narx_model = NARX(
     feat_ids=feat_ids,

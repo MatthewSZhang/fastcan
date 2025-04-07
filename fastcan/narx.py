@@ -280,31 +280,250 @@ def _mask_missing_value(*arr, return_mask=False):
     return tuple([x[mask_nomissing] for x in arr])
 
 
-def _fd2pt(feat_ids, delay_ids):
+def _valiate_time_shift_poly_ids(
+    time_shift_ids, poly_ids, n_samples=None, n_features=None, n_outputs=None
+):
+    if n_samples is None:
+        n_samples = np.inf
+    if n_features is None:
+        n_features = np.inf
+    if n_outputs is None:
+        n_outputs = np.inf
+
+    # Validate time_shift_ids
+    time_shift_ids_ = check_array(
+        time_shift_ids,
+        ensure_2d=True,
+        dtype=int,
+    )
+    if time_shift_ids_.shape[1] != 2:
+        raise ValueError(
+            "time_shift_ids should have shape (n_variables, 2), "
+            f"but got {time_shift_ids_.shape}."
+        )
+    if (time_shift_ids_[:, 0].min() < 0) or (
+        time_shift_ids_[:, 0].max() >= n_features + n_outputs
+    ):
+        raise ValueError(
+            "The element x of the first column of time_shift_ids should "
+            f"satisfy 0 <= x < {n_features + n_outputs}."
+        )
+    if (time_shift_ids_[:, 1].min() < 0) or (time_shift_ids_[:, 1].max() >= n_samples):
+        raise ValueError(
+            "The element x of the second column of time_shift_ids should "
+            f"satisfy 0 <= x < {n_samples}."
+        )
+    # Validate poly_ids
+    poly_ids_ = check_array(
+        poly_ids,
+        ensure_2d=True,
+        dtype=int,
+    )
+    if (poly_ids_.min() < 0) or (poly_ids_.max() > time_shift_ids_.shape[0]):
+        raise ValueError(
+            "The element x of poly_ids should "
+            f"satisfy 0 <= x <= {time_shift_ids_.shape[0]}."
+        )
+    return time_shift_ids_, poly_ids_
+
+
+def _validate_feat_delay_ids(
+    feat_ids, delay_ids, n_samples=None, n_features=None, n_outputs=None
+):
+    """Validate feat_ids and delay_ids."""
+    if n_samples is None:
+        n_samples = np.inf
+    if n_features is None:
+        n_features = np.inf
+    if n_outputs is None:
+        n_outputs = np.inf
+
+    # Validate feat_ids
+    feat_ids_ = check_array(
+        feat_ids,
+        ensure_2d=True,
+        dtype=int,
+    )
+    if (feat_ids_.min() < -1) or (feat_ids_.max() > n_features + n_outputs - 1):
+        raise ValueError(
+            "The element x of feat_ids should "
+            f"satisfy -1 <= x <= {n_features + n_outputs - 1}."
+        )
+    # Validate delay_ids
+    delay_ids_ = check_array(
+        delay_ids,
+        ensure_2d=True,
+        dtype=int,
+    )
+    if delay_ids_.shape != feat_ids_.shape:
+        raise ValueError(
+            "The shape of delay_ids should be equal to "
+            f"the shape of feat_ids {feat_ids_.shape}, "
+            f"but got {delay_ids_.shape}."
+        )
+    if ((delay_ids_ == -1) != (feat_ids_ == -1)).any():
+        raise ValueError(
+            "The element x of delay_ids should be -1 "
+            "if and only if the element x of feat_ids is -1."
+        )
+    if (delay_ids_.min() < -1) or (delay_ids_.max() >= n_samples):
+        raise ValueError(
+            "The element x of delay_ids should " f"satisfy -1 <= x < {n_samples}."
+        )
+    return feat_ids_, delay_ids_
+
+
+@validate_params(
+    {
+        "feat_ids": ["array-like"],
+        "delay_ids": ["array-like"],
+    },
+    prefer_skip_nested_validation=True,
+)
+def fd2tp(feat_ids, delay_ids):
     """
-    Convert feat_ids and delay_ids to poly_ids and time_shift_ids
+    Convert feat_ids and delay_ids to time_shift_ids and poly_ids.
+    The polynomial terms, e.g., x0(k-1)^2, x0(k-2)x1(k-3), can be
+    represented by two ways:
+
+    #. feat_ids and delay_ids, e.g., [[0, 0], [0, 1]] and [[1, 1], [2, 3]]
+
+    #. time_shift_ids and poly_ids, e.g., [[0, 1], [0, 2], [1, 3]] and [[1, 1], [2, 3]]
+
+    For feat_ids, [0, 0] and [0, 1] represent x0*x0 and x0*x1, while
+    for delay_ids, [1, 1] and [2, 3] represent the delays of features in feat_ids.
+
+    For time_shift_ids, [0, 1], [0, 2], and [1, 3] represents x0(k-1), x0(k-2),
+    and x1(k-3), respectively. For poly_ids, [1, 1] and [2, 3] represent the first
+    variable multiplying the first variable given by time_shift_ids, i.e.,
+    x0(k-1)*x0(k-1), and the second variable multiplying the thrid variable, i.e.,
+    x0(k-1)*x1(k-3).
+
+    Parameters
+    ----------
+    feat_ids : array-like of shape (n_terms, degree), default=None
+        The unique id numbers of features to form polynomial terms.
+        The id -1 stands for the constant 1.
+        The id 0 to n are the index of features.
+
+    delay_ids : array-like of shape (n_terms, degree), default=None
+        The delays of each feature in polynomial terms.
+        The id -1 stands for empty.
+        The id 0 stands for 0 delay.
+        The positive integer id k stands for k-th delay.
+
+    Returns
+    -------
+    time_shift_ids : array-like of shape (n_variables, 2), default=None
+        The unique id numbers of time shift variables, which are
+        (feature_idx, delay).
+
+    poly_ids : array-like of shape (n_polys, degree), default=None
+        The unique id numbers of polynomial terms, excluding the intercept.
+        The id 0 stands for the constant 1.
+        The id 1 to n are the index+1 of time_shift_ids.
+
+    Examples
+    --------
+    >>> from fastcan.narx import fd2tp
+    >>> # Encode x0(k-1), x0(k-2)x1(k-3)
+    >>> feat_ids = [[-1, 0], [0, 1]]
+    >>> delay_ids = [[-1, 1], [2, 3]]
+    >>> time_shift_ids, poly_ids = fd2tp(feat_ids, delay_ids)
+    >>> print(time_shift_ids)
+    [[0 1]
+     [0 2]
+     [1 3]]
+    >>> print(poly_ids)
+    [[0 1]
+     [2 3]]
     """
-    featd = np.c_[feat_ids.flatten(), delay_ids.flatten()]
+    _feat_ids, _delay_ids = _validate_feat_delay_ids(feat_ids, delay_ids)
+    featd = np.c_[_feat_ids.flatten(), _delay_ids.flatten()]
     # Ensure featd has at least one [-1, -1]
     time_shift_ids = np.unique(np.r_[[[-1, -1]], featd], axis=0)
     poly_ids = np.array(
         [np.where((time_shift_ids == row).all(axis=1))[0][0] for row in featd]
-    ).reshape(feat_ids.shape)
+    ).reshape(_feat_ids.shape)
     time_shift_ids = time_shift_ids[time_shift_ids[:, 0] != -1]
-    return poly_ids, time_shift_ids
+    return time_shift_ids, poly_ids
 
 
-def _pt2fd(poly_ids, time_shift_ids):
+@validate_params(
+    {
+        "time_shift_ids": ["array-like"],
+        "poly_ids": ["array-like"],
+    },
+    prefer_skip_nested_validation=True,
+)
+def tp2fd(time_shift_ids, poly_ids):
     """
-    Convert poly_ids and time_shift_ids to feat_ids and delay_ids
+    Convert time_shift_ids and poly_ids to feat_ids and delay_ids.
+    The polynomial terms, e.g., x0(k-1)^2, x0(k-2)x1(k-3), can be
+    represented by two ways:
+
+    #. feat_ids and delay_ids, e.g., [[0, 0], [0, 1]] and [[1, 1], [2, 3]]
+
+    #. time_shift_ids and poly_ids, e.g., [[0, 1], [0, 2], [1, 3]] and [[1, 1], [2, 3]]
+
+    For feat_ids, [0, 0] and [0, 1] represent x0*x0 and x0*x1, while
+    for delay_ids, [1, 1] and [2, 3] represent the delays of features in feat_ids.
+
+    For time_shift_ids, [0, 1], [0, 2], and [1, 3] represents x0(k-1), x0(k-2),
+    and x1(k-3), respectively. For poly_ids, [1, 1] and [2, 3] represent the first
+    variable multiplying the first variable given by time_shift_ids, i.e.,
+    x0(k-1)*x0(k-1), and the second variable multiplying the thrid variable, i.e.,
+    x0(k-1)*x1(k-3).
+
+    Parameters
+    ----------
+    time_shift_ids : array-like of shape (n_variables, 2)
+        The unique id numbers of time shift variables, which are
+        (feature_idx, delay).
+
+    poly_ids : array-like of shape (n_polys, degree)
+        The unique id numbers of polynomial terms, excluding the intercept.
+        The id 0 stands for the constant 1.
+        The id 1 to n are the index+1 of time_shift_ids.
+
+    Returns
+    -------
+    feat_ids : array-like of shape (n_terms, degree), default=None
+        The unique id numbers of features to form polynomial terms.
+        The id -1 stands for the constant 1.
+        The id 0 to n are the index of features.
+
+    delay_ids : array-like of shape (n_terms, degree), default=None
+        The delays of each feature in polynomial terms.
+        The id -1 stands for empty.
+        The id 0 stands for 0 delay.
+        The positive integer id k stands for k-th delay.
+
+    Examples
+    --------
+    >>> from fastcan.narx import tp2fd
+    >>> # Encode x0(k-1), x0(k-2)x1(k-3)
+    >>> time_shift_ids = [[0, 1], [0, 2], [1, 3]]
+    >>> poly_ids = [[0, 1], [2, 3]]
+    >>> feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
+    >>> print(feat_ids)
+    [[-1  0]
+     [ 0  1]]
+    >>> print(delay_ids)
+    [[-1  1]
+     [ 2  3]]
     """
-    feat_ids = np.full_like(poly_ids, -1, dtype=int)
-    delay_ids = np.full_like(poly_ids, -1, dtype=int)
-    for i, poly_id in enumerate(poly_ids):
+    _time_shift_ids, _poly_ids = _valiate_time_shift_poly_ids(
+        time_shift_ids,
+        poly_ids,
+    )
+    feat_ids = np.full_like(_poly_ids, -1, dtype=int)
+    delay_ids = np.full_like(_poly_ids, -1, dtype=int)
+    for i, poly_id in enumerate(_poly_ids):
         for j, variable_id in enumerate(poly_id):
             if variable_id != 0:
-                feat_ids[i, j] = time_shift_ids[variable_id - 1, 0]
-                delay_ids[i, j] = time_shift_ids[variable_id - 1, 1]
+                feat_ids[i, j] = _time_shift_ids[variable_id - 1, 0]
+                delay_ids[i, j] = _time_shift_ids[variable_id - 1, 1]
     feat_ids = feat_ids
     delay_ids = delay_ids
     return feat_ids, delay_ids
@@ -313,12 +532,12 @@ def _pt2fd(poly_ids, time_shift_ids):
 class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
     """The Nonlinear Autoregressive eXogenous (NARX) model class.
     For example, a (polynomial) NARX model is like
-    y(t) = y(t-1)*u(t-1) + u(t-1)^2 + u(t-2) + 1.5
-    where y(t) is the system output at time t,
-    u(t) is the system input at time t,
+    y(k) = y(k-1)*u(k-1) + u(k-1)^2 + u(k-2) + 1.5
+    where y(k) is the system output at the k-th time step,
+    u(k) is the system input at the k-th time step,
     u and y is called features,
-    u(t-1) is called a (time shift) variable,
-    u(t-1)^2 is called a (polynomial) term, and
+    u(k-1) is called a (time shift) variable,
+    u(k-1)^2 is called a (polynomial) term, and
     1.5 is called an intercept.
 
     Parameters
@@ -338,7 +557,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         The id -1 stands for empty.
         The id 0 stands for 0 delay.
         The positive integer id k stands for k-th delay.
-        E.g. for the polynomial terms 1*u(k-1, 0), 1*u(k, 1),
+        E.g., for the polynomial terms 1*u(k-1, 0), 1*u(k, 1),
         and u(k-1, 0)*y(k-2, 0), the delay_ids [[-1, 1], [-1, 0], [1, 2]].
 
     output_ids : array-like of shape (n_polys,), default=None
@@ -489,48 +708,26 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         self.n_outputs_ = y.shape[1]
         n_samples, n_features = X.shape
 
-        # Validate feat_ids
         if self.feat_ids is None:
-            self.feat_ids_ = make_poly_ids(n_features, 1) - 1
+            feat_ids_ = make_poly_ids(n_features, 1) - 1
         else:
-            self.feat_ids_ = check_array(
-                self.feat_ids,
-                ensure_2d=True,
-                dtype=int,
-            )
-            if (self.feat_ids_.min() < -1) or (
-                self.feat_ids_.max() > n_features + self.n_outputs_ - 1
-            ):
-                raise ValueError(
-                    "The element x of feat_ids should "
-                    f"satisfy -1 <= x <= {n_features + self.n_outputs_ - 1}."
-                )
+            feat_ids_ = self.feat_ids
+
         if self.delay_ids is None:
-            self.delay_ids_ = np.copy(self.feat_ids_)
-            self.delay_ids_[(self.feat_ids_ > -1) & (self.feat_ids_ < n_features)] = 0
-            self.delay_ids_[(self.feat_ids_ >= n_features)] = 1
+            delay_ids_ = np.copy(feat_ids_)
+            delay_ids_[(feat_ids_ > -1) & (feat_ids_ < n_features)] = 0
+            delay_ids_[(feat_ids_ >= n_features)] = 1
         else:
-            self.delay_ids_ = check_array(
-                self.delay_ids,
-                ensure_2d=True,
-                dtype=int,
-            )
-            if self.delay_ids_.shape != self.feat_ids_.shape:
-                raise ValueError(
-                    "The shape of delay_ids should be equal to "
-                    f"the shape of feat_ids {self.feat_ids_.shape}, "
-                    f"but got {self.delay_ids_.shape}."
-                )
-            if ((self.delay_ids_ == -1) != (self.feat_ids_ == -1)).any():
-                raise ValueError(
-                    "The element x of delay_ids should be -1 "
-                    "if and only if the element x of feat_ids is -1."
-                )
-            if (self.delay_ids_.min() < -1) or (self.delay_ids_.max() >= n_samples):
-                raise ValueError(
-                    "The element x of delay_ids should "
-                    f"satisfy -1 <= x < {n_samples}."
-                )
+            delay_ids_ = self.delay_ids
+
+        # Validate feat_ids and delay_ids
+        self.feat_ids_, self.delay_ids_ = _validate_feat_delay_ids(
+            feat_ids_,
+            delay_ids_,
+            n_samples=n_samples,
+            n_features=n_features,
+            n_outputs=self.n_outputs_,
+        )
 
         n_terms = self.feat_ids_.shape[0]
         # Validate output_ids
@@ -569,7 +766,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
 
         if isinstance(coef_init, (type(None), str)):
             # fit a one-step-ahead NARX model
-            poly_ids, time_shift_ids = _fd2pt(self.feat_ids_, self.delay_ids_)
+            time_shift_ids, poly_ids = fd2tp(self.feat_ids_, self.delay_ids_)
             xy_hstack = np.c_[X, y]
             osa_narx = LinearRegression()
             time_shift_vars = make_time_shift_features(xy_hstack, time_shift_ids)
@@ -1221,7 +1418,7 @@ def make_narx(
     )
 
     output_ids = [i for i in range(n_outputs) for _ in range(n_terms_to_select[i])]
-    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
 
     return NARX(
         feat_ids=feat_ids,

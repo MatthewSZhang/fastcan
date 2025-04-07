@@ -8,13 +8,13 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from fastcan.narx import (
     NARX,
-    _fd2pt,
     _mask_missing_value,
-    _pt2fd,
+    fd2tp,
     make_narx,
     make_poly_ids,
     make_time_shift_ids,
     print_narx,
+    tp2fd,
 )
 
 
@@ -128,7 +128,7 @@ def test_narx(nan, multi_output):
 
     params["include_zero_delay"] = [False, True]
     narx_0_delay = make_narx(X=X, y=y, **params)
-    _, time_shift_ids = _fd2pt(narx_0_delay.feat_ids, narx_0_delay.delay_ids)
+    time_shift_ids, _ = fd2tp(narx_0_delay.feat_ids, narx_0_delay.delay_ids)
     time_ids_u0 = time_shift_ids[time_shift_ids[:, 0] == 0]
     time_ids_u1 = time_shift_ids[time_shift_ids[:, 0] == 1]
     time_ids_y = time_shift_ids[time_shift_ids[:, 0] == 2]
@@ -138,7 +138,7 @@ def test_narx(nan, multi_output):
 
     params["static_indices"] = [1]
     narx_static = make_narx(X=X, y=y, **params)
-    _, time_shift_ids = _fd2pt(narx_static.feat_ids, narx_static.delay_ids)
+    time_shift_ids, _ = fd2tp(narx_static.feat_ids, narx_static.delay_ids)
     time_ids_u1 = time_shift_ids[time_shift_ids[:, 0] == 1]
     if time_ids_u1.size != 0:
         assert time_ids_u1[0, 1] == 0
@@ -158,7 +158,7 @@ def test_narx(nan, multi_output):
         output_ids[-1] = 1
     else:
         output_ids = None
-    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
     narx_osa = NARX(
         feat_ids=feat_ids, delay_ids=delay_ids, output_ids=output_ids
     ).fit(X, y)
@@ -187,7 +187,7 @@ def test_narx(nan, multi_output):
         X.shape[1] + n_outputs + 1, 3, include_zero_delay=False
     )
     poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
-    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
     if multi_output:
         n_terms = poly_ids.shape[0]
         output_ids = [0] * n_terms
@@ -202,13 +202,14 @@ def test_narx(nan, multi_output):
     time_shift_ids = np.array(
         [
             [0, 0],
-            [0, -1],
+            [0, 1],
             [1, 1],
             [1, 2],
         ]
     )
     poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
-    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
+    delay_ids[0, 0] = -2
     n_terms = poly_ids.shape[0]
     output_ids = [0] * n_terms
     output_ids[-1] = 1
@@ -221,7 +222,7 @@ def test_narx(nan, multi_output):
         X.shape[1] + n_outputs, 3, include_zero_delay=False
     )
     poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
-    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
     delay_ids_shape_err = np.delete(delay_ids, 0, axis=0)
     n_terms = poly_ids.shape[0]
     output_ids = [0] * n_terms
@@ -247,7 +248,7 @@ def test_mulit_output_warn_error():
     y = np.random.rand(10, 2)
     time_shift_ids = np.array([[0, 1], [1, 1]])
     poly_ids = np.array([[1, 1], [2, 2]])
-    feat_ids, delay_ids = _pt2fd(poly_ids, time_shift_ids)
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
 
     with pytest.warns(UserWarning, match="output_ids got"):
         narx = NARX(feat_ids=feat_ids, delay_ids=delay_ids)
@@ -334,3 +335,47 @@ def test_divergence():
     narx.fit(X, y, coef_init=[-10, 0, 0, 0])
     y_hat = narx.predict(X, y)
     assert np.all(y_hat<=1e20)
+
+def test_tp2fd():
+    time_shift_ids = np.array(
+        [
+            [0, 0, 0],
+            [0, 1, 0],
+            [1, 1, 0],
+            [1, 2, 0],
+        ]
+    )
+    poly_ids = make_poly_ids(time_shift_ids.shape[0], 2)
+    with pytest.raises(ValueError, match=r"time_shift_ids should have shape.*"):
+        _, _ = tp2fd(time_shift_ids, poly_ids)
+    time_shift_ids = np.array(
+        [
+            [0, 0],
+            [-1, 1],
+            [1, 1],
+            [1, 2],
+        ]
+    )
+    with pytest.raises(ValueError, match=r"The element x of the first column of tim.*"):
+        _, _ = tp2fd(time_shift_ids, poly_ids)
+    time_shift_ids = np.array(
+        [
+            [0, 0],
+            [0, -1],
+            [1, 1],
+            [1, 2],
+        ]
+    )
+    with pytest.raises(ValueError, match=r"The element x of the second column of ti.*"):
+        _, _ = tp2fd(time_shift_ids, poly_ids)
+    time_shift_ids = np.array(
+        [
+            [0, 0],
+            [0, 1],
+            [1, 1],
+            [1, 2],
+        ]
+    )
+    poly_ids[-1][-1] = 5
+    with pytest.raises(ValueError, match=r"The element x of poly_ids should.*"):
+        _, _ = tp2fd(time_shift_ids, poly_ids)
