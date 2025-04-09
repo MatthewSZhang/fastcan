@@ -293,7 +293,7 @@ class FastCan(SelectorMixin, BaseEstimator):
 
 def _prepare_search(n_features, n_features_to_select, indices_include, indices_exclude):
     # initiated with -1
-    indices = np.full(n_features_to_select, -1, dtype=np.intc, order="F")
+    indices = np.full(n_features_to_select, -1, dtype=np.int32, order="F")
     indices[: indices_include.size] = indices_include
     scores = np.zeros(n_features_to_select, dtype=float, order="F")
     mask = np.zeros(n_features, dtype=np.ubyte, order="F")

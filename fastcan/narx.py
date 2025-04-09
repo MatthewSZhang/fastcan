@@ -25,6 +25,7 @@ from sklearn.utils.validation import (
 )
 
 from ._fastcan import FastCan
+from ._narx_fast import _predict_step, _update_cfd, _update_terms  # type: ignore
 from ._refine import refine
 
 
@@ -342,7 +343,8 @@ def _validate_feat_delay_ids(
     feat_ids_ = check_array(
         feat_ids,
         ensure_2d=True,
-        dtype=int,
+        dtype=np.int32,
+        order="C",
     )
     if (feat_ids_.min() < -1) or (feat_ids_.max() > n_features + n_outputs - 1):
         raise ValueError(
@@ -353,7 +355,8 @@ def _validate_feat_delay_ids(
     delay_ids_ = check_array(
         delay_ids,
         ensure_2d=True,
-        dtype=int,
+        dtype=np.int32,
+        order="C",
     )
     if delay_ids_.shape != feat_ids_.shape:
         raise ValueError(
@@ -692,9 +695,9 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         self : object
             Fitted Estimator.
         """
-        check_X_params = dict(dtype=float, ensure_all_finite="allow-nan")
+        check_X_params = dict(dtype=float, order="C", ensure_all_finite="allow-nan")
         check_y_params = dict(
-            ensure_2d=False, dtype=float, ensure_all_finite="allow-nan"
+            ensure_2d=False, dtype=float, order="C", ensure_all_finite="allow-nan"
         )
         X, y = validate_data(
             self, X, y, validate_separately=(check_X_params, check_y_params)
@@ -732,11 +735,11 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         n_terms = self.feat_ids_.shape[0]
         # Validate output_ids
         if self.output_ids is None:
-            self.output_ids_ = np.zeros(n_terms, dtype=int)
+            self.output_ids_ = np.zeros(n_terms, dtype=np.int32)
         else:
             self.output_ids_ = column_or_1d(
                 self.output_ids,
-                dtype=int,
+                dtype=np.int32,
                 warn=True,
             )
             if len(self.output_ids_) != n_terms:
@@ -806,7 +809,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
                     f"({(n_coef_intercept,)}), but got {coef_init.shape}."
                 )
 
-        cfd_ids = NARX._get_cfd_ids(
+        grad_yyd_ids, grad_coef_ids, grad_feat_ids, grad_delay_ids = NARX._get_cfd_ids(
             self.feat_ids_, self.delay_ids_, self.output_ids_, X.shape[1]
         )
         sample_weight_sqrt = np.sqrt(sample_weight).reshape(-1, 1)
@@ -815,14 +818,17 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             x0=coef_init,
             jac=NARX._grad,
             args=(
-                NARX._expression,
+                _predict_step,
                 X,
                 y,
                 self.feat_ids_,
                 self.delay_ids_,
                 self.output_ids_,
                 sample_weight_sqrt,
-                cfd_ids,
+                grad_yyd_ids,
+                grad_coef_ids,
+                grad_feat_ids,
+                grad_delay_ids,
             ),
             **params,
         )
@@ -831,30 +837,15 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         return self
 
     @staticmethod
-    def _evaluate_term(feat_ids, delay_ids, X, y_hat, k):
-        n_features_in = X.shape[1]
-        term = 1
-        for i, feat_id in enumerate(feat_ids):
-            if feat_id != -1:
-                if feat_id < n_features_in:
-                    term *= X[k - delay_ids[i], feat_id]
-                else:
-                    term *= y_hat[k - delay_ids[i], feat_id - n_features_in]
-        return term
-
-    @staticmethod
-    def _expression(X, y_hat, coef, intercept, feat_ids, delay_ids, output_ids, k):
-        y_pred = np.copy(intercept)
-        for i, feat_id in enumerate(feat_ids):
-            output_i = output_ids[i]
-            y_pred[output_i] += coef[i] * NARX._evaluate_term(
-                feat_id, delay_ids[i], X, y_hat, k
-            )
-        return y_pred
-
-    @staticmethod
     def _predict(
-        expression, X, y_ref, coef, intercept, feat_ids, delay_ids, output_ids
+        expression,
+        X,
+        y_ref,
+        coef,
+        intercept,
+        feat_ids,
+        delay_ids,
+        output_ids,
     ):
         n_samples = X.shape[0]
         n_ref, n_outputs = y_ref.shape
@@ -874,8 +865,16 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             if at_init:
                 y_hat[k] = y_ref[k % n_ref]
             else:
-                y_hat[k] = expression(
-                    X, y_hat, coef, intercept, feat_ids, delay_ids, output_ids, k
+                y_hat[k] = intercept
+                expression(
+                    X,
+                    y_hat,
+                    y_hat[k],
+                    coef,
+                    feat_ids,
+                    delay_ids,
+                    output_ids,
+                    k,
                 )
             if np.any(y_hat[k] > 1e20):
                 y_hat[k:] = 1e20
@@ -888,58 +887,50 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         Get ids of CFD (Coef, Feature, and Delay) matrix to update dyn(k)/dx.
         Maps coefficients to their corresponding features and delays.
         """
-        n_outputs = np.max(output_ids) + 1
-        max_delay = np.max(delay_ids)
 
         # Initialize cfd_ids as a list of lists n_outputs *  n_outputs * max_delay
         # axis-0 (i): [dy0(k)/dx, dy1(k)/dx, ..., dyn(k)/dx]
         # axis-1 (j): [dy0(k-d)/dx, dy1(k-d)/dx, ..., dyn(k-d)/dx]
         # axis-2 (d): [dyj(k-1)/dx, dyj(k-2)/dx, ..., dyj(k-max_delay)/dx]
-        cfd_ids = [
-            [[[] for _ in range(max_delay)] for _ in range(n_outputs)]
-            for _ in range(n_outputs)
-        ]
+        grad_yyd_ids = []
+        grad_coef_ids = []
+        grad_feat_ids = []
+        grad_delay_ids = []
 
         for coef_id, (term_feat_ids, term_delay_ids) in enumerate(
             zip(feat_ids, delay_ids)
         ):
-            row_y_id = output_ids[coef_id]
+            row_y_id = output_ids[coef_id]  # y(k, id)
             for var_id, (feat_id, delay_id) in enumerate(
                 zip(term_feat_ids, term_delay_ids)
             ):
                 if feat_id >= n_features_in and delay_id > 0:
-                    col_y_id = feat_id - n_features_in
-                    cfd_ids[row_y_id][col_y_id][delay_id - 1].append(
-                        [
-                            coef_id,
-                            np.delete(term_feat_ids, var_id),
-                            np.delete(term_delay_ids, var_id),
-                        ]
-                    )
+                    col_y_id = feat_id - n_features_in  # y(k-1, id)
+                    grad_yyd_ids.append([row_y_id, col_y_id, delay_id - 1])
+                    grad_coef_ids.append(coef_id)
+                    grad_feat_ids.append(np.delete(term_feat_ids, var_id))
+                    grad_delay_ids.append(np.delete(term_delay_ids, var_id))
 
-        return cfd_ids
-
-    @staticmethod
-    def _update_cfd(X, y_hat, coef, cfd_ids, k):
-        """
-        Updates CFD matrix based on the current state.
-        """
-        n_outputs, max_delay = y_hat.shape[1], len(cfd_ids[0][0])
-        cfd = np.zeros((n_outputs, n_outputs, max_delay))
-
-        for i, yi_ids in enumerate(cfd_ids):
-            for j, yiyj in enumerate(yi_ids):
-                for d, yiyjd in enumerate(yiyj):
-                    if yiyjd:
-                        cfd[i, j, d] = sum(
-                            coef[coef_id]
-                            * NARX._evaluate_term(feat_id, delay_id, X, y_hat, k)
-                            for coef_id, feat_id, delay_id in yiyjd
-                        )
-        return cfd
+        return (
+            np.array(grad_yyd_ids, dtype=np.int32),
+            np.array(grad_coef_ids, dtype=np.int32),
+            np.array(grad_feat_ids, dtype=np.int32),
+            np.array(grad_delay_ids, dtype=np.int32),
+        )
 
     @staticmethod
-    def _update_dydx(X, y_hat, coef, feat_ids, delay_ids, output_ids, cfd_ids):
+    def _update_dydx(
+        X,
+        y_hat,
+        coef,
+        feat_ids,
+        delay_ids,
+        output_ids,
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
+    ):
         """
         Computation of the Jacobian matrix dydx.
 
@@ -970,15 +961,32 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
                 continue
             # Compute terms for time step k
             terms = np.ones(n_x, dtype=float)
-            for j in range(n_coefs):
-                terms[j] = NARX._evaluate_term(feat_ids[j], delay_ids[j], X, y_hat, k)
+            _update_terms(
+                X,
+                y_hat,
+                terms,
+                feat_ids,
+                delay_ids,
+                k,
+            )
 
             # Update constant terms of Jacobian
             dydx[k, y_ids, x_ids] = terms
 
             # Update dynamic terms of Jacobian
+            cfd = np.zeros((n_y, n_y, max_delay), dtype=float)
             if max_delay > 0:
-                cfd = NARX._update_cfd(X, y_hat, coef, cfd_ids, k)
+                _update_cfd(
+                    X,
+                    y_hat,
+                    cfd,
+                    coef,
+                    grad_yyd_ids,
+                    grad_coef_ids,
+                    grad_feat_ids,
+                    grad_delay_ids,
+                    k,
+                )
                 for d in range(max_delay):
                     dydx[k] += cfd[:, :, d] @ dydx[k - d - 1]
 
@@ -1007,7 +1015,14 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         intercept = coef_intercept[-n_outputs:]
 
         y_hat = NARX._predict(
-            expression, X, y, coef, intercept, feat_ids, delay_ids, output_ids
+            expression,
+            X,
+            y,
+            coef,
+            intercept,
+            feat_ids,
+            delay_ids,
+            output_ids,
         )
 
         y_masked, y_hat_masked, sample_weight_sqrt_masked = _mask_missing_value(
@@ -1026,7 +1041,10 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         delay_ids,
         output_ids,
         sample_weight_sqrt,
-        cfd_ids,
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
     ):
         # Sum of squared errors
         n_outputs = y.shape[1]
@@ -1034,10 +1052,26 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         intercept = coef_intercept[-n_outputs:]
 
         y_hat = NARX._predict(
-            expression, X, y, coef, intercept, feat_ids, delay_ids, output_ids
+            expression,
+            X,
+            y,
+            coef,
+            intercept,
+            feat_ids,
+            delay_ids,
+            output_ids,
         )
         dydx = NARX._update_dydx(
-            X, y_hat, coef, feat_ids, delay_ids, output_ids, cfd_ids
+            X,
+            y_hat,
+            coef,
+            feat_ids,
+            delay_ids,
+            output_ids,
+            grad_yyd_ids,
+            grad_coef_ids,
+            grad_feat_ids,
+            grad_delay_ids,
         )
 
         mask_nomissing = _mask_missing_value(
@@ -1075,7 +1109,14 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         """
         check_is_fitted(self)
 
-        X = validate_data(self, X, reset=False, ensure_all_finite="allow-nan")
+        X = validate_data(
+            self,
+            X,
+            dtype=float,
+            order="C",
+            reset=False,
+            ensure_all_finite="allow-nan",
+        )
         if y_init is None:
             y_init = np.zeros((self.max_delay_, self.n_outputs_))
         else:
@@ -1093,9 +1134,8 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
                     f"`y_init` should have {self.n_outputs_} outputs "
                     f"but got {y_init.shape[1]}."
                 )
-
         y_hat = NARX._predict(
-            NARX._expression,
+            _predict_step,
             X,
             y_init,
             self.coef_,

@@ -5,6 +5,7 @@ from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equ
 from scipy.integrate import odeint
 from sklearn.metrics import r2_score
 
+from fastcan._narx_fast import _predict_step  # type: ignore
 from fastcan.narx import NARX, make_narx
 
 
@@ -18,16 +19,16 @@ def test_simple():
     X = np.array([1.5, 1.5, 1.5]).reshape(-1, 1)
     y = np.array([1, 2.9, 3.66]).reshape(-1, 1)
 
-    feat_ids = np.array([1, 0]).reshape(-1, 1)
-    delay_ids = np.array([1, 1]).reshape(-1, 1)
-    output_ids = np.array([0, 0])
+    feat_ids = np.array([1, 0], dtype=np.int32).reshape(-1, 1)
+    delay_ids = np.array([1, 1], dtype=np.int32).reshape(-1, 1)
+    output_ids = np.array([0, 0], dtype=np.int32)
     coef = np.array([0.4, 1])
     intercept = np.array([1], dtype=float)
     sample_weight = np.array([1, 1, 1], dtype=float)
 
 
     y_hat = NARX._predict(
-        NARX._expression,
+        _predict_step,
         X=X,
         y_ref=y,
         coef=coef,
@@ -43,7 +44,7 @@ def test_simple():
     coef_1 = np.array([0.4+delta_w, 1])
 
     y_hat_1 = NARX._predict(
-        NARX._expression,
+        _predict_step,
         X=X,
         y_ref=y,
         coef=coef_1,
@@ -60,17 +61,22 @@ def test_simple():
     ])
 
 
-    cfd_ids = NARX._get_cfd_ids(feat_ids, delay_ids, output_ids, 1)
+    grad_yyd_ids, grad_coef_ids, grad_feat_ids, grad_delay_ids = NARX._get_cfd_ids(
+        feat_ids, delay_ids, output_ids, 1
+    )
     grad = NARX._grad(
         np.r_[coef_1, intercept],
-        NARX._expression,
+        _predict_step,
         X,
         y,
         feat_ids,
         delay_ids,
         output_ids,
-        sample_weight_sqrt=np.sqrt(sample_weight),
-        cfd_ids=cfd_ids,
+        np.sqrt(sample_weight),
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
     )
 
     assert_almost_equal(grad.sum(axis=0), grad_truth, decimal=4)
@@ -117,7 +123,8 @@ def test_complex():
             [2, 3],
             [1, 1],
             [1, 0],
-        ]
+        ],
+        dtype=np.int32
     )
 
     delay_ids = np.array(
@@ -131,10 +138,11 @@ def test_complex():
             [1, 2],
             [0, 0],
             [2, 3],
-        ]
+        ],
+        dtype=np.int32
     )
 
-    output_ids = np.array([0, 0, 0, 0, 0, 1, 1, 1, 1])
+    output_ids = np.array([0, 0, 0, 0, 0, 1, 1, 1, 1], dtype=np.int32)
 
     coef = np.array(
         [
@@ -153,22 +161,27 @@ def test_complex():
     intercept = np.array([1, 0.5])
 
     # NARX Jacobian
-    cfd_ids = NARX._get_cfd_ids(feat_ids, delay_ids, output_ids, X.shape[1])
+    grad_yyd_ids, grad_coef_ids, grad_feat_ids, grad_delay_ids = NARX._get_cfd_ids(
+        feat_ids, delay_ids, output_ids, X.shape[1]
+    )
     grad = NARX._grad(
         np.r_[coef, intercept],
-        NARX._expression,
+        _predict_step,
         X,
         y,
         feat_ids,
         delay_ids,
         output_ids,
-        sample_weight_sqrt=np.sqrt(np.ones((y.shape[0], 1))),
-        cfd_ids=cfd_ids,
+        np.sqrt(np.ones((y.shape[0], 1))),
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
     )
 
     # Numerical gradient
     y_hat_0 = NARX._predict(
-        NARX._expression,
+        _predict_step,
         X=X,
         y_ref=y,
         coef=coef,
@@ -191,7 +204,7 @@ def test_complex():
             intercept_1[i-len(coef)] += delta_w
 
         y_hat_1 = NARX._predict(
-            NARX._expression,
+            _predict_step,
             X=X,
             y_ref=y,
             coef=coef_1,
