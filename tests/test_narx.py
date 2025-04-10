@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from numpy.testing import assert_array_equal
+from numpy.testing import assert_almost_equal, assert_array_equal
 from sklearn.metrics import r2_score
 from sklearn.utils.estimator_checks import check_estimator
 
@@ -243,16 +243,47 @@ def test_narx(nan, multi_output):
         ).fit(X, y)
 
 
-def test_mulit_output_warn_error():
+def test_mulit_output_warn():
+    X = np.random.rand(10, 2)
+    y = np.random.rand(10, 2)
+    for i in range(2):
+        if i == 0:
+            # X only, grad does not have dynamic part
+            time_shift_ids = np.array([[0, 1], [1, 1]])
+            poly_ids = np.array([[1, 1], [2, 2]])
+        else:
+            time_shift_ids = np.array([[0, 0], [1, 1], [2, 1]])
+            poly_ids = np.array([[1, 1], [2, 2], [0, 3]])
+        feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
+
+        with pytest.warns(UserWarning, match="output_ids got"):
+            narx = NARX(feat_ids=feat_ids, delay_ids=delay_ids)
+            narx.fit(X, y)
+        y_pred = narx.predict(X)
+        assert_almost_equal(np.std(y_pred[narx.max_delay_:, 1] - np.mean(y[:, 1])), 0.0)
+
+        X_nan = np.copy(X)
+        y_nan = np.copy(y)
+        X_nan[4, 0] = np.nan
+        y_nan[4, 1] = np.nan
+        for coef_init in [None, "one_step_ahead"]:
+            with pytest.warns(UserWarning, match="output_ids got"):
+                y_pred = narx.fit(X_nan, y_nan, coef_init=coef_init).predict(X_nan)
+            y_nan_masked, y_pred_masked = _mask_missing_value(y_nan, y_pred)
+            assert_almost_equal(
+                np.std(
+                    y_pred_masked[y_pred_masked[:, 0]!=0, 1] -\
+                    np.mean(y_nan_masked[:, 1])
+                ),
+                0.0,
+            )
+
+def test_mulit_output_error():
     X = np.random.rand(10, 2)
     y = np.random.rand(10, 2)
     time_shift_ids = np.array([[0, 1], [1, 1]])
     poly_ids = np.array([[1, 1], [2, 2]])
     feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
-
-    with pytest.warns(UserWarning, match="output_ids got"):
-        narx = NARX(feat_ids=feat_ids, delay_ids=delay_ids)
-        narx.fit(X, y)
 
     with pytest.raises(ValueError, match="The length of output_ids should"):
         narx = NARX(
@@ -279,7 +310,6 @@ def test_mulit_output_warn_error():
         narx = make_narx(X=X, y=y, n_terms_to_select=[2, 2], max_delay=3, poly_degree=2)
         narx.fit(X, y)
         narx.predict(X, y_init=[1, 1, 1])
-
 
 
 def test_sample_weight():

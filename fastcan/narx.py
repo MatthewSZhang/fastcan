@@ -760,7 +760,8 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             warnings.warn(
                 f"output_ids got {self.output_ids_}, which does not "
                 f"contain all values from 0 to {self.n_outputs_ - 1}."
-                "The predicted outputs for the missing values will be 0.",
+                "The prediction for the missing outputs will be a constant"
+                "(i.e., intercept).",
                 UserWarning,
             )
 
@@ -783,6 +784,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             for i in range(self.n_outputs_):
                 output_i_mask = self.output_ids_ == i
                 if np.sum(output_i_mask) == 0:
+                    intercept[i] = np.mean(y_masked[:, i])
                     continue
                 osa_narx.fit(
                     poly_terms_masked[:, output_i_mask],
@@ -974,8 +976,8 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             dydx[k, y_ids, x_ids] = terms
 
             # Update dynamic terms of Jacobian
-            cfd = np.zeros((n_y, n_y, max_delay), dtype=float)
-            if max_delay > 0:
+            if max_delay > 0 and grad_yyd_ids.size > 0:
+                cfd = np.zeros((n_y, n_y, max_delay), dtype=float)
                 _update_cfd(
                     X,
                     y_hat,
