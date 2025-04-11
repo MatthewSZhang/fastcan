@@ -2,7 +2,7 @@
 
 import numpy as np
 import pytest
-from numpy.testing import assert_almost_equal, assert_array_equal
+from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
 from sklearn.metrics import r2_score
 from sklearn.utils.estimator_checks import check_estimator
 
@@ -349,6 +349,41 @@ def test_sample_weight():
     coef_ = narx.coef_
 
     assert np.any(coef_w != coef_)
+
+    X = np.array(
+        [
+            [1, 1],
+            [1, 2],
+            [1, 3],
+            [1, 4],
+            [2, 1],
+            [2, 2],
+            [2, 3],
+            [2, 4],
+            [3, 1],
+            [3, 2],
+            [3, 3],
+            [3, 4],
+        ]
+    )
+    y = np.array([1, 1, 1, 1, 2, 2, 2, 2, 1, 1, 2, 2])
+    sw = rng.integers(0, 5, size=12)
+    X_repeated = np.repeat(X, sw, axis=0)
+    y_repeated = np.repeat(y, sw)
+    narx_osa = NARX().fit(X_repeated, y_repeated)
+    narx_no_sw = NARX().fit(X_repeated, y_repeated, coef_init=[0]*3)
+    assert_allclose(
+        np.r_[narx_osa.coef_, narx_osa.intercept_],
+        np.r_[narx_no_sw.coef_, narx_no_sw.intercept_]
+    )
+    narx_sw = NARX().fit(
+        X, y, sample_weight=sw,
+        coef_init=[0]*3
+    )
+    assert_allclose(
+        np.r_[narx_no_sw.coef_, narx_no_sw.intercept_],
+        np.r_[narx_sw.coef_, narx_sw.intercept_]
+    )
 
 def test_divergence():
     # Test divergence of NARX model
