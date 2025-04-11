@@ -353,9 +353,7 @@ def _validate_feat_delay_ids(
         )
     # Check if any row of feat_ids only contains -1
     if np.all(feat_ids_ == -1, axis=1).any():
-        raise ValueError(
-            "`feat_ids` should not contain rows that only have -1."
-        )
+        raise ValueError("`feat_ids` should not contain rows that only have -1.")
     # Validate delay_ids
     delay_ids_ = check_array(
         delay_ids,
