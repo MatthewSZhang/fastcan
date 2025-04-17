@@ -570,6 +570,8 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         The id numbers indicate which output the polynomial term belongs to.
         It is useful in multi-output case.
 
+    fit_intercept : bool, default=True
+        Whether to fit the intercept. If set to False, intercept will be zeros.
 
     Attributes
     ----------
@@ -641,6 +643,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         "feat_ids": [None, "array-like"],
         "delay_ids": [None, "array-like"],
         "output_ids": [None, "array-like"],
+        "fit_intercept": ["boolean"],
     }
 
     def __init__(
@@ -649,10 +652,12 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         feat_ids=None,
         delay_ids=None,
         output_ids=None,
+        fit_intercept=True,
     ):
         self.feat_ids = feat_ids
         self.delay_ids = delay_ids
         self.output_ids = output_ids
+        self.fit_intercept = fit_intercept
 
     @validate_params(
         {
@@ -769,13 +774,12 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             )
 
         self.max_delay_ = self.delay_ids_.max()
-        n_coef_intercept = n_terms + self.n_outputs_
 
         if isinstance(coef_init, (type(None), str)):
             # fit a one-step-ahead NARX model
             time_shift_ids, poly_ids = fd2tp(self.feat_ids_, self.delay_ids_)
             xy_hstack = np.c_[X, y]
-            osa_narx = LinearRegression()
+            osa_narx = LinearRegression(fit_intercept=self.fit_intercept)
             time_shift_vars = make_time_shift_features(xy_hstack, time_shift_ids)
             poly_terms = make_poly_features(time_shift_vars, poly_ids)
             # Remove missing values
@@ -787,7 +791,10 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             for i in range(self.n_outputs_):
                 output_i_mask = self.output_ids_ == i
                 if np.sum(output_i_mask) == 0:
-                    intercept[i] = np.mean(y_masked[:, i])
+                    if self.fit_intercept:
+                        intercept[i] = np.mean(y_masked[:, i])
+                    else:
+                        intercept[i] = 0.0
                     continue
                 osa_narx.fit(
                     poly_terms_masked[:, output_i_mask],
@@ -801,13 +808,20 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
                 self.intercept_ = intercept
                 return self
 
-            coef_init = np.r_[coef, intercept]
+            if self.fit_intercept:
+                coef_init = np.r_[coef, intercept]
+            else:
+                coef_init = coef
         else:
             coef_init = check_array(
                 coef_init,
                 ensure_2d=False,
                 dtype=float,
             )
+            if self.fit_intercept:
+                n_coef_intercept = n_terms + self.n_outputs_
+            else:
+                n_coef_intercept = n_terms
             if coef_init.shape[0] != n_coef_intercept:
                 raise ValueError(
                     "`coef_init` should have the shape of "
@@ -829,6 +843,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
                 self.feat_ids_,
                 self.delay_ids_,
                 self.output_ids_,
+                self.fit_intercept,
                 sample_weight_sqrt,
                 grad_yyd_ids,
                 grad_coef_ids,
@@ -837,8 +852,12 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             ),
             **params,
         )
-        self.coef_ = res.x[: -self.n_outputs_]
-        self.intercept_ = res.x[-self.n_outputs_ :]
+        if self.fit_intercept:
+            self.coef_ = res.x[: -self.n_outputs_]
+            self.intercept_ = res.x[-self.n_outputs_ :]
+        else:
+            self.coef_ = res.x
+            self.intercept_ = np.zeros(self.n_outputs_, dtype=float)
         return self
 
     @staticmethod
@@ -931,6 +950,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         feat_ids,
         delay_ids,
         output_ids,
+        fit_intercept,
         grad_yyd_ids,
         grad_coef_ids,
         grad_feat_ids,
@@ -947,8 +967,13 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         n_samples, n_y = y_hat.shape
         max_delay = np.max(delay_ids)
         n_coefs = feat_ids.shape[0]
-        n_x = n_coefs + n_y  # Total number of coefficients and intercepts
-        y_ids = np.r_[output_ids, np.arange(n_y)]
+        if fit_intercept:
+            n_x = n_coefs + n_y  # Total number of coefficients and intercepts
+            y_ids = np.r_[output_ids, np.arange(n_y)]
+        else:
+            n_x = n_coefs
+            y_ids = output_ids
+
         x_ids = np.arange(n_x)
 
         dydx = np.zeros((n_samples, n_y, n_x), dtype=float)
@@ -1011,13 +1036,18 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         feat_ids,
         delay_ids,
         output_ids,
+        fit_intercept,
         sample_weight_sqrt,
         *args,
     ):
         # Sum of squared errors
         n_outputs = y.shape[1]
-        coef = coef_intercept[:-n_outputs]
-        intercept = coef_intercept[-n_outputs:]
+        if fit_intercept:
+            coef = coef_intercept[:-n_outputs]
+            intercept = coef_intercept[-n_outputs:]
+        else:
+            coef = coef_intercept
+            intercept = np.zeros(n_outputs, dtype=float)
 
         y_hat = NARX._predict(
             expression,
@@ -1045,6 +1075,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         feat_ids,
         delay_ids,
         output_ids,
+        fit_intercept,
         sample_weight_sqrt,
         grad_yyd_ids,
         grad_coef_ids,
@@ -1053,8 +1084,12 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
     ):
         # Sum of squared errors
         n_outputs = y.shape[1]
-        coef = coef_intercept[:-n_outputs]
-        intercept = coef_intercept[-n_outputs:]
+        if fit_intercept:
+            coef = coef_intercept[:-n_outputs]
+            intercept = coef_intercept[-n_outputs:]
+        else:
+            coef = coef_intercept
+            intercept = np.zeros(n_outputs, dtype=float)
 
         y_hat = NARX._predict(
             expression,
@@ -1073,6 +1108,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             feat_ids,
             delay_ids,
             output_ids,
+            fit_intercept,
             grad_yyd_ids,
             grad_coef_ids,
             grad_feat_ids,
@@ -1266,6 +1302,7 @@ def print_narx(
         "poly_degree": [
             Interval(Integral, 1, None, closed="left"),
         ],
+        "fit_intercept": ["boolean"],
         "include_zero_delay": [None, "array-like"],
         "static_indices": [None, "array-like"],
         "refine_verbose": ["verbose"],
@@ -1288,6 +1325,7 @@ def make_narx(
     max_delay=1,
     poly_degree=1,
     *,
+    fit_intercept=True,
     include_zero_delay=None,
     static_indices=None,
     refine_verbose=1,
@@ -1315,6 +1353,9 @@ def make_narx(
 
     poly_degree : int, default=1
         The maximum degree of polynomial features.
+
+    fit_intercept : bool, default=True
+        Whether to fit the intercept. If set to False, intercept will be zeros.
 
     include_zero_delay : {None, array-like} of shape (n_features,) default=None
         Whether to include the original (zero-delay) features.
@@ -1469,4 +1510,5 @@ def make_narx(
         feat_ids=feat_ids,
         delay_ids=delay_ids,
         output_ids=output_ids,
+        fit_intercept=fit_intercept,
     )
