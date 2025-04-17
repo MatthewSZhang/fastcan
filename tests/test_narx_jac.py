@@ -24,7 +24,7 @@ def test_simple():
     output_ids = np.array([0, 0], dtype=np.int32)
     coef = np.array([0.4, 1])
     intercept = np.array([1], dtype=float)
-    sample_weight = np.array([1, 1, 1], dtype=float)
+    sample_weight = np.array([1, 1, 1], dtype=float).reshape(-1, 1)
 
 
     y_hat = NARX._predict(
@@ -72,6 +72,7 @@ def test_simple():
         feat_ids,
         delay_ids,
         output_ids,
+        True,
         np.sqrt(sample_weight),
         grad_yyd_ids,
         grad_coef_ids,
@@ -80,6 +81,37 @@ def test_simple():
     )
 
     assert_almost_equal(grad.sum(axis=0), grad_truth, decimal=4)
+    grad_0 = NARX._grad(
+        np.r_[coef_1, 0],
+        _predict_step,
+        X,
+        y,
+        feat_ids,
+        delay_ids,
+        output_ids,
+        True,
+        np.sqrt(sample_weight),
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
+    )
+    grad = NARX._grad(
+        coef_1,
+        _predict_step,
+        X,
+        y,
+        feat_ids,
+        delay_ids,
+        output_ids,
+        False,
+        np.sqrt(sample_weight),
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
+    )
+    assert_almost_equal(grad.sum(axis=0), grad_0.sum(axis=0)[:-1])
 
 def test_complex():
     """Complex model"""
@@ -172,6 +204,7 @@ def test_complex():
         feat_ids,
         delay_ids,
         output_ids,
+        True,
         np.sqrt(np.ones((y.shape[0], 1))),
         grad_yyd_ids,
         grad_coef_ids,
@@ -219,6 +252,52 @@ def test_complex():
 
         assert_allclose(grad.sum(axis=0)[i], grad_num.sum(), rtol=1e-1)
 
+    grad = NARX._grad(
+        coef,
+        _predict_step,
+        X,
+        y,
+        feat_ids,
+        delay_ids,
+        output_ids,
+        False,
+        np.sqrt(np.ones((y.shape[0], 1))),
+        grad_yyd_ids,
+        grad_coef_ids,
+        grad_feat_ids,
+        grad_delay_ids,
+    )
+    y_hat_0 = NARX._predict(
+        _predict_step,
+        X=X,
+        y_ref=y,
+        coef=coef,
+        intercept=[0, 0],
+        feat_ids=feat_ids,
+        delay_ids=delay_ids,
+        output_ids=output_ids,
+    )
+    e_0 = y_hat_0 - y
+
+    for i in range(len(coef)):
+        coef_1 = np.copy(coef)
+        coef_1[i] += delta_w
+
+        y_hat_1 = NARX._predict(
+            _predict_step,
+            X=X,
+            y_ref=y,
+            coef=coef_1,
+            intercept=[0, 0],
+            feat_ids=feat_ids,
+            delay_ids=delay_ids,
+            output_ids=output_ids,
+        )
+
+        e_1 = y_hat_1 - y
+        grad_num = (e_1 - e_0).sum(axis=1) / delta_w
+
+        assert_allclose(grad.sum(axis=0)[i], grad_num.sum(), rtol=1e-1)
 
 def test_score_nan():
     """Test fitting scores when data contain nan."""

@@ -278,6 +278,46 @@ def test_mulit_output_warn():
                 0.0,
             )
 
+def test_fit_intercept():
+    X = np.random.rand(10, 2)
+    y = np.random.rand(10, 1)
+    time_shift_ids = np.array([[0, 1], [1, 1]])
+    poly_ids = np.array([[1, 1], [2, 2]])
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
+
+    narx = NARX(
+        feat_ids=feat_ids,
+        delay_ids=delay_ids,
+        fit_intercept=False,
+    )
+    narx.fit(X, y)
+    assert_almost_equal(narx.intercept_, 0.0)
+    narx.fit(X, y, coef_init="one_step_ahead")
+    assert_almost_equal(narx.intercept_, 0.0)
+
+    X = np.random.rand(10, 2)
+    y = np.random.rand(10, 2)
+    time_shift_ids = np.array([[0, 1], [1, 1]])
+    poly_ids = np.array([[1, 1], [2, 2]])
+    feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
+
+    narx = make_narx(X, y, 1, 2, 2, fit_intercept=False)
+    narx.fit(X, y)
+    assert_array_equal(narx.intercept_, [0.0, 0.0])
+    narx.fit(X, y, coef_init="one_step_ahead")
+    assert_array_equal(narx.intercept_, [0.0, 0.0])
+
+    with pytest.warns(UserWarning, match="output_ids got"):
+        narx = NARX(
+            feat_ids=feat_ids,
+            delay_ids=delay_ids,
+            fit_intercept=False,
+        )
+        narx.fit(X, y)
+        assert_array_equal(narx.intercept_, [0.0, 0.0])
+        narx.fit(X, y, coef_init=[0, 0])
+        assert_array_equal(narx.intercept_, [0.0, 0.0])
+
 def test_mulit_output_error():
     X = np.random.rand(10, 2)
     y = np.random.rand(10, 2)
