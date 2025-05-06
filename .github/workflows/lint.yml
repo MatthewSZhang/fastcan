@@ -16,7 +16,7 @@ jobs:
 
       - name: Re-install local
         run: |
-          pixi reinstall --frozen fastcan
+          pixi reinstall -e lint --frozen fastcan
 
       - name: Lint with ruff
         run: |

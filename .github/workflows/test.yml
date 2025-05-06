@@ -28,7 +28,7 @@ jobs:
 
       - name: Re-install local
         run: |
-          pixi reinstall --frozen fastcan
+          pixi reinstall -e dev --frozen fastcan
 
       - name: Test with pytest
         run: |

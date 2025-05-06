@@ -31,8 +31,6 @@ jobs:
           CIBW_ARCHS_MACOS: x86_64 arm64
           CIBW_ARCHS_WINDOWS: auto64
           CIBW_BEFORE_ALL_LINUX: yum install -y ninja-build python3-devel
-          CIBW_BEFORE_ALL_WINDOWS: choco install ninja
-          CIBW_BEFORE_ALL_MACOS: brew install ninja
           # Needed on Windows CI to compile with Visual Studio compiler
           # otherwise Meson detects a MINGW64 platform and use MINGW64
           # toolchain
