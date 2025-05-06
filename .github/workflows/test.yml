@@ -28,7 +28,10 @@ jobs:
 
       - name: Re-install local
         run: |
-          pixi reinstall --frozen fastcan
+          # Needed on Windows CI to compile with Visual Studio compiler
+          # otherwise Meson detects a MINGW64 platform and use MINGW64
+          # toolchain
+          pixi reinstall -e dev --frozen fastcan -- -Csetup-args=--vsenv
 
       - name: Test with pytest
         run: |
