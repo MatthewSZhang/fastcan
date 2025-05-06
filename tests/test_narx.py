@@ -178,8 +178,6 @@ def test_narx(nan, multi_output):
     y_hat = narx_array_init_msa.predict(X, y_init=y_init)
     assert_array_equal(y_hat[:narx_array_init_msa.max_delay_], y_init)
 
-    print_narx(narx_array_init_msa)
-
     with pytest.raises(ValueError, match=r"`coef_init` should have the shape of .*"):
         narx_array_init_msa.fit(X, y, coef_init=np.zeros(narx_osa_msa_coef.size))
 
@@ -492,3 +490,43 @@ def test_tp2fd():
     poly_ids[-1][-1] = 5
     with pytest.raises(ValueError, match=r"The element x of poly_ids should.*"):
         _, _ = tp2fd(time_shift_ids, poly_ids)
+
+def test_print_narx(capsys):
+    X = np.random.rand(10, 2)
+    y = np.random.rand(10, 2)
+    feat_ids = np.array([[0, 1], [1, 2]])
+    delay_ids = np.array([[1, 0], [2, 2]])
+
+    narx = NARX(
+        feat_ids=feat_ids,
+        delay_ids=delay_ids,
+        output_ids=[0, 1],
+    )
+    narx.fit(X, y)
+    print_narx(narx)
+    captured = capsys.readouterr()
+    # Check if the header is present in the output
+    assert "| yid |        Term        |   Coef   |" in captured.out
+    # Check if the intercept line for yid 0 is present
+    assert "|  0  |     Intercept      |" in captured.out
+    # Check if the intercept line for yid 1 is present
+    assert "|  1  |     Intercept      |" in captured.out
+    # Check if the term line for yid 0 is present
+    assert "|  0  |  X[k-1,0]*X[k,1]   |" in captured.out
+    # Check if the term line for yid 1 is present
+    assert "|  1  |X[k-2,1]*y_hat[k-2,0]|" in captured.out
+
+
+def test_make_narx_refine_print(capsys):
+    X = np.random.rand(10, 2)
+    y = np.random.rand(10, 2)
+    _ = make_narx(
+        X,
+        y,
+        n_terms_to_select=2,
+        max_delay=2,
+        poly_degree=2,
+        refine_drop=1,
+    )
+    captured = capsys.readouterr()
+    assert "No. of iterations: " in captured.out
