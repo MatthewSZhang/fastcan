@@ -8,7 +8,6 @@ from sklearn.utils.estimator_checks import check_estimator
 
 from fastcan.narx import (
     NARX,
-    _mask_missing_value,
     fd2tp,
     make_narx,
     make_poly_ids,
@@ -16,6 +15,7 @@ from fastcan.narx import (
     print_narx,
     tp2fd,
 )
+from fastcan.utils import mask_missing_values
 
 
 def test_narx_is_sklearn_estimator():
@@ -111,7 +111,7 @@ def test_narx(nan, multi_output):
             verbose=0,
         ).fit(X, y)
 
-    assert r2_score(*_mask_missing_value(y, narx_score.predict(X, y_init=y))) > 0.5
+    assert r2_score(*mask_missing_values(y, narx_score.predict(X, y_init=y))) > 0.5
 
     params = {
         "n_terms_to_select": rng.integers(low=2, high=4),
@@ -267,7 +267,7 @@ def test_mulit_output_warn():
         for coef_init in [None, "one_step_ahead"]:
             with pytest.warns(UserWarning, match="output_ids got"):
                 y_pred = narx.fit(X_nan, y_nan, coef_init=coef_init).predict(X_nan)
-            y_nan_masked, y_pred_masked = _mask_missing_value(y_nan, y_pred)
+            y_nan_masked, y_pred_masked = mask_missing_values(y_nan, y_pred)
             assert_almost_equal(
                 np.std(
                     y_pred_masked[y_pred_masked[:, 0]!=0, 1] -\

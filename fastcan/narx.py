@@ -27,6 +27,7 @@ from sklearn.utils.validation import (
 from ._fastcan import FastCan
 from ._narx_fast import _predict_step, _update_cfd, _update_terms  # type: ignore
 from ._refine import refine
+from .utils import mask_missing_values
 
 
 @validate_params(
@@ -273,14 +274,6 @@ def make_poly_ids(
     return np.delete(ids, const_id, 0)  # remove the constant featrue
 
 
-def _mask_missing_value(*arr, return_mask=False):
-    """Remove missing value for all arrays."""
-    mask_nomissing = np.all(np.isfinite(np.c_[arr]), axis=1)
-    if return_mask:
-        return mask_nomissing
-    return tuple([x[mask_nomissing] for x in arr])
-
-
 def _valiate_time_shift_poly_ids(
     time_shift_ids, poly_ids, n_samples=None, n_features=None, n_outputs=None
 ):
@@ -374,7 +367,7 @@ def _validate_feat_delay_ids(
         )
     if (delay_ids_.min() < -1) or (delay_ids_.max() >= n_samples):
         raise ValueError(
-            "The element x of delay_ids should " f"satisfy -1 <= x < {n_samples}."
+            f"The element x of delay_ids should satisfy -1 <= x < {n_samples}."
         )
     return feat_ids_, delay_ids_
 
@@ -783,7 +776,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             time_shift_vars = make_time_shift_features(xy_hstack, time_shift_ids)
             poly_terms = make_poly_features(time_shift_vars, poly_ids)
             # Remove missing values
-            poly_terms_masked, y_masked, sample_weight_masked = _mask_missing_value(
+            poly_terms_masked, y_masked, sample_weight_masked = mask_missing_values(
                 poly_terms, y, sample_weight
             )
             coef = np.zeros(n_terms, dtype=float)
@@ -1060,7 +1053,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             output_ids,
         )
 
-        y_masked, y_hat_masked, sample_weight_sqrt_masked = _mask_missing_value(
+        y_masked, y_hat_masked, sample_weight_sqrt_masked = mask_missing_values(
             y, y_hat, sample_weight_sqrt
         )
 
@@ -1115,12 +1108,10 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
             grad_delay_ids,
         )
 
-        mask_nomissing = _mask_missing_value(
-            y, y_hat, sample_weight_sqrt, return_mask=True
-        )
+        mask_valid = mask_missing_values(y, y_hat, sample_weight_sqrt, return_mask=True)
 
-        sample_weight_sqrt_masked = sample_weight_sqrt[mask_nomissing]
-        dydx_masked = dydx[mask_nomissing]
+        sample_weight_sqrt_masked = sample_weight_sqrt[mask_valid]
+        dydx_masked = dydx[mask_valid]
 
         return dydx_masked.sum(axis=1) * sample_weight_sqrt_masked
 
@@ -1264,7 +1255,7 @@ def print_narx(
                 else:
                     term_str += f"*X[k-{delay_id},{feat_id}]"
             elif feat_id >= narx.n_features_in_:
-                term_str += f"*y_hat[k-{delay_id},{feat_id-narx.n_features_in_}]"
+                term_str += f"*y_hat[k-{delay_id},{feat_id - narx.n_features_in_}]"
         return term_str[1:]
 
     yid_space = 5
@@ -1472,7 +1463,7 @@ def make_narx(
     poly_terms = make_poly_features(time_shift_vars, poly_ids_all)
 
     # Remove missing values
-    poly_terms_masked, y_masked = _mask_missing_value(poly_terms, y)
+    poly_terms_masked, y_masked = mask_missing_values(poly_terms, y)
 
     selected_poly_ids = []
     for i in range(n_outputs):

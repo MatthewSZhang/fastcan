@@ -1,10 +1,11 @@
 "Test ssc"
 
 import numpy as np
-from numpy.testing import assert_almost_equal
+import pytest
+from numpy.testing import assert_almost_equal, assert_array_equal
 from sklearn.linear_model import LinearRegression
 
-from fastcan.utils import ols, ssc
+from fastcan.utils import mask_missing_values, ols, ssc
 
 
 def test_sum_errs():
@@ -46,3 +47,30 @@ def test_multi_r():
     r2 = ssc(X.reshape(-1, 1), y)
     gtruth_r2 = LinearRegression().fit(y, X).score(y, X)
     assert_almost_equal(actual=r2, desired=gtruth_r2)
+
+def test_mask_missing():
+    """Test mask missing values."""
+    assert mask_missing_values() is None
+
+    # Check that invalid arguments yield ValueError
+    with pytest.raises(ValueError):
+        mask_missing_values([0], [0, 1])
+
+    rng = np.random.default_rng(12345)
+    a = rng.random((100, 10))
+    b = rng.random((100, 2))
+    c = rng.random(100)
+    a[10, 0] = np.nan
+    b[20, 1] = np.nan
+    c[30] = np.nan
+    a_masked, b_masked, c_mask = mask_missing_values(a, b, c)
+    mask_valid = mask_missing_values(a, b, c, return_mask=True)
+    assert a_masked.shape == (97, 10)
+    assert b_masked.shape == (97, 2)
+    assert c_mask.shape == (97,)
+    assert_array_equal(actual=a_masked, desired=a[mask_valid])
+    assert_array_equal(actual=b_masked, desired=b[mask_valid])
+    assert_array_equal(actual=c_mask, desired=c[mask_valid])
+    assert np.isfinite(a_masked).all()
+    assert np.isfinite(b_masked).all()
+    assert np.isfinite(c_mask).all()
