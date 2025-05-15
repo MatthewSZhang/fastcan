@@ -25,7 +25,11 @@ from sklearn.utils.validation import (
 )
 
 from ._fastcan import FastCan
-from ._narx_fast import _predict_step, _update_cfd, _update_terms  # type: ignore
+from ._narx_fast import (  # type: ignore[attr-defined]
+    _predict_step,
+    _update_cfd,
+    _update_terms,
+)
 from ._refine import refine
 from .utils import mask_missing_values
 

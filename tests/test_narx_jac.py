@@ -1,11 +1,11 @@
 """Test Jacobian matrix of NARX"""
 
 import numpy as np
+from fastcan._narx_fast import _predict_step  # type: ignore[attr-defined]
 from numpy.testing import assert_allclose, assert_almost_equal, assert_array_equal
 from scipy.integrate import odeint
 from sklearn.metrics import r2_score
 
-from fastcan._narx_fast import _predict_step  # type: ignore
 from fastcan.narx import NARX, make_narx
 
 
@@ -26,7 +26,6 @@ def test_simple():
     intercept = np.array([1], dtype=float)
     sample_weight = np.array([1, 1, 1], dtype=float).reshape(-1, 1)
 
-
     y_hat = NARX._predict(
         _predict_step,
         X=X,
@@ -41,7 +40,7 @@ def test_simple():
     assert_array_equal(y_hat, y)
 
     delta_w = 0.00001
-    coef_1 = np.array([0.4+delta_w, 1])
+    coef_1 = np.array([0.4 + delta_w, 1])
 
     y_hat_1 = NARX._predict(
         _predict_step,
@@ -54,12 +53,17 @@ def test_simple():
         output_ids=output_ids,
     )
 
-    grad_truth = np.array([
-        np.sum(np.array([0, y_hat_1[0, 0], y_hat_1[1, 0]+coef_1[0]]).reshape(-1, 1)),
-        np.sum(np.array([0, X[0, 0], X[0, 0]*coef_1[0]+X[0, 0]]).reshape(-1, 1)),
-        np.sum(np.array([0, 1, coef_1[0]+1]).reshape(-1, 1)),
-    ])
-
+    grad_truth = np.array(
+        [
+            np.sum(
+                np.array([0, y_hat_1[0, 0], y_hat_1[1, 0] + coef_1[0]]).reshape(-1, 1)
+            ),
+            np.sum(
+                np.array([0, X[0, 0], X[0, 0] * coef_1[0] + X[0, 0]]).reshape(-1, 1)
+            ),
+            np.sum(np.array([0, 1, coef_1[0] + 1]).reshape(-1, 1)),
+        ]
+    )
 
     grad_yyd_ids, grad_coef_ids, grad_feat_ids, grad_delay_ids = NARX._get_cfd_ids(
         feat_ids, delay_ids, output_ids, 1
@@ -113,6 +117,7 @@ def test_simple():
     )
     assert_almost_equal(grad.sum(axis=0), grad_0.sum(axis=0)[:-1])
 
+
 def test_complex():
     """Complex model"""
     # Simulated model
@@ -156,7 +161,7 @@ def test_complex():
             [1, 1],
             [1, 0],
         ],
-        dtype=np.int32
+        dtype=np.int32,
     )
 
     delay_ids = np.array(
@@ -171,7 +176,7 @@ def test_complex():
             [0, 0],
             [2, 3],
         ],
-        dtype=np.int32
+        dtype=np.int32,
     )
 
     output_ids = np.array([0, 0, 0, 0, 0, 1, 1, 1, 1], dtype=np.int32)
@@ -226,7 +231,7 @@ def test_complex():
     e_0 = y_hat_0 - y
 
     delta_w = 0.00001
-    for i in range(len(coef)+len(intercept)):
+    for i in range(len(coef) + len(intercept)):
         if i < len(coef):
             coef_1 = np.copy(coef)
             coef_1[i] += delta_w
@@ -234,7 +239,7 @@ def test_complex():
         else:
             coef_1 = np.copy(coef)
             intercept_1 = np.copy(intercept)
-            intercept_1[i-len(coef)] += delta_w
+            intercept_1[i - len(coef)] += delta_w
 
         y_hat_1 = NARX._predict(
             _predict_step,
@@ -299,15 +304,16 @@ def test_complex():
 
         assert_allclose(grad.sum(axis=0)[i], grad_num.sum(), rtol=1e-1)
 
+
 def test_score_nan():
     """Test fitting scores when data contain nan."""
+
     def duffing_equation(y, t):
         """Non-autonomous system"""
         y1, y2 = y
         u = 2.5 * np.cos(2 * np.pi * t)
         dydt = [y2, -0.1 * y2 + y1 - 0.25 * y1**3 + u]
         return dydt
-
 
     dur = 10
     n_samples = 1000

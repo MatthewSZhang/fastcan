@@ -11,8 +11,28 @@ jobs:
   call-test:
     uses: ./.github/workflows/test.yml
     secrets: inherit
+  
+  build-sdist:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: prefix-dev/setup-pixi@v0.8.8
+        with:
+          environments: dev
+          cache: true
+      - name: Re-install local
+        run: |
+          pixi reinstall -e dev --frozen fastcan
+      - name: Build SDist
+        run: |
+          pixi run build-sdist
+      - name: Store artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: cibw-sdist
+          path: dist/*.tar.gz
 
-  build:
+  build-wheels:
     strategy:
       fail-fast: false
       matrix:

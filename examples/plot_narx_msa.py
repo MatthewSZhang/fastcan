@@ -93,7 +93,7 @@ y_train = sol[:, 0] + e_train
 
 sol = odeint(duffing_equation, [0.6, -0.8], t)
 u_test = 2.5 * np.cos(2 * np.pi * t).reshape(-1, 1)
-y_test = sol[:, 0]+ e_test
+y_test = sol[:, 0] + e_test
 
 # %%
 # One-step-head VS. multi-step-ahead NARX
