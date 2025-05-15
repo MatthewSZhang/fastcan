@@ -81,7 +81,7 @@ def _fastcan_pruning(
 # %%
 # Compare pruning methods
 # -----------------------
-# 100 samples are seleced from 150 original data with ``Random`` pruning and
+# 100 samples are selected from 150 original data with ``Random`` pruning and
 # ``FastCan`` pruning. The results show that ``FastCan`` pruning gives a higher
 # mean value of R-squared and a lower standard deviation.
 

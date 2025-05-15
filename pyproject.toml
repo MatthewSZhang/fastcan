@@ -68,6 +68,7 @@ pandas = "*"
 ruff = "*"
 cython-lint = "*"
 mypy = "*"
+codespell = "*"
 
 
 [tool.pixi.feature.build.dependencies]
@@ -115,6 +116,7 @@ fmt = "ruff format"
 lint = "ruff check . --fix"
 cython-lint = { cmd = "cython-lint .", cwd = "fastcan" }
 type = { cmd = "mypy . --ignore-missing-imports", cwd = "fastcan" }
+spell = "codespell"
 
 [tool.pixi.feature.docs.tasks]
 doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "doc", env = { SPHINXBUILD = "sphinx-build", CMD = "html", SOURCEDIR = ".", BUILDDIR = "_build", SPHINXOPTS = "" } }
@@ -140,23 +142,18 @@ dev = ["docs", "test", "build", "jupyter"]
 static = { features = ["static"], no-default-feature = true }
 nogil = { features = ["nogil"], no-default-feature = true }
 
-[tool.black]
-line-length = 88
-preview = true
-exclude = '''
-/(
-    \.eggs         # exclude a few common directories in the
-  | \.git          # root of the project
-  | \.mypy_cache
-  | \.vscode
-  | \.venv
-  | \.ruff_cache
-  | build
-  | dist
-  | doc/_build
-  | doc/auto_examples
-)/
-'''
+[tool.codespell]
+skip = [
+    "./doc/_build",
+    "./doc/auto_examples",
+    "./doc/modules/generated",
+    "./htmlcov",
+    "./build",
+    "./pixi.lock",
+]
+ignore-words-list = [
+    "MIS", # magnetic impedance spectroscopy (MIS)
+]
 
 [tool.ruff]
 line-length = 88
