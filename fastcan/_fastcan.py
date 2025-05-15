@@ -17,7 +17,7 @@ from sklearn.utils._openmp_helpers import _openmp_effective_n_threads
 from sklearn.utils._param_validation import Interval
 from sklearn.utils.validation import check_is_fitted, validate_data
 
-from ._cancorr_fast import _forward_search  # type: ignore
+from ._cancorr_fast import _forward_search  # type: ignore[attr-defined]
 
 
 class FastCan(SelectorMixin, BaseEstimator):

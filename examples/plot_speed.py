@@ -178,12 +178,12 @@ time_h = np.zeros(n_features_max, dtype=float)
 time_eta = np.zeros(n_features_max, dtype=float)
 for i in range(n_features_max):
     time_h[i] = timeit(
-        f"s = FastCan({i+1}, verbose=0).fit(X, y)",
+        f"s = FastCan({i + 1}, verbose=0).fit(X, y)",
         number=10,
         globals=globals(),
     )
     time_eta[i] = timeit(
-        f"s = FastCan({i+1}, eta=True, verbose=0).fit(X, y)",
+        f"s = FastCan({i + 1}, eta=True, verbose=0).fit(X, y)",
         number=10,
         globals=globals(),
     )

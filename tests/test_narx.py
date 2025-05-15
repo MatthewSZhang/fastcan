@@ -58,12 +58,12 @@ def test_narx(nan, multi_output):
             )
             y1[i] = (
                 0.6 * y1[i - 1]
-                - 0.2 * y0[i - 1]*y1[i - 2]
+                - 0.2 * y0[i - 1] * y1[i - 2]
                 + 0.3 * u1[i] ** 2
                 + 1.5 * u1[i - 2] * u0[i - 3]
                 + 0.5
             )
-        y = np.c_[y0[max_delay:]+e0, y1[max_delay:]+e1]
+        y = np.c_[y0[max_delay:] + e0, y1[max_delay:] + e1]
         X = np.c_[u0[max_delay:], u1[max_delay:]]
         n_outputs = 2
     else:
@@ -122,7 +122,7 @@ def test_narx(nan, multi_output):
     narx_default = make_narx(X=X, y=y, **params)
 
     if multi_output:
-        assert narx_default.feat_ids.shape[0] == params["n_terms_to_select"]*2
+        assert narx_default.feat_ids.shape[0] == params["n_terms_to_select"] * 2
     else:
         assert narx_default.feat_ids.shape[0] == params["n_terms_to_select"]
 
@@ -159,9 +159,9 @@ def test_narx(nan, multi_output):
     else:
         output_ids = None
     feat_ids, delay_ids = tp2fd(time_shift_ids, poly_ids)
-    narx_osa = NARX(
-        feat_ids=feat_ids, delay_ids=delay_ids, output_ids=output_ids
-    ).fit(X, y)
+    narx_osa = NARX(feat_ids=feat_ids, delay_ids=delay_ids, output_ids=output_ids).fit(
+        X, y
+    )
     assert narx_osa.coef_.size == poly_ids.shape[0]
     narx_osa_msa = narx_drop.fit(X, y, coef_init="one_step_ahead")
     narx_osa_msa_coef = narx_osa_msa.coef_
@@ -176,7 +176,7 @@ def test_narx(nan, multi_output):
     else:
         y_init = [1] * narx_array_init_msa.max_delay_
     y_hat = narx_array_init_msa.predict(X, y_init=y_init)
-    assert_array_equal(y_hat[:narx_array_init_msa.max_delay_], y_init)
+    assert_array_equal(y_hat[: narx_array_init_msa.max_delay_], y_init)
 
     with pytest.raises(ValueError, match=r"`coef_init` should have the shape of .*"):
         narx_array_init_msa.fit(X, y, coef_init=np.zeros(narx_osa_msa_coef.size))
@@ -258,7 +258,9 @@ def test_mulit_output_warn():
             narx = NARX(feat_ids=feat_ids, delay_ids=delay_ids)
             narx.fit(X, y)
         y_pred = narx.predict(X)
-        assert_almost_equal(np.std(y_pred[narx.max_delay_:, 1] - np.mean(y[:, 1])), 0.0)
+        assert_almost_equal(
+            np.std(y_pred[narx.max_delay_ :, 1] - np.mean(y[:, 1])), 0.0
+        )
 
         X_nan = np.copy(X)
         y_nan = np.copy(y)
@@ -270,11 +272,12 @@ def test_mulit_output_warn():
             y_nan_masked, y_pred_masked = mask_missing_values(y_nan, y_pred)
             assert_almost_equal(
                 np.std(
-                    y_pred_masked[y_pred_masked[:, 0]!=0, 1] -\
-                    np.mean(y_nan_masked[:, 1])
+                    y_pred_masked[y_pred_masked[:, 0] != 0, 1]
+                    - np.mean(y_nan_masked[:, 1])
                 ),
                 0.0,
             )
+
 
 def test_fit_intercept():
     X = np.random.rand(10, 2)
@@ -316,6 +319,7 @@ def test_fit_intercept():
         narx.fit(X, y, coef_init=[0, 0])
         assert_array_equal(narx.intercept_, [0.0, 0.0])
 
+
 def test_mulit_output_error():
     X = np.random.rand(10, 2)
     y = np.random.rand(10, 2)
@@ -325,20 +329,20 @@ def test_mulit_output_error():
 
     with pytest.raises(ValueError, match="The length of output_ids should"):
         narx = NARX(
-        feat_ids=feat_ids,
-        delay_ids=delay_ids,
-        output_ids=[0],
-    )
+            feat_ids=feat_ids,
+            delay_ids=delay_ids,
+            output_ids=[0],
+        )
         narx.fit(X, y)
 
     with pytest.raises(
         ValueError, match=r"The element x of output_ids should satisfy 0 <=.*"
     ):
         narx = NARX(
-        feat_ids=feat_ids,
-        delay_ids=delay_ids,
-        output_ids=[0, 2],
-    )
+            feat_ids=feat_ids,
+            delay_ids=delay_ids,
+            output_ids=[0, 2],
+        )
         narx.fit(X, y)
 
     with pytest.raises(ValueError, match="The length of `n_terms_to_select` should"):
@@ -409,19 +413,17 @@ def test_sample_weight():
     X_repeated = np.repeat(X, sw, axis=0)
     y_repeated = np.repeat(y, sw)
     narx_osa = NARX().fit(X_repeated, y_repeated)
-    narx_no_sw = NARX().fit(X_repeated, y_repeated, coef_init=[0]*3)
+    narx_no_sw = NARX().fit(X_repeated, y_repeated, coef_init=[0] * 3)
     assert_allclose(
         np.r_[narx_osa.coef_, narx_osa.intercept_],
-        np.r_[narx_no_sw.coef_, narx_no_sw.intercept_]
+        np.r_[narx_no_sw.coef_, narx_no_sw.intercept_],
     )
-    narx_sw = NARX().fit(
-        X, y, sample_weight=sw,
-        coef_init=[0]*3
-    )
+    narx_sw = NARX().fit(X, y, sample_weight=sw, coef_init=[0] * 3)
     assert_allclose(
         np.r_[narx_no_sw.coef_, narx_no_sw.intercept_],
-        np.r_[narx_sw.coef_, narx_sw.intercept_]
+        np.r_[narx_sw.coef_, narx_sw.intercept_],
     )
+
 
 def test_divergence():
     # Test divergence of NARX model
@@ -445,7 +447,8 @@ def test_divergence():
     narx = make_narx(X, y, 3, 3, 2)
     narx.fit(X, y, coef_init=[-10, 0, 0, 0])
     y_hat = narx.predict(X, y)
-    assert np.all(y_hat<=1e20)
+    assert np.all(y_hat <= 1e20)
+
 
 def test_tp2fd():
     time_shift_ids = np.array(
@@ -490,6 +493,7 @@ def test_tp2fd():
     poly_ids[-1][-1] = 5
     with pytest.raises(ValueError, match=r"The element x of poly_ids should.*"):
         _, _ = tp2fd(time_shift_ids, poly_ids)
+
 
 def test_print_narx(capsys):
     X = np.random.rand(10, 2)
