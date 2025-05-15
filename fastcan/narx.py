@@ -275,7 +275,7 @@ def make_poly_ids(
     )
 
     const_id = np.where((ids == 0).all(axis=1))
-    return np.delete(ids, const_id, 0)  # remove the constant featrue
+    return np.delete(ids, const_id, 0)  # remove the constant feature
 
 
 def _valiate_time_shift_poly_ids(
@@ -399,7 +399,7 @@ def fd2tp(feat_ids, delay_ids):
     For time_shift_ids, [0, 1], [0, 2], and [1, 3] represents x0(k-1), x0(k-2),
     and x1(k-3), respectively. For poly_ids, [1, 1] and [2, 3] represent the first
     variable multiplying the first variable given by time_shift_ids, i.e.,
-    x0(k-1)*x0(k-1), and the second variable multiplying the thrid variable, i.e.,
+    x0(k-1)*x0(k-1), and the second variable multiplying the third variable, i.e.,
     x0(k-1)*x1(k-3).
 
     Parameters
@@ -475,7 +475,7 @@ def tp2fd(time_shift_ids, poly_ids):
     For time_shift_ids, [0, 1], [0, 2], and [1, 3] represents x0(k-1), x0(k-2),
     and x1(k-3), respectively. For poly_ids, [1, 1] and [2, 3] represent the first
     variable multiplying the first variable given by time_shift_ids, i.e.,
-    x0(k-1)*x0(k-1), and the second variable multiplying the thrid variable, i.e.,
+    x0(k-1)*x0(k-1), and the second variable multiplying the third variable, i.e.,
     x0(k-1)*x1(k-3).
 
     Parameters

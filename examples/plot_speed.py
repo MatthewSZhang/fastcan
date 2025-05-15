@@ -147,7 +147,7 @@ r_h = FastCan(n_features_to_select, verbose=0).fit(X, y).indices_
 r_eta = FastCan(n_features_to_select, eta=True, verbose=0).fit(X, y).indices_
 r_base, _ = baseline(X, y, n_features_to_select)
 
-print("The indices of the seleted features:", end="\n")
+print("The indices of the selected features:", end="\n")
 print(f"h-correlation: {r_h}")
 print(f"eta-cosine: {r_eta}")
 print(f"Baseline: {r_base}")

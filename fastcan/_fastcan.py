@@ -135,7 +135,7 @@ class FastCan(SelectorMixin, BaseEstimator):
         self.verbose = verbose
 
     def fit(self, X, y):
-        """Preprare data for h-correlation or eta-cosine methods and select features.
+        """Prepare data for h-correlation or eta-cosine methods and select features.
 
         Parameters
         ----------

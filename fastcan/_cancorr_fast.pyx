@@ -1,5 +1,5 @@
 """
-Fast feature selection with sum squared canoncial correlation coefficents
+Fast feature selection with sum squared canonical correlation coefficients
 """
 # Authors: The fastcan developers
 # SPDX-License-Identifier: MIT

@@ -30,3 +30,6 @@ jobs:
       - name: Type check
         run: |
           pixi run type
+      - name: Spell check
+        run: |
+          pixi run spell
