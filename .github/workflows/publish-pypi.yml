@@ -21,6 +21,21 @@ jobs:
         with:
           path: dist/
           merge-multiple: true
+          pattern: cibw-*
 
       - name: Publish distribution to PyPI
+        if: github.event.release.prerelease == false
         uses: pypa/gh-action-pypi-publish@release/v1
+      
+      - name: get wasm dist artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: wasm_wheel
+          path: wasm/
+
+      - name: upload to github release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            wasm/*.whl
+          prerelease: ${{ contains(github.ref, '-pre') }}

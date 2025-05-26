@@ -1,0 +1,20 @@
+name: Emscripten/Pyodide build
+
+on:
+  workflow_call:
+
+jobs:
+  build-wasm-wheel:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build WASM wheel
+        uses: pypa/cibuildwheel@v2.23.3
+        env:
+          CIBW_PLATFORM: pyodide
+      - name: Upload package
+        uses: actions/upload-artifact@v4
+        with:
+          name: wasm_wheel
+          path: ./wheelhouse/*_wasm32.whl
+          if-no-files-found: error
