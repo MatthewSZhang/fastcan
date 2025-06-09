@@ -9,7 +9,7 @@ requires-python = ">=3.10"
 readme = "README.rst"
 license = { file = "LICENSE" }
 
-dependencies = ["scikit-learn>=1.6.0"]
+dependencies = ["scikit-learn>=1.7.0"]
 
 classifiers = [
     "Development Status :: 4 - Beta",
@@ -36,8 +36,14 @@ tracker = "https://github.com/scikit-learn-contrib/fastcan/issues"
 docs = ["furo", "matplotlib", "sphinx_gallery", "sphinx-design"]
 
 [build-system]
-requires = ["meson-python>=0.16.0", "Cython>=3.0.10", "scikit-learn>=1.6.0"]
+requires = ["meson-python>=0.18.0", "Cython>=3.1.0", "scikit-learn>=1.7.0"]
 build-backend = "mesonpy"
+
+ # Needed on Windows CI to compile with Visual Studio compiler
+ # otherwise Meson detects a MINGW64 platform and use MINGW64
+ # toolchain
+[tool.meson-python.args]
+setup = ['--vsenv']
 
 [tool.pixi.project]
 channels = ["conda-forge"]
@@ -45,14 +51,14 @@ platforms = ["win-64", "linux-64", "osx-64", "osx-arm64"]
 
 [tool.pixi.dependencies]
 python = ">=3.13.0"
-scikit-learn = ">=1.6.0"
+scikit-learn = ">=1.7.0"
 
 [tool.pixi.pypi-dependencies]
 fastcan = { path = ".", editable = true }
 
 [tool.pixi.build-dependencies]
-cython = ">=3.0.10"
-meson-python = ">=0.16.0"
+cython = ">=3.1.0"
+meson-python = ">=0.18.0"
 
 [tool.pixi.feature.jupyter.dependencies]
 notebook = "*"
@@ -77,12 +83,14 @@ pip = "*"
 
 [tool.pixi.feature.nogil.dependencies]
 python-freethreading = "*"
-meson-python = "*"
-pip = "*"
 
 [tool.pixi.feature.nogil.pypi-dependencies]
-scikit-learn = { index = "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple" }
-Cython = { index = "https://pypi.anaconda.org/scientific-python-nightly-wheels/simple" }
+scikit-learn = ">=1.7.0"
+fastcan = { path = ".", editable = true }
+
+[tool.pixi.feature.nogil.build-dependencies]
+cython = ">=3.1.0"
+meson-python = ">=0.18.0"
 
 [tool.pixi.target.osx-64.build-dependencies]
 compilers = "*"
@@ -105,12 +113,6 @@ build-wheel = "rm -rf dist && python -m build -wnx -Cinstall-args=--tags=runtime
 build-sdist = "rm -rf dist && python -m build --sdist"
 rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e ."
 
- # Needed on Windows CI to compile with Visual Studio compiler
- # otherwise Meson detects a MINGW64 platform and use MINGW64
- # toolchain
- [tool.pixi.feature.build.target.win-64.tasks]
- rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e . -Csetup-args=--vsenv"
-
 [tool.pixi.feature.static.tasks]
 fmt = "ruff format"
 lint = "ruff check . --fix"
@@ -123,19 +125,9 @@ doc = { cmd = "$SPHINXBUILD -M $CMD $SOURCEDIR $BUILDDIR $SPHINXOPTS", cwd = "do
 doc-clean = { cmd = "rm -rf $BUILDDIR generated auto_examples", cwd = "doc", env = { BUILDDIR = "_build" } }
 
 [tool.pixi.feature.nogil.tasks]
-nogil-build = { cmd = "pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true" }
-nogil-h = { cmd = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'", depends-on = [
-    "nogil-build",
-] }
-nogil-eta = { cmd = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, eta=True, verbose=0).fit(X, y)'", depends-on = [
-    "nogil-build",
-] }
+nogil-h = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'"
 
-# Needed on Windows CI to compile with Visual Studio compiler
-# otherwise Meson detects a MINGW64 platform and use MINGW64
-# toolchain
-[tool.pixi.feature.nogil.target.win-64.tasks]
-nogil-build = { cmd = "pip install --editable . --verbose --no-build-isolation --config-settings editable-verbose=true -Csetup-args=--vsenv" }
+nogil-eta = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(3000, 100); y = np.random.rand(3000, 20)' 's = FastCan(100, eta=True, verbose=0).fit(X, y)'"
 
 [tool.pixi.environments]
 dev = ["docs", "test", "build", "jupyter"]
