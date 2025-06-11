@@ -28,7 +28,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
+        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -36,11 +36,11 @@ jobs:
         uses: pypa/cibuildwheel@v2.23.3
         env:
           CIBW_BUILD: cp3*-*
-          CIBW_SKIP: pp* *i686* *musllinux* *-macosx_universal2 *-manylinux_ppc64le *-manylinux_s390x
+          CIBW_SKIP: "*_i686 *_ppc64le *_s390x *_universal2 *-musllinux_*"
           CIBW_PROJECT_REQUIRES_PYTHON: ">=3.10"
-          CIBW_ARCHS_LINUX: auto64
+          CIBW_ARCHS_LINUX: auto
           CIBW_ARCHS_MACOS: x86_64 arm64
-          CIBW_ARCHS_WINDOWS: auto64
+          CIBW_ARCHS_WINDOWS: AMD64
           # Include free-threaded support
           CIBW_ENABLE: cpython-freethreading
       - name: Upload package
