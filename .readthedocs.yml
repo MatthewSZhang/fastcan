@@ -3,9 +3,16 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.13"
+  apt_packages:
+    - default-jre # for plantuml
+    - graphviz # for plantuml
+  jobs:
+    pre_install:
+      - bash scripts/rtd_pre_install.sh
 
 sphinx:
    configuration: doc/conf.py
+   fail_on_warning: true
 
 python:
   install:
