@@ -1,0 +1,17 @@
+name: fastcan-rtd
+channels:
+  - conda-forge
+dependencies:
+  - micromamba
+  - pip
+  - furo
+  - matplotlib
+  - pandas
+  - sphinx-gallery
+  - sphinx-design
+  - sphinxcontrib-plantuml
+  - jupyterlite-sphinx
+  - plantuml
+  - pip:
+      - .
+      - jupyterlite-xeus >=2.1.2
