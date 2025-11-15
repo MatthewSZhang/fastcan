@@ -38,10 +38,10 @@ def refine(selector, drop=1, max_iter=None, verbose=1):
     In the refining process, the selected features will be dropped, and
     the vacancy positions will be refilled from the candidate features.
 
-    The processing of a vacany position is refilled after searching all
+    The processing of a vacant position is refilled after searching all
     candidate features is called an `iteration`.
 
-    The processing of a vacany position is refilled by a different features
+    The processing of a vacant position is refilled by a different features
     from the dropped one, which increase the SSC of the selected features
     is called a `valid iteration`.
 
@@ -51,7 +51,7 @@ def refine(selector, drop=1, max_iter=None, verbose=1):
         FastCan selector.
 
     drop : int or array-like of shape (n_drops,) or "all", default=1
-        The number of the selected features dropped for the consequencing
+        The number of the selected features dropped for the consequent
         reselection.
 
     max_iter : int, default=None

@@ -47,7 +47,7 @@ y = y[max_delay:] + e
 X = np.c_[u0[max_delay:], u1[max_delay:]]
 
 # %%
-# Build term libriary
+# Build term library
 # -------------------
 # To build a reduced polynomial NARX model, it is normally have two steps:
 #
@@ -56,14 +56,14 @@ X = np.c_[u0[max_delay:], u1[max_delay:]]
 #
 # #. Learn the coefficients of the terms.
 #
-# To search the structure of the model, the candidate term libriary should be
+# To search the structure of the model, the candidate term library should be
 # constructed by the following two steps.
 #
 # #. Time-shifted variables: the raw input-output data, i.e., :math:`u_0(k)`,
 #    :math:`u_1(k)`, and :math:`y(k)`, are converted into :math:`u_0(k-1)`,
 #    :math:`u_1(k-2)`, etc.
 #
-# #. Nonlinear terms: the time-shifted variables are onverted to nonlinear terms
+# #. Nonlinear terms: the time-shifted variables are converted to nonlinear terms
 #    via polynomial basis functions, e.g., :math:`u_0(k-1)^2`,
 #    :math:`u_0(k-1)u_0(k-3)`, etc.
 #
@@ -124,8 +124,8 @@ selected_poly_ids = poly_ids[support]
 # %%
 # Build NARX model
 # ----------------
-# As the reduced polynomial NARX is a linear function of the nonlinear tems,
-# the coefficient of each term can be easily estimated by oridnary least squares.
+# As the reduced polynomial NARX is a linear function of the nonlinear terms,
+# the coefficient of each term can be easily estimated by ordinary least squares.
 # In the printed NARX model, it is found that :class:`FastCan` selects the correct
 # terms and the coefficients are close to the true values.
 
@@ -143,9 +143,9 @@ narx_model.fit(X, y)
 
 print_narx(narx_model)
 # %%
-# Automaticated NARX modelling workflow
+# Automated NARX modelling workflow
 # -------------------------------------
-# We provide :meth:`narx.make_narx` to automaticate the workflow above.
+# We provide :meth:`narx.make_narx` to automate the workflow above.
 
 from fastcan.narx import make_narx
 
