@@ -15,7 +15,7 @@ jobs:
     runs-on: ${{ matrix.os }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
       - uses: prefix-dev/setup-pixi@v0.9.3
         with:
           environments: >-
@@ -39,8 +39,8 @@ jobs:
       - name: Test with doctest
         if: matrix.os == 'ubuntu-latest'
         run: |
-          pixi run -e docs doc
-          pixi run -e docs doc sphinx-build doctest
+          pixi run -e docs doc-build
+          pixi run -e docs doc-build sphinx-build doctest
       - name: Test nogil
         run: |
           pixi run -e nogil nogil-eta
