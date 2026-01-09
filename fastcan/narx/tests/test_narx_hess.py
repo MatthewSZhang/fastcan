@@ -56,7 +56,7 @@ def _hessian_wrapper(
         y_ids = np.asarray(output_ids, dtype=np.int32)
 
     if return_hess:
-        res, jac, hess = NARX._func(
+        res, jac, hess, _ = NARX._func(
             coef_intercept,
             mode,
             X,
@@ -114,6 +114,9 @@ def _hessian_wrapper(
         hc = np.zeros((n_x, max_delay, n_outputs, n_outputs), dtype=float)
         d2ydx2 = np.zeros((n_samples, n_x, n_outputs, n_x), dtype=float)
 
+        p = np.zeros(1, dtype=float)
+        d2ydx2p = np.zeros((1, 1, 1), dtype=float)
+
         _update_der(
             mode,
             X,
@@ -132,11 +135,13 @@ def _hessian_wrapper(
             hess_coef_ids,
             hess_term_ids,
             hess_yd_ids,
+            p,
             term_libs,
             jc,
             hc,
             dydx,
             d2ydx2,
+            d2ydx2p,
         )
         return y_hat, d2ydx2
 
@@ -352,7 +357,7 @@ def test_complex():
         jac_delay_ids=jac_delay_ids,
     )
     hess_num = _approx_numeric_hessian(params, wrapper_func)
-    assert_allclose(hess, hess_num, rtol=0.001, atol=0.001)
+    assert_allclose(hess, hess_num, rtol=1e-5, atol=1e-5)
 
 
 @pytest.mark.parametrize("seed", [10, 42, 123, 999, 2024])
