@@ -3,19 +3,21 @@ channels = ["conda-forge"]
 platforms = ["win-64", "linux-64", "osx-64", "osx-arm64", "linux-aarch64"]
 
 [dependencies]
-python = ">=3.9"
-scikit-learn = ">=1.6.0"
-cython = ">=3.0.10" # build dependencies
-meson-python = ">=0.16.0" # build dependencies
-
-[target.osx-64.dependencies]
-compilers = "*" # build dependencies
-
-[target.osx-arm64.dependencies]
-compilers = "*" # build dependencies
+python = ">=3.10"
+scikit-learn = ">=1.7.0"
 
 [pypi-dependencies]
 fastcan = { path = ".", editable = true }
+
+[feature.build.dependencies]
+cython = ">=3.2.4"
+meson-python = ">=0.19.0"
+
+[feature.build.target.osx-64.dependencies]
+compilers = "*" # OpenMP
+
+[feature.build.target.osx-arm64.dependencies]
+compilers = "*" # OpenMP
 
 [feature.docs.dependencies]
 pydata-sphinx-theme = "*"
@@ -73,18 +75,16 @@ pytest = "*" # for ty
 sympy = "*" # for ty
 
 
-[feature.build.dependencies]
+[feature.rebuild.dependencies]
 python-build = "*"
 pip = "*"
 
 [feature.nogil.dependencies]
 python = "*"
 python-freethreading = "*"
-cython = ">=3.1.0" # build dependencies
-meson-python = ">=0.18.0" # build dependencies
 
 [feature.nogil.pypi-dependencies]
-scikit-learn = ">=1.6.0"
+scikit-learn = ">=1.7.0"
 fastcan = { path = ".", editable = true }
 
 [tasks]
@@ -104,7 +104,7 @@ asv-preview = { cmd = "python -m asv preview", cwd = "asv_benchmarks", depends-o
 test = "pytest"
 test-coverage = { cmd = "rm -rf .coverage && pytest --cov-report {{ FMT }} --cov={{ PACKAGE }}", args = [{ arg = "FMT", default = "html" }, { arg = "PACKAGE", default = "fastcan" }] }
 
-[feature.build.tasks]
+[feature.rebuild.tasks]
 build-wheel = "rm -rf dist && python -m build -wnx"
 build-sdist = "rm -rf dist && python -m build --sdist"
 rebuild = "rm -rf build && pip install --no-deps --force-reinstall -e ."
@@ -138,6 +138,8 @@ doc-plantuml = { cmd = "plantuml -tsvg {{ SOURCE }} -o {{ OUTPUT }}", cwd = "doc
 doc-plantuml-test = "plantuml -testdot"
 doc-jupyterlite-debug = { cmd = "jupyter-lite build --debug --output-dir {{ OUTPUT }}", cwd = "doc", args = [{ arg = "OUTPUT", default = "_output" }] }
 
+[feature.docs.activation.env]
+MAMBA_NO_LOW_SPEED_LIMIT = "1"
 
 [feature.nogil.tasks]
 nogil-h = "python -Xgil=0 -m timeit -n 5 -s 'import numpy as np; from fastcan import FastCan; X = np.random.rand(30000, 100); y = np.random.rand(30000, 20)' 's = FastCan(100, verbose=0).fit(X, y)'"
@@ -154,16 +156,26 @@ pyodide-build-recipe = { cmd = "rm -rf dist && bash -c 'source emsdk/emsdk_env.s
 pyodide-download = '''bash -c "[ -d pyodide ] || (LATEST_TAG=$(curl -s https://api.github.com/repos/pyodide/pyodide/releases/latest | grep \"tag_name\" | cut -d \" -f4) && curl -L https://github.com/pyodide/pyodide/releases/download/${LATEST_TAG}/pyodide-${LATEST_TAG}.tar.bz2 | tar -xjf -)"'''
 pyodide-test-recipe = { cmd = "mv ../dist/* . && python -m http.server --directory .", cwd = "pyodide", depends-on = ["pyodide-download", "pyodide-build-recipe"] }
 
-[feature.py39.dependencies]
-python = "==3.9.0"
-scikit-learn = "==1.6.0"
-meson-python = "==0.16.0"
-cython = "==3.0.10"
+[feature.low]
+solve-strategy = "lowest"
+
+[feature.low.dependencies]
+pytest = ">=9.0.2"
+numpy = ">=1.24.1"
+meson = ">=1.10.0" # For win-64
+
+[feature.low.target.osx-64.dependencies]
+# See: https://github.com/numpy/numpy/issues/29319
+cctools = ">=1030.6.3"
+
+[feature.low.target.osx-arm64.dependencies]
+cctools = ">=1030.6.3"
 
 [environments]
-dev = ["test", "build", "jupyter", "asv"]
-docs = ["docs"]
+default = ["build"]
+dev = ["build", "test", "rebuild", "jupyter", "asv"]
+docs = ["build", "docs"]
 static = { features = ["static"], no-default-feature = true }
-nogil = { features = ["nogil"], no-default-feature = true }
+nogil = { features = ["build", "nogil"], no-default-feature = true }
 wasm = { features = ["wasm"], no-default-feature = true }
-py39 = { features = ["py39", "test"] }
+low = ["build", "low", "test"]
