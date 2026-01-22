@@ -1099,6 +1099,7 @@ class NARX(MultiOutputMixin, RegressorMixin, BaseEstimator):
         hessp : array of shape (n_x,)
         """
 
+        p = np.asarray(p, dtype=float)
         coef, _, n_samples, n_outputs, n_x = NARX._split_coef_intercept(
             coef_intercept, fit_intercept, y
         )

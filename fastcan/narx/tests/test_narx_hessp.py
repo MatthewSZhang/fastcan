@@ -94,7 +94,8 @@ def test_random(seed):
     )
 
 
-def test_complex():
+@pytest.mark.parametrize("dtype", [np.int8, float])
+def test_complex(dtype):
     """Test complex model for hessp vs hess @ p."""
     # Simulated model
     rng = np.random.default_rng(12345)
@@ -181,13 +182,13 @@ def test_complex():
         fit_intercept=True,
     )
 
-    # Use patch to capture the arguments passed to _MemoizeOpt/least_squares
-    with patch("fastcan.narx._base.least_squares") as mock_ls:
+    # Use patch to capture the arguments passed to _MemoizeOpt/minimize
+    with patch("fastcan.narx._base.minimize") as mock_ls:
         coef_init = np.r_[coef, intercept]
 
-        narx.fit(X, y, coef_init=coef_init)
+        narx.fit(X, y, coef_init=coef_init, solver="minimize")
 
-        # Capture arguments passed to least_squares
+        # Capture arguments passed to minimize
         call_kwargs = mock_ls.call_args.kwargs
         args_tuple = call_kwargs["args"]
         sample_weight_sqrt = args_tuple[6]
@@ -203,7 +204,10 @@ def test_complex():
     H = memoize.hess(coef_init, *args_tuple)
 
     # 2. Compute Hessp product using mode=3 with random vector p
-    p = rng.standard_normal(len(coef_init))
+    if dtype == np.int8:
+        p = rng.integers(-5, 6, size=len(coef_init)).astype(dtype)
+    else:
+        p = rng.standard_normal(len(coef_init)).astype(dtype)
     Hp = memoize.hessp(coef_init, p, *args_tuple)
 
     # 3. Verify Hp == H @ p
