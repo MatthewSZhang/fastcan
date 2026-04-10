@@ -28,20 +28,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest, ubuntu-24.04-arm]
+        os:
+          [
+            ubuntu-latest,
+            windows-latest,
+            macos-latest,
+            ubuntu-24.04-arm,
+            macos-15-intel,
+            windows-11-arm,
+          ]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v6
       - uses: astral-sh/setup-uv@v7
-        if: matrix.os == 'windows-latest' || matrix.os == 'macos-latest'
+        if: >-
+          matrix.os == 'windows-latest' ||
+          matrix.os == 'macos-latest' ||
+          matrix.os == 'macos-15-intel' ||
+          matrix.os == 'windows-11-arm'
       - name: Build wheels
         uses: pypa/cibuildwheel@v3.4.0
         env:
           CIBW_SKIP: "*_i686 *_ppc64le *_s390x *_universal2 *-musllinux_*"
-          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.10"
+          CIBW_PROJECT_REQUIRES_PYTHON: ">=3.11"
           CIBW_ARCHS_LINUX: auto
           CIBW_ARCHS_MACOS: x86_64 arm64
-          CIBW_ARCHS_WINDOWS: AMD64
+          CIBW_ARCHS_WINDOWS: auto64
           # Include free-threaded support
           CIBW_ENABLE: cpython-freethreading
           CIBW_BUILD_FRONTEND: "build[uv]"
