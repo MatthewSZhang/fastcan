@@ -167,32 +167,7 @@ class FastCan(SelectorMixin, BaseEstimator):
         """
         self._validate_params()
         # X y
-        check_X_params = {
-            "ensure_min_samples": 2,
-            "order": "F",
-            "dtype": float,
-            "force_writeable": True,
-        }
-        check_y_params = {
-            "ensure_min_samples": 2,
-            "ensure_2d": False,
-            "order": "F",
-            "dtype": float,
-            "force_writeable": True,
-        }
-        X, y = validate_data(
-            self,
-            X=X,
-            y=y,
-            multi_output=True,
-            validate_separately=(check_X_params, check_y_params),
-        )
-        check_consistent_length(X, y)
-
-        if y.ndim == 1:
-            # reshape is necessary to preserve the data contiguity against vs
-            # [:, np.newaxis] that does not.
-            y = y.reshape(-1, 1)
+        X, y = _check_X_y(self, X, y, order="F")
 
         n_samples, n_features = X.shape
         n_outputs = y.shape[1]
@@ -207,12 +182,8 @@ class FastCan(SelectorMixin, BaseEstimator):
             raise ValueError(
                 "`eta` cannot be True, when n_samples < n_features+n_outputs."
             )
-        self.indices_include_ = self._check_indices_params(
-            self.indices_include, n_features
-        )
-        self.indices_exclude_ = self._check_indices_params(
-            self.indices_exclude, n_features
-        )
+        self.indices_include_ = _check_indices_params(self.indices_include, n_features)
+        self.indices_exclude_ = _check_indices_params(self.indices_exclude, n_features)
         n_inclusions = self.indices_include_.size
         n_exclusions = self.indices_exclude_.size
         if np.intersect1d(self.indices_include_, self.indices_exclude_).size != 0:
@@ -291,38 +262,6 @@ class FastCan(SelectorMixin, BaseEstimator):
         self.scores_ = scores
         return self
 
-    def _check_indices_params(self, indices_params, n_features):
-        """Check indices_include or indices_exclude."""
-        if indices_params is None:
-            indices_params = np.zeros(0, dtype=int)
-        else:
-            indices_params = check_array(
-                indices_params,
-                ensure_2d=False,
-                dtype=int,
-                ensure_min_samples=0,
-            )
-
-        if indices_params.ndim != 1:
-            raise ValueError(
-                f"Found indices_params with dim {indices_params.ndim}, "
-                "but expected == 1."
-            )
-
-        if indices_params.size >= n_features:
-            raise ValueError(
-                f"The number of indices in indices_params {indices_params.size} must "
-                f"be < n_features {n_features}."
-            )
-
-        if np.any((indices_params < 0) | (indices_params >= n_features)):
-            raise ValueError(
-                "Out of bounds. "
-                f"All items in indices_params should be in [0, {n_features}). "
-                f"But got indices_params = {indices_params}."
-            )
-        return indices_params
-
     def _get_support_mask(self):
         check_is_fitted(self)
         return self.support_
@@ -337,3 +276,67 @@ def _prepare_search(n_features, n_features_to_select, indices_include, indices_e
     mask[indices_exclude] = True
 
     return indices, scores, mask
+
+
+def _check_X_y(estimator, X, y, order):
+    """Check X and y for feature selection."""
+    check_X_params = {
+        "ensure_min_samples": 2,
+        "order": order,
+        "dtype": float,
+        "force_writeable": True,
+    }
+    check_y_params = {
+        "ensure_min_samples": 2,
+        "ensure_2d": False,
+        "order": order,
+        "dtype": float,
+        "force_writeable": True,
+    }
+    X, y = validate_data(
+        estimator,
+        X=X,
+        y=y,
+        multi_output=True,
+        validate_separately=(check_X_params, check_y_params),
+    )
+    check_consistent_length(X, y)
+
+    if y.ndim == 1:
+        # reshape is necessary to preserve the data contiguity against vs
+        # [:, np.newaxis] that does not.
+        y = y.reshape(-1, 1)
+
+    return X, y
+
+
+def _check_indices_params(indices_params, n_features):
+    """Check indices_include or indices_exclude."""
+    if indices_params is None:
+        indices_params = np.zeros(0, dtype=int)
+    else:
+        indices_params = check_array(
+            indices_params,
+            ensure_2d=False,
+            dtype=int,
+            ensure_min_samples=0,
+        )
+
+    if indices_params.ndim != 1:
+        raise ValueError(
+            f"Found indices_params with dim {indices_params.ndim}, but expected == 1."
+        )
+
+    if indices_params.size >= n_features:
+        raise ValueError(
+            f"The number of indices in indices_params {indices_params.size} must "
+            f"be < n_features {n_features}."
+        )
+
+    if np.any((indices_params < 0) | (indices_params >= n_features)):
+        raise ValueError(
+            "Out of bounds. "
+            f"All items in indices_params should be in [0, {n_features}). "
+            f"But got indices_params = {indices_params}."
+        )
+    return indices_params
